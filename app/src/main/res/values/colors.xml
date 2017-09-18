@@ -2,9 +2,9 @@
 <resources>
     <color name="colorPrimary">#92e1c0</color>
     <color name="colorPrimaryDark">#61af90</color>
-    <color name="colorPrimaryLight">#c4fff3</color>
     <color name="colorAccent">#e19e92</color>
 
+    <color name="colorPrimaryLight">#c4fff3</color>
     <color name="textDark">#000000</color>
     <color name="textLight">#ffffff</color>
 </resources>
