@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FallWatch</string>
+    <string name="title_activity_sidebar">Sidebar</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Asetuksets</string>
+
+    <string name="title_activity_register">RegisterActivity</string>
+    <string name="welcome">Tervetuloa!</string>
+    <string name="fillInInfo">Täytäthän alle vaaditut tiedot, jotta voimme auttaa sinua parhaalla mahdollisella tavalla.</string>
+    <string name="yourName">Nimesi:</string>
+    <string name="contact1">Yhteystieto 1:</string>
+    <string name="contact2">Yhteystieto 2:</string>
+    <string name="apply">Käytä</string>
+</resources>
