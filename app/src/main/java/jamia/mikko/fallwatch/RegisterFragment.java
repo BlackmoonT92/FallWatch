@@ -49,7 +49,6 @@ public class RegisterFragment extends Fragment {
 
         }
 
-
         userName = (EditText) getActivity().findViewById(R.id.yourNameEdit);
         contact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
         contact2 = (EditText) getActivity().findViewById(R.id.secondContactEdit);
@@ -117,7 +116,7 @@ public class RegisterFragment extends Fragment {
                 saveToPreferences("contact1", contact1.getText().toString());
                 saveToPreferences("contact2", contact2.getText().toString());
 
-                Toast.makeText(getContext(), "Saved to preferences", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
                 Intent mainIntent = new Intent(getContext(), MainSidebarActivity.class);
                 startActivity(mainIntent);
