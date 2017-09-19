@@ -15,4 +15,6 @@
     <string name="contact1">Yhteystieto 1:</string>
     <string name="contact2">Yhteystieto 2:</string>
     <string name="apply">Käytä</string>
+
+    <string name="savedToPreferences">Tiedot tallennettu</string>
 </resources>

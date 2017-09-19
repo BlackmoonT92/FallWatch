@@ -1,7 +1,6 @@
 package jamia.mikko.fallwatch;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -49,7 +48,6 @@ public class RegisterFragment extends Fragment {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, permissionReadContactsKey);
 
         }
-
 
         userName = (EditText) getActivity().findViewById(R.id.yourNameEdit);
         contact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
@@ -120,7 +118,7 @@ public class RegisterFragment extends Fragment {
                 saveToPreferences("contact1", contact1.getText().toString());
                 saveToPreferences("contact2", contact2.getText().toString());
 
-                Toast.makeText(getContext(), "Saved to preferences", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
                 Intent mainIntent = new Intent(getContext(), MainActivity.class);
                 startActivity(mainIntent);
