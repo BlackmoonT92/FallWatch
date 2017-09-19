@@ -24,9 +24,6 @@ public class ContactsFragment extends Fragment {
 
         getActivity().setTitle("Contacts");
 
-        TextView tv = (TextView) view.findViewById(R.id.contacts_text);
-        tv.setText("CONTACTS PAGE");
-
         Log.i("DEBUG", "Contracts fragment");
 
         return view;

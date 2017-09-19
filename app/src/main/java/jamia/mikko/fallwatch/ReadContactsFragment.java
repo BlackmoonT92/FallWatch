@@ -91,10 +91,7 @@ public class ReadContactsFragment extends ListFragment {
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();
-
-
     }
-
 
     public String getNumberById(long id) {
         String[] projection = new String[] {
