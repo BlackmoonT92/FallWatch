@@ -51,7 +51,6 @@ public class ReadContactsFragment extends Fragment implements LoaderManager.Load
         this.testData.add("Näi");
         this.testData.add("Noi");
 
-
         ListView listView = new ListView(getContext());
 
         // Gets a CursorAdapter

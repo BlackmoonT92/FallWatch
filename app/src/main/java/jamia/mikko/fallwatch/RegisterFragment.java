@@ -45,7 +45,6 @@ public class RegisterFragment extends Fragment {
                         .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
-
             }
         });
     }

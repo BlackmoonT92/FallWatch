@@ -17,5 +17,4 @@ public class RegisterActivity extends AppCompatActivity {
                 .addToBackStack(null)
                 .commit();
     }
-
 }
