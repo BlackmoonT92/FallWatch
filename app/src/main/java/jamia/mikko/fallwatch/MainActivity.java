@@ -10,7 +10,6 @@ import android.os.Bundle;
 public class MainActivity extends AppCompatActivity {
     private int permissionReadContactsKey = 1;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,5 +23,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent registerIntent = new Intent(this, RegisterActivity.class);
         startActivity(registerIntent);
+        
     }
 }
