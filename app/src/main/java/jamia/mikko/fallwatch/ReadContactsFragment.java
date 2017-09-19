@@ -1,32 +1,25 @@
 package jamia.mikko.fallwatch;
 
+import android.content.ContentResolver;
+import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
 
+public class ReadContactsFragment extends ListFragment {
 
-public class ReadContactsFragment extends Fragment implements LoaderManager.LoaderCallbacks, AdapterView.OnClickListener {
-
-    private ArrayList<String> testData;
-    private SimpleCursorAdapter mCursorAdapter;
-    private final static String[] FROM_COLUMNS = {
-            ContactsContract.Contacts.DISPLAY_NAME_PRIMARY
-    };
-    private final static int[] TO_IDS = {
-            android.R.id.text1
-    };
+    private CursorAdapter myAdapter;
+    private ContentResolver cr;
+    private String username, contact1, contact2;
 
     public ReadContactsFragment() {
         // Required empty public constructor
@@ -38,7 +31,6 @@ public class ReadContactsFragment extends Fragment implements LoaderManager.Load
         // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.contacts_list_view, container, false);
-
         return v;
     }
 
@@ -46,37 +38,75 @@ public class ReadContactsFragment extends Fragment implements LoaderManager.Load
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.testData = new ArrayList<>();
+        Bundle args = getArguments();
 
-        this.testData.add("Näi");
-        this.testData.add("Noi");
+        username = args.getString("username");
+        contact1 = args.getString("contact1");
+        contact2 = args.getString("contact2");
 
 
-        ListView listView = new ListView(getContext());
+        String[] projection = new String[] {
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
+        };
 
-        // Gets a CursorAdapter
-        mCursorAdapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_expandable_list_item_1, null, FROM_COLUMNS, TO_IDS, 0);
-        listView.setAdapter(mCursorAdapter);
+        int[] toLayouts = { R.id.contactName, R.id.contactNumber };
 
-    }
+        cr = getActivity().getContentResolver();
+        Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
-        return null;
-    }
+        myAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
 
-    @Override
-    public void onLoadFinished(Loader loader, Object data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader loader) {
+        setListAdapter(myAdapter);
 
     }
 
     @Override
-    public void onClick(View view) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
 
+        long contactId = id;
+
+        String phoneNumber = getNumberById(contactId);
+
+        RegisterFragment fragment = new RegisterFragment();
+
+        Bundle args = new Bundle();
+
+        args.putString("username", username);
+
+        if(contact1.equals("")) {
+            args.putString("contact1", phoneNumber);
+            args.putString("contact2", contact2);
+        } else if(contact2.equals("")) {
+            args.putString("contact1", contact1);
+            args.putString("contact2", phoneNumber);
+        } else {
+            args.putString("contact1", contact1);
+            args.putString("contact2", contact2);
+        }
+
+        fragment.setArguments(args);
+
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+
+
+    }
+
+
+    public String getNumberById(long id) {
+        String[] projection = new String[] {
+                ContactsContract.CommonDataKinds.Phone._ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+
+        Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, ContactsContract.CommonDataKinds.Phone._ID + " = " + id, null, null);
+
+        cursor.moveToFirst();
+
+        return cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
     }
 }

@@ -1,17 +1,24 @@
 package jamia.mikko.fallwatch;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class RegisterFragment extends Fragment {
 
     private EditText userName, contact1, contact2;
+    private Button submitButton;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -21,6 +28,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View v = inflater.inflate(R.layout.fragment_register, container, false);
 
         return v;
@@ -28,17 +36,60 @@ public class RegisterFragment extends Fragment {
 
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
         userName = (EditText) getActivity().findViewById(R.id.yourNameEdit);
         contact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
         contact2 = (EditText) getActivity().findViewById(R.id.secondContactEdit);
+        submitButton = (Button) getActivity().findViewById(R.id.submit);
+
+        Bundle args = getArguments();
+
+        try {
+
+            userName.setText(args.getString("username"));
+            contact1.setText(args.getString("contact1"));
+            contact2.setText(args.getString("contact2"));
+
+        } catch (Exception e) {
+
+        }
+
 
         contact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 ReadContactsFragment fragment = new ReadContactsFragment();
+
+                Bundle args = new Bundle();
+                args.putString("username", userName.getText().toString());
+                args.putString("contact1", contact1.getText().toString());
+                args.putString("contact2", contact2.getText().toString());
+
+                fragment.setArguments(args);
+
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack(null)
+                        .commit();
+
+
+            }
+        });
+
+        contact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                ReadContactsFragment fragment = new ReadContactsFragment();
+
+                Bundle args = new Bundle();
+                args.putString("username", userName.getText().toString());
+                args.putString("contact1", contact1.getText().toString());
+                args.putString("contact2", contact2.getText().toString());
+
+                fragment.setArguments(args);
 
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -48,5 +99,16 @@ public class RegisterFragment extends Fragment {
 
             }
         });
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences prefs = getActivity().getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor prefsEditor = prefs.edit();
+
+            }
+        });
     }
+
+
 }
