@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="jamia.mikko.fallwatch.SidebarActivity"
+    tools:context="jamia.mikko.fallwatch.MainSidebarActivity"
     tools:showIn="@layout/app_bar_sidebar">
 
 </android.support.constraint.ConstraintLayout>

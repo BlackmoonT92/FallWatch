@@ -7,13 +7,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 /**
  * Created by rrvil on 18-Sep-17.
  */
 
 public class HomeFragment extends Fragment {
+
+    private ImageSwitcher imgSwitcher;
+    private Button onOff;
+    private boolean isOn;
 
     public HomeFragment(){}
 
@@ -30,9 +40,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
         getActivity().setTitle("Home");
-
-        TextView tv = (TextView) view.findViewById(R.id.home_text);
-        tv.setText("HOME PAGE");
 
         Log.i("DEBUG", "Home fragment");
 

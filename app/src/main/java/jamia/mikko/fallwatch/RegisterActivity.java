@@ -16,5 +16,4 @@ public class RegisterActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment)
                 .commit();
     }
-
 }

@@ -44,7 +44,6 @@ public class ReadContactsFragment extends ListFragment {
         contact1 = args.getString("contact1");
         contact2 = args.getString("contact2");
 
-
         String[] projection = new String[] {
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
                 ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER

@@ -84,8 +84,6 @@ public class RegisterFragment extends Fragment {
                         .replace(R.id.fragment_container, fragment)
                         .addToBackStack(null)
                         .commit();
-
-
             }
         });
 
@@ -120,7 +118,7 @@ public class RegisterFragment extends Fragment {
 
                 Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
-                Intent mainIntent = new Intent(getContext(), MainActivity.class);
+                Intent mainIntent = new Intent(getContext(), MainSidebarActivity.class);
                 startActivity(mainIntent);
             }
         });
