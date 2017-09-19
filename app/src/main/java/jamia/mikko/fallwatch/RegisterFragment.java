@@ -1,10 +1,14 @@
 package jamia.mikko.fallwatch;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +23,8 @@ public class RegisterFragment extends Fragment {
 
     private EditText userName, contact1, contact2;
     private Button submitButton;
+    public static final String USER_PREFERENCES = "UserPreferences";
+    private int permissionReadContactsKey = 1;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -34,10 +40,16 @@ public class RegisterFragment extends Fragment {
         return v;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, permissionReadContactsKey);
+
+        }
+
 
         userName = (EditText) getActivity().findViewById(R.id.yourNameEdit);
         contact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
@@ -103,12 +115,26 @@ public class RegisterFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences prefs = getActivity().getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor prefsEditor = prefs.edit();
 
+                saveToPreferences("username", userName.getText().toString());
+                saveToPreferences("contact1", contact1.getText().toString());
+                saveToPreferences("contact2", contact2.getText().toString());
+
+                Toast.makeText(getContext(), "Saved to preferences", Toast.LENGTH_SHORT).show();
+
+                Intent mainIntent = new Intent(getContext(), MainActivity.class);
+                startActivity(mainIntent);
             }
         });
     }
 
+    public void saveToPreferences(String key, String value) {
+        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        prefsEditor.putString(key, value);
+
+        prefsEditor.commit();
+    }
 
 }
