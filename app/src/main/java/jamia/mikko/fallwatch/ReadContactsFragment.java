@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import jamia.mikko.fallwatch.SidebarFragments.RegisterFragment;
+
 
 public class ReadContactsFragment extends ListFragment {
 

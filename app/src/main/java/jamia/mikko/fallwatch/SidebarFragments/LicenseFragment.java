@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

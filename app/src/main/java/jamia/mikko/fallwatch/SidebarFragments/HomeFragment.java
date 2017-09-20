@@ -1,7 +1,6 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.graphics.drawable.Animatable;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.Switch;
-import android.widget.ViewSwitcher;
+
+import jamia.mikko.fallwatch.FallDetector;
+import jamia.mikko.fallwatch.MainSidebarActivity;
+import jamia.mikko.fallwatch.R;
 
 /**
  * Created by rrvil on 18-Sep-17.

@@ -18,6 +18,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
+import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
+import jamia.mikko.fallwatch.SidebarFragments.LicenseFragment;
+import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
+
 public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 

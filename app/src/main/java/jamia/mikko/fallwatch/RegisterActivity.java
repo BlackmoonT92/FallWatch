@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import jamia.mikko.fallwatch.SidebarFragments.RegisterFragment;
+
 public class RegisterActivity extends AppCompatActivity {
 
     public static final String USER_PREFERENCES = "UserPreferences";

@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.Manifest;
 import android.content.Intent;
@@ -14,6 +14,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import jamia.mikko.fallwatch.MainSidebarActivity;
+import jamia.mikko.fallwatch.R;
+import jamia.mikko.fallwatch.ReadContactsFragment;
+import jamia.mikko.fallwatch.RegisterActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
