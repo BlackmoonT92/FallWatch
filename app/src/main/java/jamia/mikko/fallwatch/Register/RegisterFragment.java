@@ -1,8 +1,7 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Register;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,7 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import static android.content.Context.MODE_PRIVATE;
+import jamia.mikko.fallwatch.MainSidebarActivity;
+import jamia.mikko.fallwatch.R;
 
 
 public class RegisterFragment extends Fragment {

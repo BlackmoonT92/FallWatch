@@ -18,6 +18,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import jamia.mikko.fallwatch.Register.RegisterActivity;
+
 public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
