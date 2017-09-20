@@ -22,8 +22,8 @@ public class RegisterFragment extends Fragment {
 
     private EditText userName, contact1, contact2;
     private Button submitButton;
-    public static final String USER_PREFERENCES = "UserPreferences";
     private int permissionReadContactsKey = 1;
+    private RegisterActivity activity;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -53,37 +53,19 @@ public class RegisterFragment extends Fragment {
         contact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
         contact2 = (EditText) getActivity().findViewById(R.id.secondContactEdit);
         submitButton = (Button) getActivity().findViewById(R.id.submit);
+        activity = ((RegisterActivity) getActivity());
 
-        Bundle args = getArguments();
-
-        try {
-
-            userName.setText(args.getString("username"));
-            contact1.setText(args.getString("contact1"));
-            contact2.setText(args.getString("contact2"));
-
-        } catch (Exception e) {
-
-        }
-
+        setInputValues();
 
         contact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
                 ReadContactsFragment fragment = new ReadContactsFragment();
 
-                Bundle args = new Bundle();
-                args.putString("username", userName.getText().toString());
-                args.putString("contact1", contact1.getText().toString());
-                args.putString("contact2", contact2.getText().toString());
-
+                Bundle args = createBundle();
                 fragment.setArguments(args);
 
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                activity.toContactsFragment(fragment);
             }
         });
 
@@ -92,18 +74,10 @@ public class RegisterFragment extends Fragment {
             public void onFocusChange(View view, boolean b) {
                 ReadContactsFragment fragment = new ReadContactsFragment();
 
-                Bundle args = new Bundle();
-                args.putString("username", userName.getText().toString());
-                args.putString("contact1", contact1.getText().toString());
-                args.putString("contact2", contact2.getText().toString());
-
+                Bundle args = createBundle();
                 fragment.setArguments(args);
 
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                activity.toContactsFragment(fragment);
 
             }
         });
@@ -112,9 +86,9 @@ public class RegisterFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                saveToPreferences("username", userName.getText().toString());
-                saveToPreferences("contact1", contact1.getText().toString());
-                saveToPreferences("contact2", contact2.getText().toString());
+                activity.saveToPreferences("username", userName.getText().toString());
+                activity.saveToPreferences("contact1", contact1.getText().toString());
+                activity.saveToPreferences("contact2", contact2.getText().toString());
 
                 Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
@@ -124,13 +98,27 @@ public class RegisterFragment extends Fragment {
         });
     }
 
-    public void saveToPreferences(String key, String value) {
-        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
 
-        prefsEditor.putString(key, value);
 
-        prefsEditor.commit();
+    public void setInputValues() {
+        Bundle args = getArguments();
+
+        try {
+
+            userName.setText(args.getString("username"));
+            contact1.setText(args.getString("contact1"));
+            contact2.setText(args.getString("contact2"));
+
+        } catch (Exception e) {}
     }
 
+    public Bundle createBundle() {
+        Bundle args = new Bundle();
+        args.putString("username", userName.getText().toString());
+        args.putString("contact1", contact1.getText().toString());
+        args.putString("contact2", contact2.getText().toString());
+
+        return args;
+    }
 }
+

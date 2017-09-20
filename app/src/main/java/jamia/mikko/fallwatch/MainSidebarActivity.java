@@ -31,8 +31,6 @@ public class MainSidebarActivity extends AppCompatActivity
         String username = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
 
-        Log.i("USERNAME", username);
-
         if(username == null && contact1 == null) {
 
             Intent registerIntent = new Intent(this, RegisterActivity.class);
