@@ -19,6 +19,7 @@ public class ReadContactsFragment extends ListFragment {
     private CursorAdapter myAdapter;
     private ContentResolver cr;
     private String username, contact1, contact2;
+    private RegisterActivity activity;
 
     public ReadContactsFragment() {
         // Required empty public constructor
@@ -36,6 +37,8 @@ public class ReadContactsFragment extends ListFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        activity = ((RegisterActivity) getActivity());
 
         Bundle args = getArguments();
 
@@ -86,10 +89,7 @@ public class ReadContactsFragment extends ListFragment {
 
         fragment.setArguments(args);
 
-        getActivity().getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        activity.toRegisterFragment(fragment);
     }
 
     public String getNumberById(long id) {

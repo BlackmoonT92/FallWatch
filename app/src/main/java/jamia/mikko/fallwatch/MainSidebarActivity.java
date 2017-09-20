@@ -1,7 +1,10 @@
 package jamia.mikko.fallwatch;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,7 +14,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String USER_PREFERENCES = "UserPreferences";
+    private FallDetector fallDetector;
+    private SensorManager sensorManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +34,6 @@ public class MainSidebarActivity extends AppCompatActivity
 
         String username = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
-
-        Log.i("USERNAME", username);
 
         if(username == null && contact1 == null) {
 
@@ -70,6 +72,13 @@ public class MainSidebarActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        if (sensorExists()) {
+            fallDetector = new FallDetector(sensorManager, this);
+            fallDetector.onStart();
+        }
     }
 
     @Override
@@ -124,5 +133,13 @@ public class MainSidebarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    public Boolean sensorExists() {
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
