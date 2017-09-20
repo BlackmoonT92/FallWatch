@@ -22,7 +22,7 @@ public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String USER_PREFERENCES = "UserPreferences";
-    private FallDetector fallDetector;
+    public FallDetector fallDetector;
     private SensorManager sensorManager;
 
     @Override
@@ -77,7 +77,6 @@ public class MainSidebarActivity extends AppCompatActivity
 
         if (sensorExists()) {
             fallDetector = new FallDetector(sensorManager, this);
-            fallDetector.onStart();
         }
     }
 
