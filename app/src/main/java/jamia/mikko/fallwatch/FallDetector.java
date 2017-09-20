@@ -60,15 +60,15 @@ public class FallDetector implements SensorEventListener {
 
     }
 
-    protected void onStart() {
+    public void onStart() {
         sm.registerListener(this, gravity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    protected void onResume() {
+    public void onResume() {
         sm.registerListener(this, gravity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    protected void onStop() {
+    public void onStop() {
         sm.unregisterListener(this);
     }
 }

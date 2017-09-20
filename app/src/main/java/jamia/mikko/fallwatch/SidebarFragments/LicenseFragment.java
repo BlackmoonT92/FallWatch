@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import jamia.mikko.fallwatch.R;
+
 /**
  * Created by rrvil on 18-Sep-17.
  */
