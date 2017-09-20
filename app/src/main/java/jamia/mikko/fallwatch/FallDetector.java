@@ -34,12 +34,21 @@ public class FallDetector implements SensorEventListener {
         int sensorType = sensorEvent.sensor.getType();
 
         if(sensorType == Sensor.TYPE_GRAVITY) {
-            float force = sensorEvent.values[0];
+            double force = sensorEvent.values[0];
             long currentTime = System.currentTimeMillis();
+
+            double startValue = 0.0;
 
             if((currentTime - lastUpdate) > 500) {
                 lastUpdate = currentTime;
-                Log.i("Gravity", String.valueOf(force));
+                double currentValue = force * -1.0;
+                double valueDifference = startValue - currentValue;
+
+                if(valueDifference > 2.0 && currentValue < startValue) {
+
+                    Log.i("Gravity", "You have fallen");
+
+                }
             }
         }
     }
