@@ -20,6 +20,7 @@ public class FallDetector implements SensorEventListener {
     private SensorManager sm;
     private Sensor gravity;
     private MainSidebarActivity activity;
+    private long lastUpdate = 0;
 
     public FallDetector(SensorManager sensorManager, MainSidebarActivity activity) {
         this.sm = sensorManager;
@@ -30,9 +31,17 @@ public class FallDetector implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-        float force = sensorEvent.values[0];
+        int sensorType = sensorEvent.sensor.getType();
 
-        Log.i("Gravity", String.valueOf(force));
+        if(sensorType == Sensor.TYPE_GRAVITY) {
+            float force = sensorEvent.values[0];
+            long currentTime = System.currentTimeMillis();
+
+            if((currentTime - lastUpdate) > 500) {
+                lastUpdate = currentTime;
+                Log.i("Gravity", String.valueOf(force));
+            }
+        }
     }
 
     @Override

@@ -77,6 +77,7 @@ public class MainSidebarActivity extends AppCompatActivity
 
         if (sensorExists()) {
             fallDetector = new FallDetector(sensorManager, this);
+            fallDetector.onStart();
         }
     }
 
