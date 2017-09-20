@@ -2,20 +2,19 @@ package jamia.mikko.fallwatch;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -32,11 +31,12 @@ public class MainSidebarActivity extends AppCompatActivity
         String username = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
 
+        Log.i("USERNAME", username);
+
         if(username == null && contact1 == null) {
 
             Intent registerIntent = new Intent(this, RegisterActivity.class);
             startActivity(registerIntent);
-
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -56,16 +56,6 @@ public class MainSidebarActivity extends AppCompatActivity
             fragmentManager.beginTransaction().replace(R.id.nav_container, fragment).commit();
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -74,6 +64,12 @@ public class MainSidebarActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        toolbar.findViewById(R.id.logged_user);
+
+        View header = navigationView.getHeaderView(0);
+        TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
+        loggedUser.setText(username);
     }
 
     @Override
