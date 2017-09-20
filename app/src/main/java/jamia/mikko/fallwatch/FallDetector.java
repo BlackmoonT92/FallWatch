@@ -38,13 +38,15 @@ public class FallDetector implements SensorEventListener {
             long currentTime = System.currentTimeMillis();
 
             double startValue = 0.0;
+            double gravityThreshold = 2.0;
+            int eventFrequency = 500;
 
-            if((currentTime - lastUpdate) > 500) {
+            if((currentTime - lastUpdate) > eventFrequency) {
                 lastUpdate = currentTime;
                 double currentValue = force * -1.0;
                 double valueDifference = startValue - currentValue;
 
-                if(valueDifference > 2.0 && currentValue < startValue) {
+                if(valueDifference > gravityThreshold && currentValue < startValue) {
 
                     Log.i("Gravity", "You have fallen");
 
