@@ -1,10 +1,10 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Register;
 
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import jamia.mikko.fallwatch.SidebarFragments.RegisterFragment;
+import jamia.mikko.fallwatch.R;
 
 public class RegisterActivity extends AppCompatActivity {
 

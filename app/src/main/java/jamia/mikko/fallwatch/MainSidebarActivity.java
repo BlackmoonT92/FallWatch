@@ -22,6 +22,8 @@ import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
 import jamia.mikko.fallwatch.SidebarFragments.LicenseFragment;
 import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
+import jamia.mikko.fallwatch.Register.RegisterActivity;
+
 
 public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

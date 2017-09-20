@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jamia.mikko.fallwatch.RegisterActivity"
+    tools:context="jamia.mikko.fallwatch.Register.RegisterActivity"
     android:padding="16dp"
     android:orientation="vertical">
 

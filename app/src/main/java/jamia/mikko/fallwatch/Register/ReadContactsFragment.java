@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Register;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import jamia.mikko.fallwatch.SidebarFragments.RegisterFragment;
+import jamia.mikko.fallwatch.R;
 
 
 public class ReadContactsFragment extends ListFragment {

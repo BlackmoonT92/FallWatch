@@ -39,7 +39,7 @@ public class FallDetector implements SensorEventListener {
 
             double startValue = 0.0;
             double gravityThreshold = 2.0;
-            int eventFrequency = 500;
+            int eventFrequency = 300;
 
             if((currentTime - lastUpdate) > eventFrequency) {
                 lastUpdate = currentTime;
