@@ -15,7 +15,11 @@
     <string name="contact2">Contact 2:</string>
     <string name="apply">Apply</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="savedToPreferences">Saved to preferences</string>
+
+    <string name="typeNumberYourSelf">Do you want to type the number yourself?</string>
+    <string name="contactPhoneNumber">Contact phone number</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
