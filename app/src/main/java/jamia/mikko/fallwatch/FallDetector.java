@@ -1,6 +1,7 @@
 package jamia.mikko.fallwatch;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -49,7 +50,6 @@ public class FallDetector implements SensorEventListener {
                 if(valueDifference > gravityThreshold && currentValue < startValue) {
 
                     Log.i("Gravity", "You have fallen");
-
                 }
             }
         }
@@ -60,15 +60,12 @@ public class FallDetector implements SensorEventListener {
 
     }
 
-    public void onStart() {
+    public void start() {
         sm.registerListener(this, gravity, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
-    public void onResume() {
-        sm.registerListener(this, gravity, SensorManager.SENSOR_DELAY_NORMAL);
-    }
 
-    public void onStop() {
+    public void stop() {
         sm.unregisterListener(this);
     }
 }

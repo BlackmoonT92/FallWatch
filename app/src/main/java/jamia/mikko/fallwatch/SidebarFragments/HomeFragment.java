@@ -30,7 +30,6 @@ public class HomeFragment extends Fragment {
     private ImageView statusOn;
     private ImageView statusOff;
     private FallDetector fallDetector;
-    private PopupWindow popupWindow;
 
     public HomeFragment(){}
 
@@ -66,13 +65,13 @@ public class HomeFragment extends Fragment {
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
-                    fallDetector.onStart();
+                    fallDetector.start();
                 }else {
                     statusOff.getDrawable();
                     Log.i("DEBUG", "Switch off");
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
-                    fallDetector.onStop();
+                    fallDetector.stop();
                 }
             }
         });

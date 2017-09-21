@@ -1,19 +1,23 @@
 package jamia.mikko.fallwatch.Register;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 
@@ -24,6 +28,7 @@ public class RegisterFragment extends Fragment {
     private Button submitButton;
     private int permissionReadContactsKey = 1;
     private RegisterActivity activity;
+    private InputMethodManager inputMethodManager;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -54,30 +59,72 @@ public class RegisterFragment extends Fragment {
         contact2 = (EditText) getActivity().findViewById(R.id.secondContactEdit);
         submitButton = (Button) getActivity().findViewById(R.id.submit);
         activity = ((RegisterActivity) getActivity());
+        inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
 
         setInputValues();
 
         contact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                ReadContactsFragment fragment = new ReadContactsFragment();
 
-                Bundle args = createBundle();
-                fragment.setArguments(args);
+                if(b) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                activity.toContactsFragment(fragment);
+                    builder.setMessage(R.string.typeNumberYourSelf)
+                            .setTitle(R.string.contactPhoneNumber)
+                            .setNegativeButton(R.string.yes, null)
+                            .setPositiveButton(R.string.no, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+                                    ReadContactsFragment fragment = new ReadContactsFragment();
+
+                                    Bundle args = createBundle();
+                                    fragment.setArguments(args);
+
+                                    activity.toContactsFragment(fragment);
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+
+                    dialog.show();
+
+
+                }
             }
         });
 
         contact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                ReadContactsFragment fragment = new ReadContactsFragment();
+                if(b) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                Bundle args = createBundle();
-                fragment.setArguments(args);
+                    builder.setMessage(R.string.typeNumberYourSelf)
+                            .setTitle(R.string.contactPhoneNumber)
+                            .setNegativeButton(R.string.yes, null)
+                            .setPositiveButton(R.string.no, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
 
-                activity.toContactsFragment(fragment);
+                                    ReadContactsFragment fragment = new ReadContactsFragment();
+
+                                    Bundle args = createBundle();
+                                    fragment.setArguments(args);
+
+                                    activity.toContactsFragment(fragment);
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+
+                    dialog.show();
+
+
+                }
 
             }
         });

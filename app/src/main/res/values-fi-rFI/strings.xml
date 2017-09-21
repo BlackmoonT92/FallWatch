@@ -17,4 +17,9 @@
     <string name="apply">Käytä</string>
 
     <string name="savedToPreferences">Tiedot tallennettu</string>
+
+    <string name="typeNumberYourSelf">Haluatko määrittää numeron itse?</string>
+    <string name="contactPhoneNumber">Kontaktin puhelinnumero</string>
+    <string name="yes">Kyllä</string>
+    <string name="no">Ei</string>
 </resources>

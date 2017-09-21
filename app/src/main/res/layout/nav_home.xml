@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp">
 
     <ImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:id="@+id/status_on"
         android:visibility="visible"
-        android:layout_gravity="center"
-        app:srcCompat="@drawable/animated_check"/>
+        android:layout_centerHorizontal="true"
+        app:srcCompat="@drawable/animated_check"
+        android:layout_alignParentTop="true" />
 
     <ImageView
+        android:id="@+id/status_off"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:id="@+id/status_off"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:visibility="visible"
-        android:layout_gravity="center"
-        app:srcCompat="@drawable/ic_close"/>
-    <!---->
+        app:srcCompat="@drawable/ic_close" />
 
     <Switch
+        android:layout_marginTop="30dp"
         android:id="@+id/tracking_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleX="2"
         android:scaleY="2"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="30sp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/status_off"/>
 
-</FrameLayout>
+</RelativeLayout>
