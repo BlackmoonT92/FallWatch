@@ -6,6 +6,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 
 
@@ -13,13 +14,18 @@ import android.util.Log;
  * Created by jamiamikko on 21/09/2017.
  */
 
-public class FallDetectionClient implements Runnable  {
+public class FallDetectionClient implements Runnable, SensorEventListener  {
 
     private Handler handler;
     private SensorManager sm;
     private Sensor gravity;
-    private long lastUpdate = 0;
+    private long lastTime = 0;
+    private long currentTime;
     private SensorEventListener eventListener;
+    private int eventFrequency;
+    private double gravityThreshold;
+    private double forceDifference;
+    private double gravityBase;
 
     public FallDetectionClient(SensorManager sensorManager, Handler handler) {
         this.sm = sensorManager;
@@ -32,42 +38,9 @@ public class FallDetectionClient implements Runnable  {
 
         try {
 
-            eventListener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent sensorEvent) {
-                    int sensorType = sensorEvent.sensor.getType();
+            Thread.sleep(1000);
+            sm.registerListener(this, gravity, SensorManager.SENSOR_DELAY_NORMAL);
 
-                    if(sensorType == Sensor.TYPE_GRAVITY) {
-                        double force = sensorEvent.values[0];
-                        long currentTime = System.currentTimeMillis();
-
-                        double startValue = 0.0;
-                        double gravityThreshold = 2.0;
-                        int eventFrequency = 300;
-
-                        if((currentTime - lastUpdate) > eventFrequency) {
-                            lastUpdate = currentTime;
-                            double currentValue = force * -1.0;
-                            double valueDifference = startValue - currentValue;
-
-                            if(valueDifference > gravityThreshold && currentValue < startValue) {
-
-                                Log.i("Gravity", "You have fallen");
-                                Message msg = handler.obtainMessage();
-                                msg.what = 0;
-                                handler.sendMessage(msg);
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
-
-                }
-            };
-
-            sm.registerListener(eventListener, gravity, SensorManager.SENSOR_DELAY_NORMAL);
 
         } catch (Exception e) {
             Log.i("Error", e.toString());
@@ -76,6 +49,51 @@ public class FallDetectionClient implements Runnable  {
     }
 
     public void stop() {
-        sm.unregisterListener(eventListener);
+        sm.unregisterListener(this);
+    }
+
+
+    public void resetValues() {
+        this.eventFrequency = 500;
+        this.gravityThreshold = 2.0;
+        this.gravityBase = 0.0;
+        this.forceDifference = 0.0;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        int sensorType = sensorEvent.sensor.getType();
+
+        if(sensorType == Sensor.TYPE_GRAVITY) {
+
+            currentTime = System.currentTimeMillis();
+
+
+            if((currentTime - lastTime) > eventFrequency) {
+                lastTime = currentTime;
+
+                double force = sensorEvent.values[0];
+
+                if(force > 0.0) {
+
+                forceDifference = (gravityBase - force);
+
+                if((forceDifference * -1) > gravityThreshold) {
+
+                    Message msg = handler.obtainMessage();
+                    msg.what = 0;
+                    msg.obj = "You have fallen!!";
+                    handler.sendMessage(msg);
+                }
+
+            }
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

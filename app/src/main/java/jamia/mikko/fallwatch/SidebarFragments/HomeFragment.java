@@ -48,9 +48,10 @@ public class HomeFragment extends Fragment {
     private Handler uiHandler = new Handler(Looper.getMainLooper()){
         public void handleMessage(Message msg){
             if (msg.what == 0) {
+                Log.i("Sensor", String.valueOf(msg.obj));
                 showPopupDialog();
-                t.interrupt();
                 fallDetectionClient.stop();
+                fallDetectionClient.resetValues();
             }
         }
     };
@@ -72,7 +73,6 @@ public class HomeFragment extends Fragment {
         }
 
         Switch trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
-        //final ImageView statusImg = (ImageView) view.findViewById(R.id.image_tracking_status);
         trackerSwitch.setChecked(false);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -94,8 +94,8 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    t.interrupt();
                     fallDetectionClient.stop();
+                    fallDetectionClient.resetValues();
                 }
             }
         });
