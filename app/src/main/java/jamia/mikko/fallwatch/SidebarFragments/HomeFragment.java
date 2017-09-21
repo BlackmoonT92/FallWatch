@@ -1,20 +1,20 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
+import android.content.Context;
 import android.graphics.drawable.Animatable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.Switch;
 
-import jamia.mikko.fallwatch.FallDetector;
-import jamia.mikko.fallwatch.MainSidebarActivity;
+import jamia.mikko.fallwatch.FallDetectionClient;
 import jamia.mikko.fallwatch.R;
 
 /**
@@ -23,11 +23,11 @@ import jamia.mikko.fallwatch.R;
 
 public class HomeFragment extends Fragment {
 
-    private ImageSwitcher imgSwitcher;
-    private Button onOff;
     private ImageView statusOn;
     private ImageView statusOff;
-    private FallDetector fallDetector;
+    private Thread t;
+    public FallDetectionClient fallDetectionClient;
+    private SensorManager sensorManager;
 
     public HomeFragment(){}
 
@@ -47,8 +47,11 @@ public class HomeFragment extends Fragment {
 
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
+        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
 
-        fallDetector = ((MainSidebarActivity) getActivity()).fallDetector;
+        if (sensorExists()) {
+            fallDetectionClient = new FallDetectionClient(sensorManager);
+        }
 
         Switch trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
         //final ImageView statusImg = (ImageView) view.findViewById(R.id.image_tracking_status);
@@ -63,17 +66,30 @@ public class HomeFragment extends Fragment {
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
-                    fallDetector.start();
+
+                    t = new Thread(fallDetectionClient);
+                    t.start();
+
                 }else {
                     statusOff.getDrawable();
                     Log.i("DEBUG", "Switch off");
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
-                    fallDetector.stop();
+
+                    t.interrupt();
+                    fallDetectionClient.stop();
                 }
             }
         });
 
         return view;
+    }
+
+    public Boolean sensorExists() {
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
