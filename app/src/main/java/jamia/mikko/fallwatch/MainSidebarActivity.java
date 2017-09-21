@@ -24,6 +24,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import jamia.mikko.fallwatch.SidebarFragments.ContactsFragment;
+import java.util.logging.Handler;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
 import jamia.mikko.fallwatch.SidebarFragments.LicenseFragment;
@@ -35,7 +36,7 @@ public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String USER_PREFERENCES = "UserPreferences";
-    public FallDetector fallDetector;
+
     private SensorManager sensorManager;
     public PopupWindow popupWindow;
 
@@ -86,12 +87,6 @@ public class MainSidebarActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
-
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
-        if (sensorExists()) {
-            fallDetector = new FallDetector(sensorManager, this);
-        }
     }
 
     @Override
@@ -146,34 +141,5 @@ public class MainSidebarActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    public Boolean sensorExists() {
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void showPopupDialog() {
-        try {
-            LayoutInflater inflater = (LayoutInflater) MainSidebarActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) findViewById(R.id.popup));
-
-            popupWindow = new PopupWindow(layout, 300, 370, true);
-            popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
-            Button close = (Button) findViewById(R.id.close_popup);
-            close.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    popupWindow.dismiss();
-                }
-            });
-
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
     }
 }

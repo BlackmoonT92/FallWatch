@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +30,11 @@ public class RegisterFragment extends Fragment {
     private InputMethodManager inputMethodManager;
 
     public RegisterFragment() {
-        // Required empty public constructor
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         View v = inflater.inflate(R.layout.fragment_register, container, false);
 
@@ -132,7 +129,6 @@ public class RegisterFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 activity.saveToPreferences("username", userName.getText().toString());
                 activity.saveToPreferences("contact1", contact1.getText().toString());
                 activity.saveToPreferences("contact2", contact2.getText().toString());
@@ -151,7 +147,6 @@ public class RegisterFragment extends Fragment {
         Bundle args = getArguments();
 
         try {
-
             userName.setText(args.getString("username"));
             contact1.setText(args.getString("contact1"));
             contact2.setText(args.getString("contact2"));
