@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import jamia.mikko.fallwatch.R;
+
 /**
  * Created by rrvil on 18-Sep-17.
  */
@@ -28,7 +30,6 @@ public class LicenseFragment extends Fragment {
         tv.setText("LICENSE PAGE");
 
         Log.i("DEBUG", "License fragment");
-
 
         return view;
     }

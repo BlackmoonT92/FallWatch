@@ -1,5 +1,6 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
+import android.content.Context;
 import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 
 import jamia.mikko.fallwatch.FallDetector;
@@ -28,6 +30,7 @@ public class HomeFragment extends Fragment {
     private ImageView statusOn;
     private ImageView statusOff;
     private FallDetector fallDetector;
+    private PopupWindow popupWindow;
 
     public HomeFragment(){}
 
@@ -76,4 +79,5 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+
 }

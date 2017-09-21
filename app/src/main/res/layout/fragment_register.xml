@@ -2,11 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-<<<<<<< HEAD
-    tools:context="jamia.mikko.fallwatch.SidebarFragments.RegisterFragment">
-=======
+
     tools:context="jamia.mikko.fallwatch.Register.RegisterFragment">
->>>>>>> 53258dffdfbbde1c650a9c84707e24098c8d1184
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
