@@ -48,10 +48,8 @@ public class HomeFragment extends Fragment {
     private Handler uiHandler = new Handler(Looper.getMainLooper()){
         public void handleMessage(Message msg){
             if (msg.what == 0) {
-                Log.i("Sensor", String.valueOf(msg.obj));
                 showPopupDialog();
                 fallDetectionClient.stop();
-                fallDetectionClient.resetValues();
             }
         }
     };
@@ -95,7 +93,6 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.VISIBLE);
 
                     fallDetectionClient.stop();
-                    fallDetectionClient.resetValues();
                 }
             }
         });
