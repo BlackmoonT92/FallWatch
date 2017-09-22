@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 
@@ -26,6 +32,7 @@ public class RegisterFragment extends Fragment {
     private EditText userName, contact1, contact2;
     private Button submitButton;
     private int permissionReadContactsKey = 1;
+    private int permissionSendSMS = 2;
     private RegisterActivity activity;
     private InputMethodManager inputMethodManager;
 
@@ -45,11 +52,7 @@ public class RegisterFragment extends Fragment {
     public void onActivityCreated(@Nullable final Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, permissionReadContactsKey);
-
-        }
+        checkAndRequestPermissions();
 
         userName = (EditText) getActivity().findViewById(R.id.yourNameEdit);
         contact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
@@ -162,5 +165,22 @@ public class RegisterFragment extends Fragment {
 
         return args;
     }
+
+    private  void checkAndRequestPermissions() {
+        String [] permissions=new String[]{
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.SEND_SMS
+        };
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String permission:permissions) {
+            if (ContextCompat.checkSelfPermission(getContext(),permission )!= PackageManager.PERMISSION_GRANTED){
+                listPermissionsNeeded.add(permission);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), 1);
+        }
+    }
+
 }
 

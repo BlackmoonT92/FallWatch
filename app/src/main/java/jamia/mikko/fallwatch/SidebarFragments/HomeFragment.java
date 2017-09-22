@@ -86,7 +86,6 @@ public class HomeFragment extends Fragment {
 
                     t = new Thread(fallDetectionClient);
                     t.start();
-                    showPopupDialog();
 
                 }else {
                     statusOff.getDrawable();
