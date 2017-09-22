@@ -29,9 +29,6 @@ public class HelpFragment extends Fragment {
         TextView tv = (TextView) view.findViewById(R.id.help_text);
         tv.setText("HELP PAGE");
 
-        Log.i("DEBUG", "Help fragment");
-
-
         return view;
     }
 }

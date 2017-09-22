@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,9 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
-
 import jamia.mikko.fallwatch.FallDetectionClient;
-import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 
 /**
@@ -37,7 +34,9 @@ public class HomeFragment extends Fragment {
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
 
-    public HomeFragment(){}
+    public HomeFragment(){
+
+    }
 
     public static HomeFragment newInstance() {
         HomeFragment homeFragment = new HomeFragment();
@@ -48,7 +47,6 @@ public class HomeFragment extends Fragment {
     private Handler uiHandler = new Handler(Looper.getMainLooper()){
         public void handleMessage(Message msg){
             if (msg.what == 0) {
-                Log.i("Sensor", msg.obj.toString());
                 showPopupDialog();
                 fallDetectionClient.stop();
             }
@@ -61,7 +59,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
-        getActivity().setTitle("Home");
+        getActivity().setTitle(R.string.titleHome);
 
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
@@ -79,7 +77,6 @@ public class HomeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 if(isChecked) {
-                    Log.i("DEBUG", "Switch on");
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
@@ -89,7 +86,6 @@ public class HomeFragment extends Fragment {
 
                 }else {
                     statusOff.getDrawable();
-                    Log.i("DEBUG", "Switch off");
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 

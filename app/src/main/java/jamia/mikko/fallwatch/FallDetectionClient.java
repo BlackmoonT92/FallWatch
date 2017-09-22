@@ -35,8 +35,6 @@ public class FallDetectionClient implements Runnable, SensorEventListener  {
 
             Thread.sleep(500);
             sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.i("Listener", "Sensor registered");
-
 
         } catch (Exception e) {
             Log.i("Error", e.toString());
@@ -46,7 +44,6 @@ public class FallDetectionClient implements Runnable, SensorEventListener  {
 
     public void stop() {
         sm.unregisterListener(this);
-        Log.i("Listener", "Sensor unregistered");
     }
 
 
@@ -68,8 +65,6 @@ public class FallDetectionClient implements Runnable, SensorEventListener  {
                 lastTime = currentTime;
 
                 float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / timeDifference * 10000;
-
-                Log.i("Speed", String.valueOf(speed));
 
                 if (speed > THRESHOLD) {
                     Message msg = handler.obtainMessage();

@@ -5,22 +5,22 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_home"
-            android:title="Home" />
+            android:title="@string/titleHome" />
         <item
             android:id="@+id/nav_contacts"
             android:icon="@drawable/ic_menu_contacts"
-            android:title="Contacts" />
+            android:title="@string/titleContacts" />
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_settings"
-            android:title="Settings" />
+            android:title="@string/titleSettings" />
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_help"
-            android:title="Help" />
+            android:title="@string/titleHelp" />
         <item
             android:id="@+id/nav_license"
             android:icon="@drawable/ic_menu_manage"
-            android:title="License" />
+            android:title="@string/titleLicence" />
     </group>
 </menu>
