@@ -106,8 +106,6 @@ public class MainSidebarActivity extends AppCompatActivity
 
         if (id == R.id.nav_home) {
             fragmentClass = HomeFragment.class;
-        } else if (id == R.id.nav_contacts) {
-            fragmentClass = ContactsFragment.class;
         } else if (id == R.id.nav_settings) {
             fragmentClass = SettingsFragment.class;
         } else if (id == R.id.nav_help) {

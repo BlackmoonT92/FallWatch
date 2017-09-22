@@ -132,9 +132,10 @@ public class RegisterFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.saveToPreferences("username", userName.getText().toString());
-                activity.saveToPreferences("contact1", contact1.getText().toString());
-                activity.saveToPreferences("contact2", contact2.getText().toString());
+                activity.saveStringToPreferences("username", userName.getText().toString());
+                activity.saveStringToPreferences("contact1", contact1.getText().toString());
+                activity.saveStringToPreferences("contact2", contact2.getText().toString());
+                activity.saveBooleanToPreferences("internalSensor", true);
 
                 Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
