@@ -1,22 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:padding="20dp"
+    android:layout_gravity="center"
     android:background="#ffffff"
     android:id="@+id/popup">
 
     <TextView
-        android:id="@+id/alert_countdown"
-        android:layout_width="wrap_content"
+        android:id="@+id/you_have_fallen"
+        android:textSize="25sp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:textSize="100sp"/>
+        android:text="@string/fallen"
+        android:textAlignment="center"/>
 
-    <Button
-        android:id="@+id/close_popup"
+    <TextView
+        android:id="@+id/alert_countdown"
+        android:textSize="100sp"
+        android:textAlignment="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/you_have_fallen"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/popup_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="close"/>
+        android:layout_below="@id/alert_countdown"
+        android:layout_marginTop="30dp"
+        android:text="@string/confirm_condition"
+        android:textAlignment="center"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/popup_text"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp">
+
+        <Button
+            android:id="@+id/btn_need_help"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="@string/no"
+            android:layout_gravity="center"
+            android:background="@color/colorAccent"
+            android:textColor="@color/textLight"
+            android:layout_marginRight="10dp"/>
+
+        <Button
+            android:id="@+id/btn_im_okay"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:text="@string/yes"
+            android:background="@color/colorPrimary"
+            android:textColor="@color/textLight"/>
+    </LinearLayout>
 
 </RelativeLayout>

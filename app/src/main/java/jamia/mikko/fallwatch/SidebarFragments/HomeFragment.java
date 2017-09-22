@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +21,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import jamia.mikko.fallwatch.FallDetectionClient;
-import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 
 /**
@@ -42,7 +37,9 @@ public class HomeFragment extends Fragment {
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
 
-    public HomeFragment(){}
+    public HomeFragment(){
+
+    }
 
     public static HomeFragment newInstance() {
         HomeFragment homeFragment = new HomeFragment();
@@ -54,7 +51,6 @@ public class HomeFragment extends Fragment {
         public void handleMessage(Message msg){
             if (msg.what == 0) {
                 showPopupDialog();
-                t.interrupt();
                 fallDetectionClient.stop();
             }
         }
@@ -66,7 +62,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
-        getActivity().setTitle("Home");
+        getActivity().setTitle(R.string.titleHome);
 
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
@@ -77,7 +73,6 @@ public class HomeFragment extends Fragment {
         }
 
         Switch trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
-        //final ImageView statusImg = (ImageView) view.findViewById(R.id.image_tracking_status);
         trackerSwitch.setChecked(false);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -85,7 +80,6 @@ public class HomeFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                 if(isChecked) {
-                    Log.i("DEBUG", "Switch on");
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
@@ -96,11 +90,9 @@ public class HomeFragment extends Fragment {
 
                 }else {
                     statusOff.getDrawable();
-                    Log.i("DEBUG", "Switch off");
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    t.interrupt();
                     fallDetectionClient.stop();
                 }
             }
@@ -110,7 +102,7 @@ public class HomeFragment extends Fragment {
     }
 
     public Boolean sensorExists() {
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             return true;
         } else {
             return false;
@@ -122,7 +114,7 @@ public class HomeFragment extends Fragment {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) getActivity().findViewById(R.id.popup));
 
-            popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+            popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
             popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
@@ -140,11 +132,10 @@ public class HomeFragment extends Fragment {
                 }
             }.start();
 
-            Button close = (Button) layout.findViewById(R.id.close_popup);
+            Button close = (Button) layout.findViewById(R.id.btn_im_okay);
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     popupWindow.dismiss();
-                    Log.i("DEBUG", "close button pressed");
                 }
             });
 

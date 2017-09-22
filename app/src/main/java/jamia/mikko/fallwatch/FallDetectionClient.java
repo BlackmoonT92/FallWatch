@@ -13,17 +13,18 @@ import android.util.Log;
  * Created by jamiamikko on 21/09/2017.
  */
 
-public class FallDetectionClient implements Runnable  {
+public class FallDetectionClient implements Runnable, SensorEventListener  {
 
     private Handler handler;
     private SensorManager sm;
-    private Sensor gravity;
-    private long lastUpdate = 0;
-    private SensorEventListener eventListener;
+    private Sensor accelaration;
+    private long lastTime = 0;
+    private float lastX, lastY, lastZ;
+    private static final int THRESHOLD = 1000;
 
     public FallDetectionClient(SensorManager sensorManager, Handler handler) {
         this.sm = sensorManager;
-        this.gravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+        this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;
     }
 
@@ -32,42 +33,8 @@ public class FallDetectionClient implements Runnable  {
 
         try {
 
-            eventListener = new SensorEventListener() {
-                @Override
-                public void onSensorChanged(SensorEvent sensorEvent) {
-                    int sensorType = sensorEvent.sensor.getType();
-
-                    if(sensorType == Sensor.TYPE_GRAVITY) {
-                        double force = sensorEvent.values[0];
-                        long currentTime = System.currentTimeMillis();
-
-                        double startValue = 0.0;
-                        double gravityThreshold = 2.0;
-                        int eventFrequency = 300;
-
-                        if((currentTime - lastUpdate) > eventFrequency) {
-                            lastUpdate = currentTime;
-                            double currentValue = force * -1.0;
-                            double valueDifference = startValue - currentValue;
-
-                            if(valueDifference > gravityThreshold && currentValue < startValue) {
-
-                                Log.i("Gravity", "You have fallen");
-                                Message msg = handler.obtainMessage();
-                                msg.what = 0;
-                                handler.sendMessage(msg);
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onAccuracyChanged(Sensor sensor, int i) {
-
-                }
-            };
-
-            sm.registerListener(eventListener, gravity, SensorManager.SENSOR_DELAY_NORMAL);
+            Thread.sleep(500);
+            sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
 
         } catch (Exception e) {
             Log.i("Error", e.toString());
@@ -76,6 +43,47 @@ public class FallDetectionClient implements Runnable  {
     }
 
     public void stop() {
-        sm.unregisterListener(eventListener);
+        sm.unregisterListener(this);
+    }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        int sensorType = sensorEvent.sensor.getType();
+
+        if(sensorType == Sensor.TYPE_ACCELEROMETER) {
+
+            float x = sensorEvent.values[0];
+            float y = sensorEvent.values[1];
+            float z = sensorEvent.values[2];
+
+            long currentTime = System.currentTimeMillis();
+
+            if((currentTime - lastTime) > 250) {
+                long timeDifference = currentTime - lastTime;
+                lastTime = currentTime;
+
+                float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / timeDifference * 10000;
+
+                if (speed > THRESHOLD) {
+                    Message msg = handler.obtainMessage();
+                    msg.what = 0;
+                    msg.obj = "You have fallen!!";
+
+                    handler.sendMessage(msg);
+                }
+
+                lastX = x;
+                lastY = y;
+                lastZ = z;
+            }
+
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }

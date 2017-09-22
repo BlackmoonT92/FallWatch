@@ -2,7 +2,6 @@ package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +23,9 @@ public class LicenseFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.nav_license, container, false);
 
-        getActivity().setTitle("License");
+        getActivity().setTitle(R.string.titleLicence);
 
         TextView tv = (TextView) view.findViewById(R.id.license_text);
-        tv.setText("LICENSE PAGE");
-
-        Log.i("DEBUG", "License fragment");
 
         return view;
     }
