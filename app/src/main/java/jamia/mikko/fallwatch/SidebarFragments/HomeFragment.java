@@ -48,6 +48,7 @@ public class HomeFragment extends Fragment {
     private Handler uiHandler = new Handler(Looper.getMainLooper()){
         public void handleMessage(Message msg){
             if (msg.what == 0) {
+                Log.i("Sensor", msg.obj.toString());
                 showPopupDialog();
                 fallDetectionClient.stop();
             }
@@ -101,7 +102,7 @@ public class HomeFragment extends Fragment {
     }
 
     public Boolean sensorExists() {
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
+        if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             return true;
         } else {
             return false;
