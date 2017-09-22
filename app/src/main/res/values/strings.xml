@@ -19,4 +19,7 @@
     <string name="labelRegister">Register</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="sensorInternal">Internal sensor</string>
+    <string name="sensorExternal">External sensor</string>
+    <string name="sensors">Sensors</string>
 </resources>

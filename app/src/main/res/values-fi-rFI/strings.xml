@@ -20,4 +20,7 @@
     <string name="labelRegister">Rekisteröinti</string>
     <string name="navigation_drawer_open">Avaa navigaatio</string>
     <string name="navigation_drawer_close">Sulje navigaatio</string>
+    <string name="sensorInternal">Sisäinen sensori</string>
+    <string name="sensorExternal">Ulkoinen sensori</string>
+    <string name="sensors">Sensorit</string>
 </resources>

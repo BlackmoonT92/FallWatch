@@ -1,12 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/settings_text"
+        android:id="@+id/sensors"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical" />
+        android:text="@string/sensors"
+        android:textSize="24dp"
+        android:layout_marginBottom="16dp"
+        android:layout_alignParentTop="true"/>
 
+    <LinearLayout
+        android:id="@+id/internalHolder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_below="@+id/sensors">
+        <TextView
+            android:id="@+id/sensorInternal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sensorInternal"
+            android:layout_marginRight="30dp"/>
+
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/externalHolder"
+        android:layout_below="@id/internalHolder"
+        android:layout_marginBottom="32dp">
+        <TextView
+            android:id="@+id/sensorExternal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sensorExternal"
+            android:layout_marginRight="30dp"/>
+        <Switch
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/contactsHolder"
+        android:layout_below="@+id/externalHolder"
+        android:layout_marginBottom="16dp"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true">
+
+        <TextView
+            android:id="@+id/contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/titleContacts"
+            android:textSize="24dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/yourNameLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/yourName" />
+        <EditText
+            android:id="@+id/yourNameEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/firstContactLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/contact1" />
+        <EditText
+            android:id="@+id/firstContactEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/secondContactLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/contact2" />
+        <EditText
+            android:id="@+id/secondContactEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 </RelativeLayout>
