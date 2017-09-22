@@ -22,4 +22,6 @@
     <string name="contactPhoneNumber">Contact phone number</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <string name="alerting">Sending alert!</string>
 </resources>
