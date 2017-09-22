@@ -23,4 +23,7 @@
     <string name="sensorInternal">Sisäinen sensori</string>
     <string name="sensorExternal">Ulkoinen sensori</string>
     <string name="sensors">Sensorit</string>
+    <string name="alerting">Pyydetään apua!</string>
+    <string name="confirm_condition">Ole hyvä ja vahvista oletko kunnossa.</string>
+    <string name="fallen">Voi jehna, olet kaatunut..</string>
 </resources>

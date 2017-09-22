@@ -11,6 +11,7 @@
     <string name="contactPhoneNumber">Contact phone number</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="alerting">Sending alert!</string>
     <string name="titleHome">Home</string>
     <string name="titleLicence">License</string>
     <string name="titleSettings">Settigns</string>
@@ -22,4 +23,6 @@
     <string name="sensorInternal">Internal sensor</string>
     <string name="sensorExternal">External sensor</string>
     <string name="sensors">Sensors</string>
+    <string name="confirm_condition">Please confirm if your are okay.</string>
+    <string name="fallen">Ouch, you have fallen..</string>
 </resources>
