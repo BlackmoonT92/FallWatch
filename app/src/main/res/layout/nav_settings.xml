@@ -27,6 +27,7 @@
             android:layout_marginRight="30dp"/>
 
         <Switch
+            android:id="@+id/useInternal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -43,6 +44,7 @@
             android:text="@string/sensorExternal"
             android:layout_marginRight="30dp"/>
         <Switch
+            android:id="@+id/useExternal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
@@ -97,4 +99,12 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+    <Button
+        android:clickable="false"
+        android:text="@string/apply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 </RelativeLayout>

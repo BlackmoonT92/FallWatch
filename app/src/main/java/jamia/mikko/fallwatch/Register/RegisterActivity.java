@@ -36,11 +36,20 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    public void saveToPreferences(String key, String value) {
+    public void saveStringToPreferences(String key, String value) {
         SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
 
         prefsEditor.putString(key, value);
+
+        prefsEditor.commit();
+    }
+
+    public void saveBooleanToPreferences(String key, boolean value) {
+        SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        prefsEditor.putBoolean(key, value);
 
         prefsEditor.commit();
     }
