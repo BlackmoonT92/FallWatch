@@ -41,6 +41,7 @@ public class MainSidebarActivity extends AppCompatActivity
 
             Intent registerIntent = new Intent(this, RegisterActivity.class);
             startActivity(registerIntent);
+            finish();
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

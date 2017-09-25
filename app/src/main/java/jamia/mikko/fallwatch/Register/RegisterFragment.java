@@ -31,8 +31,6 @@ public class RegisterFragment extends Fragment {
 
     private EditText userName, contact1, contact2;
     private Button submitButton;
-    private int permissionReadContactsKey = 1;
-    private int permissionSendSMS = 2;
     private RegisterActivity activity;
     private InputMethodManager inputMethodManager;
 
@@ -66,7 +64,6 @@ public class RegisterFragment extends Fragment {
         contact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-
                 if(b) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -90,7 +87,6 @@ public class RegisterFragment extends Fragment {
                     AlertDialog dialog = builder.create();
 
                     dialog.show();
-
 
                 }
             }
@@ -128,26 +124,31 @@ public class RegisterFragment extends Fragment {
 
             }
         });
-
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                activity.saveStringToPreferences("username", userName.getText().toString());
-                activity.saveStringToPreferences("contact1", contact1.getText().toString());
-                activity.saveStringToPreferences("contact2", contact2.getText().toString());
-                activity.saveBooleanToPreferences("internalSensor", true);
+                if(validRegister()) {
+                    activity.saveStringToPreferences("username", userName.getText().toString());
+                    activity.saveStringToPreferences("contact1", contact1.getText().toString());
+                    activity.saveStringToPreferences("contact2", contact2.getText().toString());
+                    activity.saveBooleanToPreferences("internalSensor", true);
 
-                Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
-                Intent mainIntent = new Intent(getContext(), MainSidebarActivity.class);
-                startActivity(mainIntent);
+                    Intent mainIntent = new Intent(getContext(), MainSidebarActivity.class);
+                    startActivity(mainIntent);
+                    getActivity().finish();
+
+                } else {
+                    Toast.makeText(getContext(), getString(R.string.fillAllFields), Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
 
 
 
-    public void setInputValues() {
+    private void setInputValues() {
         Bundle args = getArguments();
 
         try {
@@ -158,7 +159,7 @@ public class RegisterFragment extends Fragment {
         } catch (Exception e) {}
     }
 
-    public Bundle createBundle() {
+    private Bundle createBundle() {
         Bundle args = new Bundle();
         args.putString("username", userName.getText().toString());
         args.putString("contact1", contact1.getText().toString());
@@ -167,7 +168,7 @@ public class RegisterFragment extends Fragment {
         return args;
     }
 
-    private  void checkAndRequestPermissions() {
+    private void checkAndRequestPermissions() {
         String [] permissions=new String[]{
                 Manifest.permission.READ_CONTACTS,
                 Manifest.permission.SEND_SMS
@@ -183,5 +184,14 @@ public class RegisterFragment extends Fragment {
         }
     }
 
+    private boolean validRegister() {
+
+        if(!userName.getText().toString().equals("") && !contact1.getText().toString().equals("") && !contact2.getText().toString().equals("")) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
 }
 
