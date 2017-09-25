@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class HomeFragment extends Fragment {
     public FallDetectionClient fallDetectionClient;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
+    private Switch trackerSwitch;
 
     public HomeFragment(){
 
@@ -54,6 +56,7 @@ public class HomeFragment extends Fragment {
             if (msg.what == 0) {
                 showPopupDialog();
                 fallDetectionClient.stop();
+                trackerSwitch.setChecked(false);
             }
         }
     };
@@ -74,7 +77,7 @@ public class HomeFragment extends Fragment {
             fallDetectionClient = new FallDetectionClient(sensorManager, uiHandler);
         }
 
-        Switch trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
+        trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
         trackerSwitch.setChecked(false);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -104,6 +107,7 @@ public class HomeFragment extends Fragment {
 
     public Boolean sensorExists() {
         if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            Log.i("Sensor", "löyty");
             return true;
         } else {
             return false;
