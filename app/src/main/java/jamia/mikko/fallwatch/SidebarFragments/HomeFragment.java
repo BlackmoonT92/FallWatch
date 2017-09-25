@@ -1,8 +1,8 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
+import android.telephony.SmsManager;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +25,12 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import jamia.mikko.fallwatch.FallDetectionClient;
 import jamia.mikko.fallwatch.R;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by rrvil on 18-Sep-17.
@@ -38,6 +44,10 @@ public class HomeFragment extends Fragment {
     public FallDetectionClient fallDetectionClient;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
+    private SmsManager smsManager = SmsManager.getDefault();
+    public static final String USER_PREFERENCES = "UserPreferences";
+    private String username;
+    private String contact1;
 
     public HomeFragment(){
 
@@ -65,6 +75,11 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
         getActivity().setTitle(R.string.titleHome);
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+
+        username = prefs.getString("username", null);
+        contact1 = prefs.getString("contact1", null);
 
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
@@ -113,7 +128,7 @@ public class HomeFragment extends Fragment {
     public void showPopupDialog() {
         try {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) getActivity().findViewById(R.id.popup));
+            final View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) getActivity().findViewById(R.id.popup));
 
             popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
             popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
@@ -121,7 +136,7 @@ public class HomeFragment extends Fragment {
 
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
 
-            new CountDownTimer(60000, 1000) {
+            final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -130,7 +145,10 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onFinish() {
-                    timer.setText(getString(R.string.alerting));
+                    smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
+                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+                    timer.setText(getString(R.string.waiting_for_help));
                 }
             }.start();
 
@@ -138,6 +156,17 @@ public class HomeFragment extends Fragment {
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     popupWindow.dismiss();
+                }
+            });
+
+            Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
+            sendAlert.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v){
+                    smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
+                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    countDownTimer.cancel();
+                    timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
+                    timer.setText(getString(R.string.waiting_for_help));
                 }
             });
 

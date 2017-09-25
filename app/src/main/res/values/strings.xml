@@ -25,4 +25,5 @@
     <string name="sensors">Sensors</string>
     <string name="confirm_condition">Please confirm if your are okay.</string>
     <string name="fallen">Ouch, you have fallen..</string>
+    <string name="waiting_for_help">Waiting for help.</string>
 </resources>
