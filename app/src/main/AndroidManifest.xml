@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".MainSidebarActivity" android:configChanges="orientation|screenSize">
+        <activity
+            android:name=".MainSidebarActivity"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,8 +24,8 @@
         <activity
             android:name=".Register.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/labelRegister">
-        </activity>
+            android:label="@string/labelRegister"></activity>
+        <activity android:name=".Register.RegisterContacts"></activity>
     </application>
 
 </manifest>

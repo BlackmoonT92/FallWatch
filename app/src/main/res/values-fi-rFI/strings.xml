@@ -8,7 +8,7 @@
     <string name="contact2">Yhteystieto 2:</string>
     <string name="apply">Käytä</string>
     <string name="savedToPreferences">Tiedot tallennettu</string>
-    <string name="typeNumberYourSelf">Haluatko määrittää numeron itse?</string>
+    <string name="typeNumberYourSelf">Haluatko valita numeron yhteystiedoista?</string>
     <string name="contactPhoneNumber">Yhteystiedon puhelinnumero</string>
     <string name="yes">Kyllä</string>
     <string name="no">Ei</string>
