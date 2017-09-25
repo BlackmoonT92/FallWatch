@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,14 +58,15 @@ public class SettingsFragment extends Fragment {
         editContact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
         editContact2 = (EditText) getActivity().findViewById(R.id.secondContactEdit);
         internalSensor = (Switch) getActivity().findViewById(R.id.useInternal);
+        externalSensor = (Switch) getActivity().findViewById(R.id.useExternal);
         submitButton = (Button) getActivity().findViewById(R.id.submitButton);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-
 
         String name = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
         String contact2 = prefs.getString("contact2", null);
         final boolean useInternal = prefs.getBoolean("internalSensor", true);
+        final boolean useExternal = prefs.getBoolean("externalSensor", true);
 
         if(name != null) {
             editUsername.setText(name.toString());
@@ -82,6 +84,10 @@ public class SettingsFragment extends Fragment {
             internalSensor.setChecked(true);
         }
 
+        if(useExternal) {
+            externalSensor.setChecked(true);
+        }
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +97,7 @@ public class SettingsFragment extends Fragment {
                     prefs.edit().putString("contact1", editContact1.getText().toString()).apply();
                     prefs.edit().putString("contact2", editContact2.getText().toString()).apply();
                     prefs.edit().putBoolean("internalSensor", internalSensor.isChecked()).apply();
+                    prefs.edit().putBoolean("externalSensor", externalSensor.isChecked()).apply();
 
                     Toast.makeText(getContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
                 }
@@ -111,7 +118,7 @@ public class SettingsFragment extends Fragment {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-                                    
+
                                 }
                             });
 

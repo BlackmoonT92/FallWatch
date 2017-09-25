@@ -1,5 +1,6 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
@@ -28,9 +29,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import jamia.mikko.fallwatch.ExternalDetectionClient;
 import jamia.mikko.fallwatch.FallDetectionClient;
 import jamia.mikko.fallwatch.R;
 
+import static android.content.Context.BLUETOOTH_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -42,7 +45,8 @@ public class HomeFragment extends Fragment {
     private ImageView statusOn;
     private ImageView statusOff;
     private Thread t;
-    public FallDetectionClient fallDetectionClient;
+    private FallDetectionClient fallDetectionClient;
+    private ExternalDetectionClient externalDetectionClient;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
     private SmsManager smsManager = SmsManager.getDefault();
@@ -65,7 +69,8 @@ public class HomeFragment extends Fragment {
         public void handleMessage(Message msg){
             if (msg.what == 0) {
                 showPopupDialog();
-                fallDetectionClient.stop();
+                //fallDetectionClient.stop();
+                externalDetectionClient.stop();
                 trackerSwitch.setChecked(false);
             }
         }
@@ -92,6 +97,10 @@ public class HomeFragment extends Fragment {
             fallDetectionClient = new FallDetectionClient(sensorManager, uiHandler);
         }
 
+        BluetoothManager btManager = (BluetoothManager) getActivity().getSystemService(BLUETOOTH_SERVICE);
+
+        externalDetectionClient = new ExternalDetectionClient(getContext(), btManager, uiHandler);
+
         trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
         trackerSwitch.setChecked(false);
 
@@ -104,7 +113,9 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
-                    t = new Thread(fallDetectionClient);
+                    //t = new Thread(fallDetectionClient);
+
+                    t = new Thread(externalDetectionClient);
                     t.start();
 
                 }else {
@@ -112,7 +123,9 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    fallDetectionClient.stop();
+                    //fallDetectionClient.stop();
+                    externalDetectionClient.stop();
+                    Log.i("external", "stopped");
                 }
             }
         });
@@ -149,8 +162,8 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onFinish() {
-                    smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
-                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    //smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
+                    //Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
                 }

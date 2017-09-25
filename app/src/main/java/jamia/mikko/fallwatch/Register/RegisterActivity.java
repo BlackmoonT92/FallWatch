@@ -114,6 +114,7 @@ public class RegisterActivity extends AppCompatActivity {
                     saveStringToPreferences("contact1", contact1.getText().toString());
                     saveStringToPreferences("contact2", contact2.getText().toString());
                     saveBooleanToPreferences("internalSensor", true);
+                    saveBooleanToPreferences("externalSensor", false);
 
                     Toast.makeText(getApplicationContext(), getString(R.string.savedToPreferences), Toast.LENGTH_SHORT).show();
 
