@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Arrays;
+
 import jamia.mikko.fallwatch.R;
 import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
 
@@ -38,8 +40,12 @@ public class RegisterContacts extends AppCompatActivity {
 
         int[] toLayouts = { R.id.contactName, R.id.contactNumber };
 
+        String selectionFields =  ContactsContract.RawContacts.ACCOUNT_TYPE + " = ?";
+        String[] selectionArgs = new String[]{"com.google"};
+
         cr = getContentResolver();
-        Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        //Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+        Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selectionFields, selectionArgs, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
         myAdapter = new SimpleCursorAdapter(this, R.layout.contact_list_item, cursor, projection, toLayouts);
 
