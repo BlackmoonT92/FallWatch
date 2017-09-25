@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-
 /**
  * Created by jamiamikko on 21/09/2017.
  */
@@ -78,7 +77,6 @@ public class FallDetectionClient implements Runnable, SensorEventListener  {
                 lastY = y;
                 lastZ = z;
             }
-
         }
     }
 

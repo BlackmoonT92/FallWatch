@@ -26,5 +26,6 @@
     <string name="alerting">Pyydetään apua!</string>
     <string name="confirm_condition">Ole hyvä ja vahvista oletko kunnossa.</string>
     <string name="fallen">Voi jehna, olet kaatunut..</string>
+    <string name="waiting_for_help">Odotetaan apua.</string>
     <string name="fillAllFields">Täytäthän kaikki kentät</string>
 </resources>
