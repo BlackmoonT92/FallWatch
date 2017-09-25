@@ -7,7 +7,7 @@
     <string name="contact2">Contact 2:</string>
     <string name="apply">Apply</string>
     <string name="savedToPreferences">Saved information</string>
-    <string name="typeNumberYourSelf">Do you want to type phone number yourself?</string>
+    <string name="typeNumberYourSelf">Do you want select the number from your contacts?</string>
     <string name="contactPhoneNumber">Contact phone number</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
