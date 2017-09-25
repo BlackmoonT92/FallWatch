@@ -128,4 +128,13 @@ public class MainSidebarActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    public void saveTrackingStateToPreferences(String key, boolean value) {
+        SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+
+        prefsEditor.putBoolean(key, value);
+
+        prefsEditor.commit();
+    }
 }

@@ -11,6 +11,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
 import android.util.TypedValue;
@@ -29,6 +30,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import jamia.mikko.fallwatch.FallDetectionClient;
+import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -50,6 +52,7 @@ public class HomeFragment extends Fragment {
     private String username;
     private String contact1;
     private Switch trackerSwitch;
+    private MainSidebarActivity activity;
 
     public HomeFragment(){
 
@@ -79,10 +82,7 @@ public class HomeFragment extends Fragment {
 
         getActivity().setTitle(R.string.titleHome);
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-
-        username = prefs.getString("username", null);
-        contact1 = prefs.getString("contact1", null);
+        activity = ((MainSidebarActivity) getActivity());
 
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
@@ -93,7 +93,6 @@ public class HomeFragment extends Fragment {
         }
 
         trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
-        trackerSwitch.setChecked(false);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -104,6 +103,8 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
+                    activity.saveTrackingStateToPreferences("tracking_state", true);
+
                     t = new Thread(fallDetectionClient);
                     t.start();
 
@@ -112,12 +113,30 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
+                    activity.saveTrackingStateToPreferences("tracking_state", false);
+
                     fallDetectionClient.stop();
                 }
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+
+        username = prefs.getString("username", null);
+        contact1 = prefs.getString("contact1", null);
+
+        boolean switchOn =  prefs.getBoolean("tracking_state", true);
+
+        if(switchOn) {
+            trackerSwitch.setChecked(true);
+        }
     }
 
     public Boolean sensorExists() {

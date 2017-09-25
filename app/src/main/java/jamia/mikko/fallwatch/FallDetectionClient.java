@@ -19,7 +19,7 @@ public class FallDetectionClient implements Runnable, SensorEventListener  {
     private Sensor accelaration;
     private long lastTime = 0;
     private float lastX, lastY, lastZ;
-    private static final int THRESHOLD = 500;
+    private static final int THRESHOLD = 200;
 
     public FallDetectionClient(SensorManager sensorManager, Handler handler) {
         this.sm = sensorManager;
