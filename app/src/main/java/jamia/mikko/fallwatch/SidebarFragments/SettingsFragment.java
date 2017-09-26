@@ -1,25 +1,33 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import jamia.mikko.fallwatch.R;
-import jamia.mikko.fallwatch.Register.RegisterContacts;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -35,6 +43,10 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;
     private Button submitButton;
     private InputMethodManager inputMethodManager;
+    private CursorAdapter myAdapter;
+    private ContentResolver cr;
+    private Cursor cursor;
+    private LayoutInflater inflater;
 
     public SettingsFragment(){}
 
@@ -88,6 +100,112 @@ public class SettingsFragment extends Fragment {
             externalSensor.setChecked(true);
         }
 
+        final String[] projection = new String[] {
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
+        };
+
+        final int[] toLayouts = { R.id.contactName, R.id.contactNumber };
+
+        String selectionFields =  ContactsContract.RawContacts.ACCOUNT_TYPE + " = ?";
+        String[] selectionArgs = new String[]{"com.whatsapp"};
+
+        cr = getActivity().getContentResolver();
+
+        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selectionFields, selectionArgs, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+
+        inflater = getActivity().getLayoutInflater();
+
+        editContact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    builder.setMessage(R.string.typeNumberYourSelf)
+                            .setTitle(R.string.contactPhoneNumber)
+                            .setNegativeButton(R.string.no, null)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+                                    View convertView = inflater.inflate(R.layout.contacts, null);
+
+                                    final PopupWindow popupWindow = new PopupWindow(convertView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+                                    popupWindow.showAtLocation(convertView, Gravity.CENTER, 0, 0);
+
+                                    ListView lv = (ListView) convertView.findViewById(R.id.contactList);
+                                    myAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+                                    lv.setAdapter(myAdapter);
+
+                                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            long contactId = l;
+
+                                            String phoneNumber = getNumberById(contactId);
+
+                                            editContact1.setText(phoneNumber);
+
+                                            popupWindow.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+
+                    dialog.show();
+                }
+            }
+        });
+
+        editContact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean b) {
+                if(b) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+                    builder.setMessage(R.string.typeNumberYourSelf)
+                            .setTitle(R.string.contactPhoneNumber)
+                            .setNegativeButton(R.string.no, null)
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+
+                                    View convertView = inflater.inflate(R.layout.contacts, null);
+
+                                    final PopupWindow popupWindow = new PopupWindow(convertView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
+                                    popupWindow.showAtLocation(convertView, Gravity.CENTER, 0, 0);
+
+                                    ListView lv = (ListView) convertView.findViewById(R.id.contactList);
+                                    myAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+                                    lv.setAdapter(myAdapter);
+
+                                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                        @Override
+                                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                            long contactId = l;
+
+                                            String phoneNumber = getNumberById(contactId);
+
+                                            editContact2.setText(phoneNumber);
+
+                                            popupWindow.dismiss();
+                                        }
+                                    });
+                                }
+                            });
+
+                    AlertDialog dialog = builder.create();
+
+                    dialog.show();
+                }
+            }
+        });
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,31 +222,21 @@ public class SettingsFragment extends Fragment {
 
             }
         });
-
-        editContact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean b) {
-                if(b) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-                    builder.setMessage(R.string.typeNumberYourSelf)
-                            .setTitle(R.string.contactPhoneNumber)
-                            .setNegativeButton(R.string.no, null)
-                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    inputMethodManager.hideSoftInputFromWindow(getView().getWindowToken(), 0);
-
-                                }
-                            });
-
-                    AlertDialog dialog = builder.create();
-
-                    dialog.show();
-                }
-            }
-        });
     }
+
+    public String getNumberById(long id) {
+        String[] projection = new String[] {
+                ContactsContract.CommonDataKinds.Phone._ID,
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+
+        Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, projection, ContactsContract.CommonDataKinds.Phone._ID + " = " + id, null, null);
+
+        cursor.moveToFirst();
+
+        return cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+    }
+
 
     private boolean validEdit() {
 
@@ -139,5 +247,4 @@ public class SettingsFragment extends Fragment {
         }
 
     }
-
 }

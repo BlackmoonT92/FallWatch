@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
     public static final String USER_PREFERENCES = "UserPreferences";
     private String username;
     private String contact1;
-    private Switch trackerSwitch;
+    public Switch trackerSwitch;
     private MainSidebarActivity activity;
 
     public HomeFragment(){
@@ -72,8 +72,8 @@ public class HomeFragment extends Fragment {
         public void handleMessage(Message msg){
             if (msg.what == 0) {
                 showPopupDialog();
-                //fallDetectionClient.stop();
-                externalDetectionClient.stop();
+                fallDetectionClient.stop();
+                //externalDetectionClient.stop();
                 trackerSwitch.setChecked(false);
             }
         }
@@ -97,11 +97,11 @@ public class HomeFragment extends Fragment {
             fallDetectionClient = new FallDetectionClient(sensorManager, uiHandler);
         }
 
+        trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
+
         BluetoothManager btManager = (BluetoothManager) getActivity().getSystemService(BLUETOOTH_SERVICE);
 
         externalDetectionClient = new ExternalDetectionClient(getContext(), btManager, uiHandler);
-
-        trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -112,10 +112,10 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
-                    t = new Thread(externalDetectionClient);
+                    //t = new Thread(externalDetectionClient);
                     activity.saveTrackingStateToPreferences("tracking_state", true);
 
-                    //t = new Thread(fallDetectionClient);
+                    t = new Thread(fallDetectionClient);
                     t.start();
 
                 }else {
@@ -123,8 +123,8 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    //fallDetectionClient.stop();
-                    externalDetectionClient.stop();
+                    fallDetectionClient.stop();
+                    //externalDetectionClient.stop();
                     Log.i("external", "stopped");
                     activity.saveTrackingStateToPreferences("tracking_state", false);
 
@@ -197,7 +197,7 @@ public class HomeFragment extends Fragment {
             Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
             sendAlert.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v){
-                    smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
+                    //smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);

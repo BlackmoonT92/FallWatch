@@ -7,6 +7,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -15,6 +16,10 @@ import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
+
 import com.mbientlab.metawear.DataToken;
 import com.mbientlab.metawear.MetaWearBoard;
 import com.mbientlab.metawear.Route;
@@ -25,6 +30,7 @@ import com.mbientlab.metawear.builder.filter.Comparison;
 import com.mbientlab.metawear.builder.filter.ThresholdOutput;
 import com.mbientlab.metawear.builder.function.Function1;
 import com.mbientlab.metawear.module.Accelerometer;
+import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Led;
 
 import bolts.Continuation;
@@ -67,7 +73,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
     public void stop() {
         context.unbindService(this);
-        accelerometer.stop();
+        accelerometer.acceleration().stop();
     }
 
     @Override
@@ -75,7 +81,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
         BtleService.LocalBinder serviceBinder = (BtleService.LocalBinder) service;
 
-        String mwMacAddress= "E6:F3:22:B3:2C:4E";
+        final String mwMacAddress= "E6:F3:22:B3:2C:4E";
         BluetoothDevice btDevice = btManager.getAdapter().getRemoteDevice(mwMacAddress);
 
         mwBoard = serviceBinder.getMetaWearBoard(btDevice);
@@ -95,14 +101,15 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
                     public void configure(RouteComponent source) {
                         source.map(Function1.RSS).average((byte) 4).filter(ThresholdOutput.BINARY, 0.5f)
                                 .multicast()
-                                .to().filter(Comparison.EQ, -1).react(new RouteComponent.Action() {
+                                .to().filter(Comparison.GTE, -5.0).react(new RouteComponent.Action() {
                             @Override
                             public void execute(DataToken token) {
                                 Led led = mwBoard.getModule(Led.class);
-                                led.editPattern(Led.Color.BLUE, Led.PatternPreset.SOLID).commit();
+                                led.editPattern(Led.Color.RED, Led.PatternPreset.SOLID).commit();
                                 led.play();
+
                             }
-                        }).to().filter(Comparison.EQ, 1).react(new RouteComponent.Action() {
+                        }).to().filter(Comparison.GTE, 0.0).react(new RouteComponent.Action() {
                             @Override
                             public void execute(DataToken token) {
                                 Led led = mwBoard.getModule(Led.class);
@@ -119,6 +126,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
             public Void then(Task<Route> task) throws Exception {
                 if(task.isFaulted()) {
                     Log.i("Freefall", String.valueOf(task.getError()));
+                    mwBoard.getModule(Debug.class).resetAsync();
                 } else {
                     Log.i("Freefall", "Great success");
                     accelerometer.acceleration().start();

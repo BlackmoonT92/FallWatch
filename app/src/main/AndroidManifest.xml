@@ -28,7 +28,6 @@
             android:name=".Register.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/labelRegister"></activity>
-        <activity android:name=".Register.RegisterContacts"></activity>
     </application>
 
 </manifest>
