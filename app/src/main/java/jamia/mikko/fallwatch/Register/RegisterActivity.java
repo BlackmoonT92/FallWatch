@@ -220,7 +220,11 @@ public class RegisterActivity extends AppCompatActivity {
     private void checkAndRequestPermissions() {
         String [] permissions=new String[]{
                 Manifest.permission.READ_CONTACTS,
-                Manifest.permission.SEND_SMS
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+
         };
         List<String> listPermissionsNeeded = new ArrayList<>();
         for (String permission:permissions) {
