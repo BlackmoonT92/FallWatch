@@ -31,7 +31,6 @@ public class RegisterActivity extends AppCompatActivity {
     private Button submitButton;
     private InputMethodManager inputMethodManager;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,10 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                     AlertDialog dialog = builder.create();
 
                     dialog.show();
-
-
                 }
-
             }
         });
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -148,11 +144,13 @@ public class RegisterActivity extends AppCompatActivity {
         prefsEditor.commit();
     }
 
-
     private void checkAndRequestPermissions() {
         String [] permissions=new String[]{
                 Manifest.permission.READ_CONTACTS,
-                Manifest.permission.SEND_SMS
+                Manifest.permission.SEND_SMS,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.INTERNET
         };
         List<String> listPermissionsNeeded = new ArrayList<>();
         for (String permission:permissions) {
@@ -172,9 +170,7 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             return false;
         }
-
     }
-
 
     private void setInputValues(Intent dataIntent) {
         userName.setText(dataIntent.getStringExtra("username"));

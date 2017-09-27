@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -14,8 +15,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
-import android.util.TypedValue;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,16 +42,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
-    private ImageView statusOn;
-    private ImageView statusOff;
+    private ImageView statusOn, statusOff;
     private Thread t;
     public FallDetectionClient fallDetectionClient;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
     private SmsManager smsManager = SmsManager.getDefault();
     public static final String USER_PREFERENCES = "UserPreferences";
-    private String username;
-    private String contact1;
+    private String username, contact1, location;
     private Switch trackerSwitch;
     private MainSidebarActivity activity;
 
@@ -132,6 +131,8 @@ public class HomeFragment extends Fragment {
         username = prefs.getString("username", null);
         contact1 = prefs.getString("contact1", null);
 
+        Log.i("LOCATION", activity.getLastLocationString());
+
         boolean switchOn =  prefs.getBoolean("tracking_state", true);
 
         if(switchOn) {
@@ -168,10 +169,10 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onFinish() {
-                    smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
+                    sendSMS();
                 }
             }.start();
 
@@ -185,11 +186,11 @@ public class HomeFragment extends Fragment {
             Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
             sendAlert.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v){
-                    smsManager.sendTextMessage(contact1, null, username + " needs help", null, null);
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
+                    sendSMS();
                 }
             });
 
@@ -219,5 +220,15 @@ public class HomeFragment extends Fragment {
         p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         p.dimAmount = 0.5f;
         wm.updateViewLayout(container, p);
+    }
+
+    private void sendSMS() {
+        String uri = "http://google.com/maps/place/"+activity.getLastLocationString();
+
+        smsManager.getDefault();
+        StringBuffer smsBody = new StringBuffer();
+        smsBody.append(Uri.parse(uri));
+
+        smsManager.sendTextMessage(contact1, null, username + " needs help " + smsBody.toString(), null, null);
     }
 }
