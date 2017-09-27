@@ -53,10 +53,11 @@ public class HomeFragment extends Fragment {
     private PopupWindow popupWindow;
     private SmsManager smsManager = SmsManager.getDefault();
     public static final String USER_PREFERENCES = "UserPreferences";
-    private String username;
-    private String contact1;
+    private String username, contact1;
+    private boolean useInternal, useExternal;
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
+    private SharedPreferences prefs;
 
     public HomeFragment(){
 
@@ -72,8 +73,11 @@ public class HomeFragment extends Fragment {
         public void handleMessage(Message msg){
             if (msg.what == 0) {
                 showPopupDialog();
-                fallDetectionClient.stop();
-                //externalDetectionClient.stop();
+                if(useExternal) {
+                    externalDetectionClient.stop();
+                } else {
+                    fallDetectionClient.stop();
+                }
                 trackerSwitch.setChecked(false);
             }
         }
@@ -92,6 +96,7 @@ public class HomeFragment extends Fragment {
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
         if (sensorExists()) {
             fallDetectionClient = new FallDetectionClient(sensorManager, uiHandler);
@@ -112,20 +117,27 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
-                    //t = new Thread(externalDetectionClient);
-                    activity.saveTrackingStateToPreferences("tracking_state", true);
+                    if(useExternal) {
+                        t = new Thread(externalDetectionClient);
+                    } else {
+                        t = new Thread(fallDetectionClient);
+                    }
 
-                    t = new Thread(fallDetectionClient);
                     t.start();
+
+                    activity.saveTrackingStateToPreferences("tracking_state", true);
 
                 }else {
                     statusOff.getDrawable();
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    fallDetectionClient.stop();
-                    //externalDetectionClient.stop();
-                    Log.i("external", "stopped");
+                    if(useExternal) {
+                        externalDetectionClient.stop();
+                    } else {
+                        fallDetectionClient.stop();
+                    }
+
                     activity.saveTrackingStateToPreferences("tracking_state", false);
 
                 }
@@ -139,10 +151,10 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-
         username = prefs.getString("username", null);
         contact1 = prefs.getString("contact1", null);
+        useInternal = prefs.getBoolean("internalSensor", true);
+        useExternal = prefs.getBoolean("externalSensor", true);
 
         boolean switchOn =  prefs.getBoolean("tracking_state", true);
 
