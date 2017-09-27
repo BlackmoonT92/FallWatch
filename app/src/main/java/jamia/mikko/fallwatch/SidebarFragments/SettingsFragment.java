@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -202,6 +203,24 @@ public class SettingsFragment extends Fragment {
                     AlertDialog dialog = builder.create();
 
                     dialog.show();
+                }
+            }
+        });
+
+        internalSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) {
+                    externalSensor.setChecked(false);
+                }
+            }
+        });
+
+        externalSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) {
+                    internalSensor.setChecked(false);
                 }
             }
         });
