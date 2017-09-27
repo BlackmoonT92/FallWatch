@@ -2,7 +2,6 @@ package jamia.mikko.fallwatch;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -161,9 +160,6 @@ public class MainSidebarActivity extends AppCompatActivity
         double lat = location.getLatitude();
         double lng = location.getLongitude();
 
-        SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-
         String currentLocation = Double.toString(lat) + "," + Double.toString(lng);
     }
 
@@ -209,34 +205,31 @@ public class MainSidebarActivity extends AppCompatActivity
     }
 
     public void isProviderEnabled() {
-        /*LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean enabled = service
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        if (!enabled) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivityForResult(intent, 1);
-        }*/
+        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-        final String message = "In orderd to continue, please enable your GPS on.";
+        if(!enabled){
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+            final String message = "In order to continue, please enable your GPS on.";
 
-        builder.setMessage(message)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                startActivity(new Intent(action));
-                                d.dismiss();
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                d.cancel();
-                            }
-                        });
-        builder.create().show();
+            builder.setMessage(message)
+                    .setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int id) {
+                                    startActivity(new Intent(action));
+                                    d.dismiss();
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface d, int id) {
+                                    d.cancel();
+                                }
+                            });
+            builder.create().show();
+        }
     }
 
     @Override
@@ -252,6 +245,7 @@ public class MainSidebarActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
         locationManager.requestLocationUpdates(provider, 400, 1, this);
     }
 

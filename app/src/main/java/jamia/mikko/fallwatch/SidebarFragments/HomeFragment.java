@@ -124,6 +124,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 if (isChecked) {
+                    activity.isProviderEnabled();
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
@@ -209,14 +210,14 @@ public class HomeFragment extends Fragment {
                 }
             }.start();
 
-            Button close = (Button) layout.findViewById(R.id.btn_im_okay);
+            final Button close = (Button) layout.findViewById(R.id.btn_im_okay);
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     popupWindow.dismiss();
                 }
             });
 
-            Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
+            final Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v){
@@ -225,6 +226,8 @@ public class HomeFragment extends Fragment {
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
                     sendSMS();
+                    close.setVisibility(View.INVISIBLE);
+                    sendAlert.setVisibility(View.INVISIBLE);
                 }
             });
 
@@ -262,7 +265,6 @@ public class HomeFragment extends Fragment {
         smsManager.getDefault();
         StringBuffer smsBody = new StringBuffer();
         smsBody.append(Uri.parse(uri));
-
         smsManager.sendTextMessage(contact1, null, username + " needs help " + smsBody.toString(), null, null);
     }
 }
