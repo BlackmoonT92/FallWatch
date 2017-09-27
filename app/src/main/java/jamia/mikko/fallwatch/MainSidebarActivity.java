@@ -2,6 +2,7 @@ package jamia.mikko.fallwatch;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;

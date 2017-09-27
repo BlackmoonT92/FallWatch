@@ -1,7 +1,9 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
 import android.hardware.Sensor;
@@ -27,6 +29,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,8 +61,9 @@ public class HomeFragment extends Fragment {
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
     private SharedPreferences prefs;
+    private BluetoothAdapter mBluetoothAdapter;
 
-    public HomeFragment(){
+    public HomeFragment() {
 
     }
 
@@ -69,11 +73,11 @@ public class HomeFragment extends Fragment {
         return homeFragment;
     }
 
-    private Handler uiHandler = new Handler(Looper.getMainLooper()){
-        public void handleMessage(Message msg){
+    private Handler uiHandler = new Handler(Looper.getMainLooper()) {
+        public void handleMessage(Message msg) {
             if (msg.what == 0) {
                 showPopupDialog();
-                if(useExternal) {
+                if (useExternal) {
                     externalDetectionClient.stop();
                 } else {
                     fallDetectionClient.stop();
@@ -98,6 +102,8 @@ public class HomeFragment extends Fragment {
         sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         if (sensorExists()) {
             fallDetectionClient = new FallDetectionClient(sensorManager, uiHandler);
         }
@@ -112,27 +118,31 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
-                if(isChecked) {
+                if (!mBluetoothAdapter.isEnabled() && useExternal) {
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, 1);
+                }
+
+                if (isChecked) {
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
-                    if(useExternal) {
+                    if (useExternal) {
                         t = new Thread(externalDetectionClient);
                     } else {
                         t = new Thread(fallDetectionClient);
                     }
 
                     t.start();
-
                     activity.saveTrackingStateToPreferences("tracking_state", true);
 
-                }else {
+                } else {
                     statusOff.getDrawable();
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    if(useExternal) {
+                    if (useExternal) {
                         externalDetectionClient.stop();
                     } else {
                         fallDetectionClient.stop();
@@ -156,15 +166,15 @@ public class HomeFragment extends Fragment {
         useInternal = prefs.getBoolean("internalSensor", true);
         useExternal = prefs.getBoolean("externalSensor", true);
 
-        boolean switchOn =  prefs.getBoolean("tracking_state", true);
+        boolean switchOn = prefs.getBoolean("tracking_state", true);
 
-        if(switchOn) {
+        if (switchOn) {
             trackerSwitch.setChecked(true);
         }
     }
 
     public Boolean sensorExists() {
-        if(sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             Log.i("Sensor", "löyty");
             return true;
         } else {
@@ -208,6 +218,7 @@ public class HomeFragment extends Fragment {
 
             Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
             sendAlert.setOnClickListener(new View.OnClickListener() {
+
                 public void onClick(View v){
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
@@ -217,7 +228,7 @@ public class HomeFragment extends Fragment {
                 }
             });
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
