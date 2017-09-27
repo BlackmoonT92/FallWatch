@@ -20,15 +20,18 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.mbientlab.metawear.Data;
 import com.mbientlab.metawear.DataToken;
 import com.mbientlab.metawear.MetaWearBoard;
 import com.mbientlab.metawear.Route;
+import com.mbientlab.metawear.Subscriber;
 import com.mbientlab.metawear.android.BtleService;
 import com.mbientlab.metawear.builder.RouteBuilder;
 import com.mbientlab.metawear.builder.RouteComponent;
 import com.mbientlab.metawear.builder.filter.Comparison;
 import com.mbientlab.metawear.builder.filter.ThresholdOutput;
 import com.mbientlab.metawear.builder.function.Function1;
+import com.mbientlab.metawear.builder.function.Function2;
 import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Led;
@@ -47,19 +50,23 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     private Context context;
     private BluetoothManager btManager;
     private Handler uiHandler;
+    private final String mwMacAddress= "E6:F3:22:B3:2C:4E";
+    private BluetoothDevice btDevice;
+    private boolean userHasFallen;
 
 
     public ExternalDetectionClient(Context context, BluetoothManager btManager, Handler uiHandler) {
         this.context = context;
         this.btManager = btManager;
         this.uiHandler = uiHandler;
+        this.userHasFallen = false;
     }
 
     @Override
     public void run() {
         try {
             start();
-            Log.i("bind", "connected");
+            Log.i("bind", "connecting");
 
         } catch (Exception e) {
             Log.i("Error", e.toString());
@@ -72,8 +79,17 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     }
 
     public void stop() {
-        context.unbindService(this);
-        accelerometer.acceleration().stop();
+        try {
+
+            context.unbindService(this);
+            if(accelerometer != null) {
+                accelerometer.acceleration().stop();
+            }
+            Log.i("bind", "unconnecting");
+
+        } catch (Exception e) {
+            Log.i("unbind", e.toString());
+        }
     }
 
     @Override
@@ -81,8 +97,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
         BtleService.LocalBinder serviceBinder = (BtleService.LocalBinder) service;
 
-        final String mwMacAddress= "E6:F3:22:B3:2C:4E";
-        BluetoothDevice btDevice = btManager.getAdapter().getRemoteDevice(mwMacAddress);
+        btDevice = btManager.getAdapter().getRemoteDevice(mwMacAddress);
 
         mwBoard = serviceBinder.getMetaWearBoard(btDevice);
 
@@ -93,27 +108,35 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
                 accelerometer = mwBoard.getModule(Accelerometer.class);
                 accelerometer.configure()
-                        .odr(25f)
+                        .odr(5f)
                         .commit();
 
                 return accelerometer.acceleration().addRouteAsync(new RouteBuilder() {
                     @Override
-                    public void configure(RouteComponent source) {
-                        source.map(Function1.RSS).average((byte) 4).filter(ThresholdOutput.BINARY, 0.5f)
+                    public void configure(final RouteComponent source) {
+                        source.map(Function1.RSS).average((byte) 5).filter(ThresholdOutput.BINARY, 0.5f)
                                 .multicast()
-                                .to().filter(Comparison.GTE, -5.0).react(new RouteComponent.Action() {
+                                .to().filter(Comparison.EQ, -1).react(new RouteComponent.Action() {
                             @Override
                             public void execute(DataToken token) {
                                 Led led = mwBoard.getModule(Led.class);
                                 led.editPattern(Led.Color.RED, Led.PatternPreset.SOLID).commit();
                                 led.play();
-
                             }
-                        }).to().filter(Comparison.GTE, 0.0).react(new RouteComponent.Action() {
+                        }).stream(new Subscriber() {
+                            @Override
+                            public void apply(Data data, Object... env) {
+                                Message msg = uiHandler.obtainMessage();
+                                msg.obj = 0;
+                                uiHandler.sendMessage(msg);
+                            }
+                        }).to().filter(Comparison.EQ, 1).react(new RouteComponent.Action() {
                             @Override
                             public void execute(DataToken token) {
                                 Led led = mwBoard.getModule(Led.class);
                                 led.stop(true);
+
+
                             }
                         }).end();
                     }
