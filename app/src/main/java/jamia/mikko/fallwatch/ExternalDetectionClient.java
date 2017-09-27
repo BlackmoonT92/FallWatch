@@ -16,7 +16,9 @@ import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -38,6 +40,7 @@ import com.mbientlab.metawear.module.Led;
 
 import bolts.Continuation;
 import bolts.Task;
+import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
 
 /**
  * Created by jamiamikko on 25/09/2017.
@@ -52,14 +55,11 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     private Handler uiHandler;
     private final String mwMacAddress= "E6:F3:22:B3:2C:4E";
     private BluetoothDevice btDevice;
-    private boolean userHasFallen;
-
 
     public ExternalDetectionClient(Context context, BluetoothManager btManager, Handler uiHandler) {
         this.context = context;
         this.btManager = btManager;
         this.uiHandler = uiHandler;
-        this.userHasFallen = false;
     }
 
     @Override
@@ -67,7 +67,6 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
         try {
             start();
             Log.i("bind", "connecting");
-
         } catch (Exception e) {
             Log.i("Error", e.toString());
         }
