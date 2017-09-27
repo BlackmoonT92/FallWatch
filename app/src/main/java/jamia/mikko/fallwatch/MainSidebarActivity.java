@@ -1,6 +1,7 @@
 package jamia.mikko.fallwatch;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -17,6 +18,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -201,22 +203,39 @@ public class MainSidebarActivity extends AppCompatActivity
             double lat = location.getLatitude();
             double lng = location.getLongitude();
 
-            SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = prefs.edit();
-
             lastLocation = Double.toString(lat) + "," + Double.toString(lng);
         }
     }
 
     public void isProviderEnabled() {
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
+        /*LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean enabled = service
                 .isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         if (!enabled) {
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        }
+            startActivityForResult(intent, 1);
+        }*/
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
+        final String message = "In orderd to continue, please enable your GPS on.";
+
+        builder.setMessage(message)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                startActivity(new Intent(action));
+                                d.dismiss();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                d.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 
     @Override
