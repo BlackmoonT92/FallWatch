@@ -118,6 +118,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
+                if (!mBluetoothAdapter.isEnabled() && useExternal) {
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, 1);
+                }
 
                 if (isChecked) {
                     ((Animatable) statusOn.getDrawable()).start();
@@ -125,19 +129,13 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.VISIBLE);
 
                     if (useExternal) {
-                        if (!mBluetoothAdapter.isEnabled()) {
-                            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            startActivityForResult(enableBtIntent, 1);
-                        } else {
-                            t = new Thread(externalDetectionClient);
-                            t.start();
-                            activity.saveTrackingStateToPreferences("tracking_state", true);
-                        }
+                        t = new Thread(externalDetectionClient);
                     } else {
                         t = new Thread(fallDetectionClient);
-                        t.start();
-                        activity.saveTrackingStateToPreferences("tracking_state", true);
                     }
+
+                    t.start();
+                    activity.saveTrackingStateToPreferences("tracking_state", true);
 
                 } else {
                     statusOff.getDrawable();
