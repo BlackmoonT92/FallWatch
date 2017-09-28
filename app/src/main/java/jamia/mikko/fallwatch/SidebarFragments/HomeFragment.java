@@ -2,8 +2,10 @@ package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
 import android.hardware.Sensor;
@@ -12,9 +14,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.telephony.SmsManager;
@@ -32,12 +31,12 @@ import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import jamia.mikko.fallwatch.Constants;
 import jamia.mikko.fallwatch.ExternalDetectionClient;
 import jamia.mikko.fallwatch.FallDetectionClient;
+import jamia.mikko.fallwatch.FallDetectionService;
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
-
 import static android.content.Context.BLUETOOTH_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
@@ -61,6 +60,8 @@ public class HomeFragment extends Fragment {
     private MainSidebarActivity activity;
     private SharedPreferences prefs;
     private BluetoothAdapter mBluetoothAdapter;
+    private BroadcastReceiver messageReceiver;
+
 
     public HomeFragment() {
 
@@ -72,19 +73,6 @@ public class HomeFragment extends Fragment {
         return homeFragment;
     }
 
-    private Handler uiHandler = new Handler(Looper.getMainLooper()) {
-        public void handleMessage(Message msg) {
-            if (msg.what == 0) {
-                showPopupDialog();
-                if (useExternal) {
-                    externalDetectionClient.stop();
-                } else {
-                    fallDetectionClient.stop();
-                }
-                trackerSwitch.setChecked(false);
-            }
-        }
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,24 +91,22 @@ public class HomeFragment extends Fragment {
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        if (sensorExists()) {
-            fallDetectionClient = new FallDetectionClient(sensorManager, uiHandler);
-        }
-
         trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
 
-        BluetoothManager btManager = (BluetoothManager) getActivity().getSystemService(BLUETOOTH_SERVICE);
 
-        externalDetectionClient = new ExternalDetectionClient(getContext(), btManager, uiHandler);
+        BluetoothManager btManager = (BluetoothManager) getActivity().getSystemService(BLUETOOTH_SERVICE);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
+                final Intent service = new Intent(getContext(), FallDetectionService.class);
+
                 if (!mBluetoothAdapter.isEnabled() && useExternal) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, 1);
                 }
+
 
                 if (isChecked) {
                     activity.isProviderEnabled();
@@ -128,25 +114,39 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
-                    if (useExternal) {
-                        t = new Thread(externalDetectionClient);
-                    } else {
-                        t = new Thread(fallDetectionClient);
+                    if(!FallDetectionService.IS_SERVICE_RUNNING) {
+                        service.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                        FallDetectionService.IS_SERVICE_RUNNING = true;
                     }
 
-                    t.start();
+                    IntentFilter intentFilter = new IntentFilter(Constants.ACTION.MESSAGE_RECEIVED);
+
+                    messageReceiver = new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context context, Intent intent) {
+                            String message = intent.getStringExtra("alert");
+
+                            if(message != null) {
+                                showPopupDialog();
+                                activity.stopService(service);
+                            }
+                        }
+                    };
+
+                    activity.registerReceiver(messageReceiver, intentFilter);
+
+                    activity.startService(service);
                     activity.saveTrackingStateToPreferences("tracking_state", true);
+
 
                 } else {
                     statusOff.getDrawable();
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    if (useExternal) {
-                        externalDetectionClient.stop();
-                    } else {
-                        fallDetectionClient.stop();
-                    }
+
+                    activity.stopService(service);
+                    activity.unregisterReceiver(messageReceiver);
 
                     activity.saveTrackingStateToPreferences("tracking_state", false);
                 }
@@ -154,6 +154,12 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 
     @Override
@@ -180,6 +186,7 @@ public class HomeFragment extends Fragment {
             return false;
         }
     }
+
 
     public void showPopupDialog() {
         try {
@@ -219,7 +226,7 @@ public class HomeFragment extends Fragment {
             final Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
-                public void onClick(View v){
+                public void onClick(View v) {
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
@@ -259,7 +266,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void sendSMS() {
-        String uri = "http://google.com/maps/place/"+activity.getLastLocationString();
+        String uri = "http://google.com/maps/place/" + activity.getLastLocationString();
 
         smsManager.getDefault();
         StringBuffer smsBody = new StringBuffer();

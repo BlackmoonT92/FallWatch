@@ -64,9 +64,6 @@ public class RegisterActivity extends AppCompatActivity {
         final int[] toLayouts = { R.id.contactName, R.id.contactNumber };
 
         try {
-            String selectionFields =  ContactsContract.RawContacts.ACCOUNT_TYPE + " = ?";
-            String[] selectionArgs = new String[]{"com.google"};
-
             cr = getContentResolver();
 
             cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
@@ -109,11 +106,9 @@ public class RegisterActivity extends AppCompatActivity {
                                         @Override
                                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                             long contactId = l;
-
                                             String phoneNumber = getNumberById(contactId);
 
                                             contact1.setText(phoneNumber);
-
                                             popupWindow.dismiss();
                                         }
                                     });
