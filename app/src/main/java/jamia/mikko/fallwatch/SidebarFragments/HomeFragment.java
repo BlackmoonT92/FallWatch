@@ -29,7 +29,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -150,7 +149,6 @@ public class HomeFragment extends Fragment {
                     }
 
                     activity.saveTrackingStateToPreferences("tracking_state", false);
-
                 }
             }
         });
@@ -214,6 +212,7 @@ public class HomeFragment extends Fragment {
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     popupWindow.dismiss();
+                    countDownTimer.cancel();
                 }
             });
 
