@@ -48,8 +48,6 @@ public class HomeFragment extends Fragment {
 
     private ImageView statusOn, statusOff;
     private Thread t;
-    private FallDetectionClient fallDetectionClient;
-    private ExternalDetectionClient externalDetectionClient;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
     private SmsManager smsManager = SmsManager.getDefault();
@@ -61,7 +59,7 @@ public class HomeFragment extends Fragment {
     private SharedPreferences prefs;
     private BluetoothAdapter mBluetoothAdapter;
     private BroadcastReceiver messageReceiver;
-
+    private FallDetectionService fallDetectionService;
 
     public HomeFragment() {
 
@@ -92,15 +90,28 @@ public class HomeFragment extends Fragment {
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
+        fallDetectionService = new FallDetectionService();
+        final Intent service = new Intent(getContext(), FallDetectionService.class);
+
+        messageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String message = intent.getStringExtra("alert");
+
+                if(message != null) {
+                    showPopupDialog();
+                    activity.stopService(service);
+                }
+            }
+        };
 
 
-        BluetoothManager btManager = (BluetoothManager) getActivity().getSystemService(BLUETOOTH_SERVICE);
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
-                final Intent service = new Intent(getContext(), FallDetectionService.class);
+
 
                 if (!mBluetoothAdapter.isEnabled() && useExternal) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -109,7 +120,7 @@ public class HomeFragment extends Fragment {
 
 
                 if (isChecked) {
-                    activity.isProviderEnabled();
+
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
@@ -120,19 +131,6 @@ public class HomeFragment extends Fragment {
                     }
 
                     IntentFilter intentFilter = new IntentFilter(Constants.ACTION.MESSAGE_RECEIVED);
-
-                    messageReceiver = new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            String message = intent.getStringExtra("alert");
-
-                            if(message != null) {
-                                showPopupDialog();
-                                activity.stopService(service);
-                            }
-                        }
-                    };
-
                     activity.registerReceiver(messageReceiver, intentFilter);
 
                     activity.startService(service);
@@ -153,9 +151,13 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+
+        username = prefs.getString("username", null);
+        contact1 = prefs.getString("contact1", null);
+
         return view;
     }
-
 
     @Override
     public void onDestroy() {
@@ -187,7 +189,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
     public void showPopupDialog() {
         try {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -211,7 +212,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    sendSMS();
+                    fallDetectionService.sendSMS(contact1,username);
                 }
             }.start();
 
@@ -231,9 +232,9 @@ public class HomeFragment extends Fragment {
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    sendSMS();
                     close.setVisibility(View.INVISIBLE);
                     sendAlert.setVisibility(View.INVISIBLE);
+                    fallDetectionService.sendSMS(contact1, username);
                 }
             });
 
@@ -263,14 +264,5 @@ public class HomeFragment extends Fragment {
         p.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         p.dimAmount = 0.5f;
         wm.updateViewLayout(container, p);
-    }
-
-    private void sendSMS() {
-        String uri = "http://google.com/maps/place/" + activity.getLastLocationString();
-
-        smsManager.getDefault();
-        StringBuffer smsBody = new StringBuffer();
-        smsBody.append(Uri.parse(uri));
-        smsManager.sendTextMessage(contact1, null, username + " needs help " + smsBody.toString(), null, null);
     }
 }
