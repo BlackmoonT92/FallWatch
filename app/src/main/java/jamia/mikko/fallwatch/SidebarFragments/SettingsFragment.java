@@ -108,12 +108,10 @@ public class SettingsFragment extends Fragment {
 
         final int[] toLayouts = { R.id.contactName, R.id.contactNumber };
 
-        String selectionFields =  ContactsContract.RawContacts.ACCOUNT_TYPE + " = ?";
-        String[] selectionArgs = new String[]{"com.whatsapp"};
 
         cr = getActivity().getContentResolver();
 
-        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, selectionFields, selectionArgs, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
         inflater = getActivity().getLayoutInflater();
 

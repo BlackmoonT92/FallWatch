@@ -18,8 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
         <service android:name="com.mbientlab.metawear.android.BtleService" />
+        <service android:name=".FallDetectionService"/>
         <activity
             android:name=".MainSidebarActivity"
             android:configChanges="orientation|screenSize">
