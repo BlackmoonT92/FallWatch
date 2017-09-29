@@ -48,11 +48,9 @@ public class FallDetectionService extends Service implements LocationListener{
     private SensorManager sensorManager;
     public static boolean IS_SERVICE_RUNNING = false;
     private SmsManager smsManager = SmsManager.getDefault();
-    private String username, contact1;
-    public static final String USER_PREFERENCES = "UserPreferences";
-    //private SharedPreferences prefs;
     private LocationManager locationManager;
-    private String provider, lastLocation;
+    private String provider, lastKnownLocation;
+    private Location lastLocation;
 
     public FallDetectionService(){}
 
@@ -64,6 +62,8 @@ public class FallDetectionService extends Service implements LocationListener{
                 showAlert();
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
                 getApplicationContext().sendBroadcast(alert);
+                stopSelf();
+                stopForeground(true);
             }
         }
     };
@@ -89,6 +89,7 @@ public class FallDetectionService extends Service implements LocationListener{
         thread = new Thread(fallDetectionClient);
         thread.start();
         showNotification();
+        getLastLocation();
 
         return START_STICKY;
     }
@@ -151,17 +152,18 @@ public class FallDetectionService extends Service implements LocationListener{
 
     public void sendSMS(String number, String username) {
 
-        String uri = "http://google.com/maps/place/" + getLastLocationString();
+        Log.i("LOC", lastKnownLocation);
+        String uri = "http://google.com/maps/place/" + lastKnownLocation;
         smsManager.getDefault();
         StringBuffer smsBody = new StringBuffer();
         smsBody.append(Uri.parse(uri));
-        smsManager.sendTextMessage(number, null, username + " needs help ", null, null);
-        /*+ smsBody.toString()*/
+        smsManager.sendTextMessage(number, null, username + " needs help " + smsBody.toString(), null, null);
+
     }
 
     @Override
     public void onLocationChanged(Location location) {
-
+        lastLocation.set(location);
     }
 
     @Override
@@ -190,6 +192,7 @@ public class FallDetectionService extends Service implements LocationListener{
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
 
@@ -201,7 +204,8 @@ public class FallDetectionService extends Service implements LocationListener{
             double lat = location.getLatitude();
             double lng = location.getLongitude();
 
-            lastLocation = Double.toString(lat) + "," + Double.toString(lng);
+            lastKnownLocation = Double.toString(lat) + "," + Double.toString(lng);
+            Log.i("LOCATION", lastKnownLocation);
         }
     }
 
@@ -231,9 +235,5 @@ public class FallDetectionService extends Service implements LocationListener{
                             });
             builder.create().show();
         }
-    }
-
-    public String getLastLocationString() {
-        return lastLocation;
     }
 }

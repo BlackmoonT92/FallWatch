@@ -235,6 +235,7 @@ public class HomeFragment extends Fragment {
                     close.setVisibility(View.INVISIBLE);
                     sendAlert.setVisibility(View.INVISIBLE);
                     fallDetectionService.sendSMS(contact1, username);
+                    countDownTimer.cancel();
                 }
             });
 
