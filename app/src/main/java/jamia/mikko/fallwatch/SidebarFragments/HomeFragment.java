@@ -28,13 +28,12 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import jamia.mikko.fallwatch.Constants;
 import jamia.mikko.fallwatch.ExternalDetectionClient;
-import jamia.mikko.fallwatch.FallDetectionClient;
+import jamia.mikko.fallwatch.InternalDetectionClient;
 import jamia.mikko.fallwatch.FallDetectionService;
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
@@ -49,7 +48,7 @@ public class HomeFragment extends Fragment {
 
     private ImageView statusOn, statusOff;
     private Thread t;
-    private FallDetectionClient fallDetectionClient;
+    private InternalDetectionClient internalDetectionClient;
     private ExternalDetectionClient externalDetectionClient;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
@@ -209,10 +208,10 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onFinish() {
-                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    sendSMS();
+                    //sendSMS();
                 }
             }.start();
 
@@ -227,11 +226,11 @@ public class HomeFragment extends Fragment {
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    sendSMS();
+                    //sendSMS();
                 }
             });
 

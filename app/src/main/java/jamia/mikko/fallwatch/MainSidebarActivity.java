@@ -49,8 +49,8 @@ public class MainSidebarActivity extends AppCompatActivity
         SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        isProviderEnabled();
-        getLastLocation();
+        //isProviderEnabled();
+        //getLastLocation();
 
         String username = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
@@ -252,7 +252,7 @@ public class MainSidebarActivity extends AppCompatActivity
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
+        //locationManager.requestLocationUpdates(provider, 400, 1, this);
     }
 
     /* Remove the locationlistener updates when Activity is paused */

@@ -24,10 +24,8 @@ public class HelpFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.nav_help, container, false);
 
-        getActivity().setTitle("Help");
+        getActivity().setTitle(getString(R.string.titleHelp));
 
-        TextView tv = (TextView) view.findViewById(R.id.help_text);
-        tv.setText("HELP PAGE");
 
         return view;
     }

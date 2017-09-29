@@ -16,7 +16,7 @@ import android.util.Log;
  * Created by jamiamikko on 21/09/2017.
  */
 
-public class FallDetectionClient implements Runnable, SensorEventListener  {
+public class InternalDetectionClient implements Runnable, SensorEventListener  {
 
     private Handler handler;
     private SensorManager sm;
@@ -25,7 +25,7 @@ public class FallDetectionClient implements Runnable, SensorEventListener  {
     private float lastX, lastY, lastZ;
     private static final int THRESHOLD = 200;
 
-    public FallDetectionClient(SensorManager sensorManager, Handler handler) {
+    public InternalDetectionClient(SensorManager sensorManager, Handler handler) {
         this.sm = sensorManager;
         this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;

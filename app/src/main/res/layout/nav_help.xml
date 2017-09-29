@@ -2,12 +2,80 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/help_text"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"/>
+        android:layout_height="match_parent">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/help"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/help"
+                android:textSize="24dp"
+                android:text="@string/titleHelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentTop="true"/>
+
+            <TextView
+                android:layout_marginTop="8dp"
+                android:id="@+id/titleHowToUse"
+                android:text="@string/titleHowToUse"
+                android:textSize="14dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:textSize="14dp"
+                android:id="@+id/textHowToUse"
+                android:text="@string/textHowToUse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginTop="16dp"
+                android:id="@+id/settings"
+                android:textSize="14dp"
+                android:text="@string/titleHowToChangeSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:textSize="14dp"
+                android:id="@+id/textHowToChangeSettings"
+                android:text="@string/textHowToChangeSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginTop="16dp"
+                android:id="@+id/titleApplicationOnOff"
+                android:textSize="14dp"
+                android:text="@string/titleApplicationOnOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_alignParentTop="true"
+                android:textStyle="bold"/>
+            <TextView
+                android:layout_marginTop="8dp"
+                android:textSize="14dp"
+                android:id="@+id/textApplicationOnOff"
+                android:text="@string/textApplicationOnOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

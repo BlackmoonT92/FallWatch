@@ -28,4 +28,24 @@
     <string name="fallen">Voi jehna, olet kaatunut..</string>
     <string name="waiting_for_help">Odotetaan apua.</string>
     <string name="fillAllFields">Täytäthän kaikki kentät</string>
+    <string name="alertSent">Viesti lähetetty!</string>
+    <string name="titleHowToUse">Kuinka käytän FallWatchia?</string>
+    <string name="textHowToUse">FallWatch käyttää kiihtyvyysantureita havaitakseen yllättäviä muutoksia
+        liikkeessäsi. Voit käyttää halutessasi joko laitteesi sisäistä anturia, tai vaihtoehtoisesti ulkoista MetaMotionC
+         anturia. Ulkoista anturia käyttäessäsi sinun ei tarvitse pitää mobiililaitettasi mukanasi, mutta suosittelemme
+    silti pitämään laitteesi aina lähettyvillä. Voit asettaa kaatumisen havaitsemisen päälle
+         kotinäkymästä.\n\nMahdollisen kaatumisen yhteydessä FallWatch kysyy sinulta oletko
+    kunnossa, johon voit vastata joko kyllä tai ei. Jos vastaat kyllä, FallWatch jatkaa toimintaansa normaalisti. Jos
+        vastaat ei, sovellus lähettää tekstiviestin määrittämiisi yhteystietoihin. Tekstiviestistäsi yhteystietosi
+    saavat tietää sinun kaatuneen, sekä nykyisen sijaintisi.</string>
+    <string name="titleHowToChangeSettings">Kuinka voin muuttaa asetuksiani?</string>
+    <string name="textHowToChangeSettings">Sovelluksen vasemmasta yläkulmasta löydät navigaation, jonka kautta
+     pääset sovelluksen asetuksiin. Asetuksista voit asettaa käyttöösi sisäisen/ulkoisen anturin, sekä muuttaa
+    käyttäjätietojasi. Voit muuttaa nimeä jota sovellus käyttää lähettäessään viestin yhteystiedoillesi. Voit myös
+     muuttaa yhteystietojasi joille viesti lähetetään. Muista painaa näkymän alalaidassa olevaa "Käytä" nappia
+     saadaksesi uudet asetukset käyttöösi.</string>
+
+    <string name="titleApplicationOnOff">Tarvitseeko sovelluksen olla aktiivinen jotta se toimisi?</string>
+    <string name="textApplicationOnOff">Ei tarvitse. Voit rauhassa sulkea sovelluksen kun havaitseminen on asetettu
+     päälle. FallWatch jatkaa havaitsemista vaikka sovellus ei olisi aktiivinen.</string>
 </resources>

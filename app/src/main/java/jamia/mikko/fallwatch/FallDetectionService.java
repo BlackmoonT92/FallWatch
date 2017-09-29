@@ -5,21 +5,14 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.os.Messenger;
-import android.provider.SyncStateContract;
-import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Created by jamiamikko on 27/09/2017.
@@ -29,7 +22,7 @@ import android.widget.Toast;
 public class FallDetectionService extends Service {
 
     private Thread thread;
-    private FallDetectionClient fallDetectionClient;
+    private InternalDetectionClient internalDetectionClient;
     private SensorManager sensorManager;
     public static boolean IS_SERVICE_RUNNING = false;
 
@@ -59,7 +52,7 @@ public class FallDetectionService extends Service {
     public void onCreate() {
         super.onCreate();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        fallDetectionClient = new FallDetectionClient(sensorManager, messageHandler);
+        internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler);
     }
 
 
@@ -67,7 +60,7 @@ public class FallDetectionService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
 
-        thread = new Thread(fallDetectionClient);
+        thread = new Thread(internalDetectionClient);
         thread.start();
         showNotification();
 
@@ -77,7 +70,7 @@ public class FallDetectionService extends Service {
     @Override
     public void onDestroy() {
         thread = null;
-        fallDetectionClient.stop();
+        internalDetectionClient.stop();
     }
 
     private void showNotification() {
