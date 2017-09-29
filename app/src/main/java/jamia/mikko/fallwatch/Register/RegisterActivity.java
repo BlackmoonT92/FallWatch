@@ -72,15 +72,11 @@ public class RegisterActivity extends AppCompatActivity {
             Log.i("ERROR", e.toString());
         }
 
-
         userName = (EditText) findViewById(R.id.yourNameEdit);
         contact1 = (EditText) findViewById(R.id.firstContactEdit);
         contact2 = (EditText) findViewById(R.id.secondContactEdit);
         submitButton = (Button) findViewById(R.id.submit);
         inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-
-
-
 
         inflater = getLayoutInflater();
 
@@ -116,14 +112,12 @@ public class RegisterActivity extends AppCompatActivity {
                                             popupWindow.dismiss();
                                         }
                                     });
-
                                 }
                             });
 
                     AlertDialog dialog = builder.create();
 
                     dialog.show();
-
                 }
             }
         });
@@ -164,16 +158,13 @@ public class RegisterActivity extends AppCompatActivity {
                                             popupWindow.dismiss();
                                         }
                                     });
-
                                 }
                             });
 
                     AlertDialog dialog = builder.create();
 
                     dialog.show();
-
                 }
-
             }
         });
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -199,8 +190,6 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-
-
     private void saveStringToPreferences(String key, String value) {
         SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
@@ -219,12 +208,11 @@ public class RegisterActivity extends AppCompatActivity {
         prefsEditor.commit();
     }
 
-
     private void checkAndRequestPermissions() {
         String [] permissions=new String[]{
                 Manifest.permission.READ_CONTACTS,
                 Manifest.permission.SEND_SMS,
-                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.BLUETOOTH,
                 Manifest.permission.BLUETOOTH_ADMIN,
                 Manifest.permission.INTERNET
@@ -247,9 +235,7 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             return false;
         }
-
     }
-
 
     public String getNumberById(long id) {
         String[] projection = new String[] {

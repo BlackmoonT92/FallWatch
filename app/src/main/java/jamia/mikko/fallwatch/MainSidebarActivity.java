@@ -1,25 +1,14 @@
 package jamia.mikko.fallwatch;
 
-import android.Manifest;
-import android.content.DialogInterface;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,11 +24,9 @@ import jamia.mikko.fallwatch.Register.RegisterActivity;
 
 
 public class MainSidebarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, LocationListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
 
     public static final String USER_PREFERENCES = "UserPreferences";
-    private LocationManager locationManager;
-    private String provider, lastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +34,6 @@ public class MainSidebarActivity extends AppCompatActivity
         setContentView(R.layout.activity_sidebar);
 
         SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        //isProviderEnabled();
-        //getLastLocation();
 
         String username = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
@@ -154,115 +137,5 @@ public class MainSidebarActivity extends AppCompatActivity
         prefsEditor.putBoolean(key, value);
 
         prefsEditor.commit();
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-
-        SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-
-        String currentLocation = Double.toString(lat) + "," + Double.toString(lng);
-    }
-
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    public void getLastLocation() {
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if (location != null) {
-            onLocationChanged(location);
-
-            double lat = location.getLatitude();
-            double lng = location.getLongitude();
-
-            lastLocation = Double.toString(lat) + "," + Double.toString(lng);
-        }
-    }
-
-    public void isProviderEnabled() {
-        /*LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean enabled = service
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (!enabled) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivityForResult(intent, 1);
-        }*/
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-        final String message = "In orderd to continue, please enable your GPS on.";
-
-        builder.setMessage(message)
-                .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                startActivity(new Intent(action));
-                                d.dismiss();
-                            }
-                        })
-                .setNegativeButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface d, int id) {
-                                d.cancel();
-                            }
-                        });
-        builder.create().show();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        //locationManager.requestLocationUpdates(provider, 400, 1, this);
-    }
-
-    /* Remove the locationlistener updates when Activity is paused */
-    @Override
-    protected void onPause() {
-        super.onPause();
-        locationManager.removeUpdates(this);
-    }
-
-    public String getLastLocationString() {
-        return lastLocation;
     }
 }

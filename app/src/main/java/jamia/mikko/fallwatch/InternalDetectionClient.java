@@ -23,7 +23,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener  {
     private Sensor accelaration;
     private long lastTime = 0;
     private float lastX, lastY, lastZ;
-    private static final int THRESHOLD = 200;
+    private static final int THRESHOLD = 300;
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler) {
         this.sm = sensorManager;
