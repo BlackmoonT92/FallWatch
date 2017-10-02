@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -32,12 +31,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import jamia.mikko.fallwatch.Constants;
-import jamia.mikko.fallwatch.ExternalDetectionClient;
-import jamia.mikko.fallwatch.FallDetectionClient;
 import jamia.mikko.fallwatch.FallDetectionService;
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
-import static android.content.Context.BLUETOOTH_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -52,7 +48,7 @@ public class HomeFragment extends Fragment {
     private PopupWindow popupWindow;
     private SmsManager smsManager = SmsManager.getDefault();
     public static final String USER_PREFERENCES = "UserPreferences";
-    private String username, contact1;
+    private String username, contact1, location;
     private boolean useInternal, useExternal;
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
@@ -79,7 +75,6 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
         getActivity().setTitle(R.string.titleHome);
-
         activity = ((MainSidebarActivity) getActivity());
 
         statusOn = (ImageView) view.findViewById(R.id.status_on);
@@ -105,19 +100,14 @@ public class HomeFragment extends Fragment {
             }
         };
 
-
-
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-
-
 
                 if (!mBluetoothAdapter.isEnabled() && useExternal) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, 1);
                 }
-
 
                 if (isChecked) {
 
@@ -198,6 +188,8 @@ public class HomeFragment extends Fragment {
             popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
             dimBehind(popupWindow);
 
+            Log.i("LOCATION" ,location);
+
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
 
             final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
@@ -212,7 +204,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    fallDetectionService.sendSMS(contact1,username);
+                    fallDetectionService.sendSMS(contact1,username, location);
                 }
             }.start();
 
@@ -234,7 +226,7 @@ public class HomeFragment extends Fragment {
                     timer.setText(getString(R.string.waiting_for_help));
                     close.setVisibility(View.INVISIBLE);
                     sendAlert.setVisibility(View.INVISIBLE);
-                    fallDetectionService.sendSMS(contact1, username);
+                    fallDetectionService.sendSMS(contact1, username, location);
                     countDownTimer.cancel();
                 }
             });
