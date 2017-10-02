@@ -20,10 +20,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationSettingsStates;
-
 import jamia.mikko.fallwatch.Register.RegisterActivity;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
@@ -34,10 +30,8 @@ import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
 public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+
     public static final String USER_PREFERENCES = "UserPreferences";
-    private Location lastLocation;
-    private LocationRequest locationRequest;
-    private GoogleApiClient gac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,12 +82,13 @@ public class MainSidebarActivity extends AppCompatActivity
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
 
-        PendingIntent pI = (PendingIntent) (getIntent().getParcelableExtra("resolution"));
+        /*PendingIntent pI = getIntent().getParcelableExtra("resolution");
         try {
             startIntentSenderForResult(pI.getIntentSender(),1,null,0,0,0);
         } catch (IntentSender.SendIntentException e) {
             e.printStackTrace();
-        }
+        }*/
+
     }
 
     @Override
@@ -158,23 +153,9 @@ public class MainSidebarActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        gac.disconnect();
-        super.onStop();
-    }
-
-    @Override
-    protected void onStart() {
-        gac.connect();
-        super.onStart();
-    }
-
-    //Method to get the enable location settings dialog
-
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+
+        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode) {
             case 1000:
                 switch (resultCode) {

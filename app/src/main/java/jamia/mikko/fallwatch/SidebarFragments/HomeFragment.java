@@ -1,7 +1,6 @@
 package jamia.mikko.fallwatch.SidebarFragments;
 
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -56,6 +55,7 @@ public class HomeFragment extends Fragment {
     private BluetoothAdapter mBluetoothAdapter;
     private BroadcastReceiver messageReceiver;
     private FallDetectionService fallDetectionService;
+    private String receivedLocation;
 
     public HomeFragment() {
 
@@ -69,7 +69,7 @@ public class HomeFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.nav_home, container, false);
@@ -92,9 +92,10 @@ public class HomeFragment extends Fragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String message = intent.getStringExtra("alert");
+                receivedLocation = intent.getStringExtra("location");
 
                 if(message != null) {
-                    showPopupDialog();
+                    showPopupDialog(receivedLocation);
                     activity.stopService(service);
                 }
             }
@@ -179,7 +180,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public void showPopupDialog() {
+    public void showPopupDialog(final String location) {
         try {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) getActivity().findViewById(R.id.popup));
@@ -187,8 +188,6 @@ public class HomeFragment extends Fragment {
             popupWindow = new PopupWindow(layout, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
             popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
             dimBehind(popupWindow);
-
-            Log.i("LOCATION" ,location);
 
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
 
