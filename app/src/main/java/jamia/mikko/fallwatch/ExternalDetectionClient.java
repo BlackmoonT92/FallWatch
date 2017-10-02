@@ -1,27 +1,15 @@
 package jamia.mikko.fallwatch;
 
-import android.app.Activity;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.ActivityInfo;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.Switch;
-import android.widget.TextView;
-
 import com.mbientlab.metawear.Data;
 import com.mbientlab.metawear.DataToken;
 import com.mbientlab.metawear.MetaWearBoard;
@@ -66,9 +54,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     public void run() {
         try {
             start();
-            Log.i("bind", "connecting");
         } catch (Exception e) {
-            Log.i("Error", e.toString());
         }
     }
 
@@ -84,10 +70,8 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
             if(accelerometer != null) {
                 accelerometer.acceleration().stop();
             }
-            Log.i("bind", "unconnecting");
 
         } catch (Exception e) {
-            Log.i("unbind", e.toString());
         }
     }
 
@@ -150,7 +134,6 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
                     Log.i("Freefall", String.valueOf(task.getError()));
                     mwBoard.getModule(Debug.class).resetAsync();
                 } else {
-                    Log.i("Freefall", "Great success");
                     accelerometer.acceleration().start();
                     accelerometer.start();
                 }

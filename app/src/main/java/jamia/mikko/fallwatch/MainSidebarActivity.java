@@ -1,9 +1,7 @@
 package jamia.mikko.fallwatch;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
@@ -23,7 +21,7 @@ import android.widget.Toast;
 import jamia.mikko.fallwatch.Register.RegisterActivity;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
-import jamia.mikko.fallwatch.SidebarFragments.LicenseFragment;
+import jamia.mikko.fallwatch.SidebarFragments.AboutFragment;
 import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
 
 
@@ -81,14 +79,6 @@ public class MainSidebarActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
-
-        /*PendingIntent pI = getIntent().getParcelableExtra("resolution");
-        try {
-            startIntentSenderForResult(pI.getIntentSender(),1,null,0,0,0);
-        } catch (IntentSender.SendIntentException e) {
-            e.printStackTrace();
-        }*/
-
     }
 
     @Override
@@ -126,7 +116,7 @@ public class MainSidebarActivity extends AppCompatActivity
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_license) {
-            fragmentClass = LicenseFragment.class;
+            fragmentClass = AboutFragment.class;
         }
 
         try {
@@ -152,7 +142,6 @@ public class MainSidebarActivity extends AppCompatActivity
         prefsEditor.commit();
     }
 
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);

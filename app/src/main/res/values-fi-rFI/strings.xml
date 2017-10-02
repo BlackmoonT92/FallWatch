@@ -13,7 +13,7 @@
     <string name="yes">Kyllä</string>
     <string name="no">Ei</string>
     <string name="titleHome">Koti</string>
-    <string name="titleLicence">Lisenssi</string>
+    <string name="titleAbout">Tietoja FallWatchista</string>
     <string name="titleSettings">Asetukset</string>
     <string name="titleContacts">Yhteystiedot</string>
     <string name="titleHelp">Tuki</string>
@@ -48,4 +48,9 @@
     <string name="titleApplicationOnOff">Tarvitseeko sovelluksen olla aktiivinen jotta se toimisi?</string>
     <string name="textApplicationOnOff">Ei tarvitse. Voit rauhassa sulkea sovelluksen kun havaitseminen on asetettu
      päälle. FallWatch jatkaa havaitsemista vaikka sovellus ei olisi aktiivinen.</string>
+
+    <string name="version">Versio: 1.0</string>
+    <string name="contactUs">Contact us</string>
+    <string name="contactUs1">+358405268536</string>
+    <string name="contactUs2">+358445092182</string>
 </resources>

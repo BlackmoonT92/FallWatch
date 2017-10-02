@@ -22,9 +22,11 @@
         <service android:name=".FallDetectionService"/>
         <meta-data android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <activity
             android:name=".MainSidebarActivity"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,7 +36,8 @@
         <activity
             android:name=".Register.RegisterActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/labelRegister"></activity>
+            android:label="@string/labelRegister"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -7,15 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
-import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.telephony.SmsManager;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,10 +39,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment {
 
     private ImageView statusOn, statusOff;
-    private Thread t;
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
-    private SmsManager smsManager = SmsManager.getDefault();
     public static final String USER_PREFERENCES = "UserPreferences";
     private String username, contact1, location;
     private boolean useInternal, useExternal;
@@ -61,13 +56,6 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public static HomeFragment newInstance() {
-        HomeFragment homeFragment = new HomeFragment();
-
-        return homeFragment;
-    }
-
-
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -75,17 +63,14 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
         getActivity().setTitle(R.string.titleHome);
-        activity = ((MainSidebarActivity) getActivity());
 
+        activity = ((MainSidebarActivity) getActivity());
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
-        sensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
         prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
-        fallDetectionService = new FallDetectionService();
         final Intent service = new Intent(getContext(), FallDetectionService.class);
 
         messageReceiver = new BroadcastReceiver() {
@@ -97,6 +82,8 @@ public class HomeFragment extends Fragment {
                 if(message != null) {
                     showPopupDialog(receivedLocation);
                     activity.stopService(service);
+                    activity.unregisterReceiver(this);
+                    FallDetectionService.IS_SERVICE_RUNNING = false;
                 }
             }
         };
@@ -133,19 +120,18 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
+                    FallDetectionService.IS_SERVICE_RUNNING = false;
+
+                    try {
+                        activity.unregisterReceiver(messageReceiver);
+                    } catch (Exception e) {}
 
                     activity.stopService(service);
-                    activity.unregisterReceiver(messageReceiver);
 
                     activity.saveTrackingStateToPreferences("tracking_state", false);
                 }
             }
         });
-
-        SharedPreferences prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-
-        username = prefs.getString("username", null);
-        contact1 = prefs.getString("contact1", null);
 
         return view;
     }
@@ -171,14 +157,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    public Boolean sensorExists() {
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-            Log.i("Sensor", "löyty");
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     public void showPopupDialog(final String location) {
         try {
@@ -203,7 +181,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    fallDetectionService.sendSMS(contact1,username, location);
+                    this.cancel();
                 }
             }.start();
 
@@ -225,7 +203,6 @@ public class HomeFragment extends Fragment {
                     timer.setText(getString(R.string.waiting_for_help));
                     close.setVisibility(View.INVISIBLE);
                     sendAlert.setVisibility(View.INVISIBLE);
-                    fallDetectionService.sendSMS(contact1, username, location);
                     countDownTimer.cancel();
                 }
             });
