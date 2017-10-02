@@ -1,32 +1,41 @@
 package jamia.mikko.fallwatch;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationSettingsStates;
+
+import jamia.mikko.fallwatch.Register.RegisterActivity;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
-import jamia.mikko.fallwatch.SidebarFragments.LicenseFragment;
+import jamia.mikko.fallwatch.SidebarFragments.AboutFragment;
 import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
-import jamia.mikko.fallwatch.Register.RegisterActivity;
 
 
 public class MainSidebarActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     public static final String USER_PREFERENCES = "UserPreferences";
+    private Location lastLocation;
+    private LocationRequest locationRequest;
+    private GoogleApiClient gac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +122,7 @@ public class MainSidebarActivity extends AppCompatActivity
         } else if (id == R.id.nav_help) {
             fragmentClass = HelpFragment.class;
         } else if (id == R.id.nav_license) {
-            fragmentClass = LicenseFragment.class;
+            fragmentClass = AboutFragment.class;
         }
 
         try {
@@ -137,5 +146,38 @@ public class MainSidebarActivity extends AppCompatActivity
         prefsEditor.putBoolean(key, value);
 
         prefsEditor.commit();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    //Method to get the enable location settings dialog
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
+        switch (requestCode) {
+            case 1000:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        // All required changes were successfully made
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        // The user was asked to change settings, but chose not to
+                        Toast.makeText(this, "Location Service not Enabled", Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+        }
     }
 }

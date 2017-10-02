@@ -1,15 +1,11 @@
 package jamia.mikko.fallwatch;
 
-import android.app.Service;
-import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**

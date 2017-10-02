@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/aboutTitle"
+        android:text="@string/titleAbout"
+        android:textStyle="bold"
+        android:textSize="18dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"/>
+
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/version"
+        android:text="@string/version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/aboutTitle"/>
+
+    <TextView
+        android:layout_marginTop="16dp"
+        android:id="@+id/contactUs"
+        android:textStyle="bold"
+        android:text="@string/contactUs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/version"/>
+
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/contact1"
+        android:text="@string/contactUs1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contactUs"/>
+
+    <TextView
+        android:layout_marginTop="8dp"
+        android:id="@+id/contact2"
+        android:text="@string/contactUs2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/contact1"/>
+
+</RelativeLayout>

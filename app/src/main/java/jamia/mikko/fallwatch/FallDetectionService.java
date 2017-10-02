@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.hardware.SensorManager;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -29,19 +30,35 @@ import android.os.Messenger;
 import android.provider.Settings;
 import android.provider.SyncStateContract;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.util.Log;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 /**
  * Created by jamiamikko on 27/09/2017.
  */
 
 
-public class FallDetectionService extends Service implements LocationListener{
+public class FallDetectionService extends Service implements GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
 
     private Thread thread;
     private InternalDetectionClient internalDetectionClient;
@@ -50,7 +67,9 @@ public class FallDetectionService extends Service implements LocationListener{
     private SmsManager smsManager = SmsManager.getDefault();
     private LocationManager locationManager;
     private String provider, lastKnownLocation;
-    private Location lastLocation;
+    private GoogleApiClient googleApiClient;
+    private Location mLastLocation;
+    private LocationRequest locationRequest;
 
     public FallDetectionService(){}
 
@@ -78,6 +97,14 @@ public class FallDetectionService extends Service implements LocationListener{
     public void onCreate() {
         super.onCreate();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        //locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
@@ -87,7 +114,6 @@ public class FallDetectionService extends Service implements LocationListener{
         thread = new Thread(internalDetectionClient);
         thread.start();
         showNotification();
-        //getLastLocation();
 
         return START_STICKY;
     }
@@ -148,10 +174,9 @@ public class FallDetectionService extends Service implements LocationListener{
         notificationManager.notify(1, alert);
     }
 
-    public void sendSMS(String number, String username) {
+    public void sendSMS(String number, String username, String location) {
 
-        Log.i("LOC", lastKnownLocation);
-        String uri = "http://google.com/maps/place/" + lastKnownLocation;
+        String uri = "http://google.com/maps/place/" + location;
         smsManager.getDefault();
         StringBuffer smsBody = new StringBuffer();
         smsBody.append(Uri.parse(uri));
@@ -160,70 +185,68 @@ public class FallDetectionService extends Service implements LocationListener{
     }
 
     @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        enableLocationRequest();
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
+
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        stopLocationUpdates();
+    }
+
+    @Override
     public void onLocationChanged(Location location) {
-        //lastLocation.set(location);
+        mLastLocation = location;
     }
 
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
+    private void enableLocationRequest() {
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(locationRequest);
+
+        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
+                .checkLocationSettings(googleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+
+                switch (status.getStatusCode()) {
+                    //All location settings are satisfied
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        break;
+                    //Not all location settings are satisfied
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        //Show dialog user a dialog to enable location
+                        PendingIntent pI = status.getResolution();
+                        googleApiClient.getContext().startActivity(new Intent(googleApiClient.getContext(), MainSidebarActivity.class)
+                                .putExtra("resolution", pI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        break;
+                }
+            }
+        });
     }
 
-    @Override
-    public void onProviderEnabled(String s) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String s) {
-
-    }
-
-    public void getLastLocation() {
-        Criteria criteria = new Criteria();
-        provider = locationManager.getBestProvider(criteria, false);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-
-        Location location = locationManager.getLastKnownLocation(provider);
-
-        if (location != null) {
-            //onLocationChanged(location);
-
-            double lat = location.getLatitude();
-            double lng = location.getLongitude();
-
-            lastKnownLocation = Double.toString(lat) + "," + Double.toString(lng);
-            Log.i("LOCATION", lastKnownLocation);
-        }
-    }
-
-    public void isProviderEnabled() {
-
-        LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if(!enabled){
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            final String action = Settings.ACTION_LOCATION_SOURCE_SETTINGS;
-            final String message = "In order to continue, please enable your GPS on.";
-
-            builder.setMessage(message)
-                    .setPositiveButton("OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int id) {
-                                    startActivity(new Intent(action));
-                                    d.dismiss();
-                                }
-                            })
-                    .setNegativeButton("Cancel",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface d, int id) {
-                                    d.cancel();
-                                }
-                            });
-            builder.create().show();
+    private void stopLocationUpdates() {
+        if (googleApiClient != null && googleApiClient.isConnected()) {
+            googleApiClient.disconnect();
         }
     }
 }

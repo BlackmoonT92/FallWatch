@@ -13,7 +13,7 @@
     <string name="no">No</string>
     <string name="alerting">Sending alert!</string>
     <string name="titleHome">Home</string>
-    <string name="titleLicence">License</string>
+    <string name="titleAbout">About FallWatch</string>
     <string name="titleSettings">Settigns</string>
     <string name="titleContacts">Contacts</string>
     <string name="titleHelp">Help</string>
@@ -47,4 +47,8 @@
     <string name="titleApplicationOnOff">Does the application have to be active in order it to work?</string>
     <string name="textApplicationOnOff">No. You can turn the application off once you have set the detection on.
     FallWatch will continue detecting in the background even if the app is not active.</string>
+    <string name="version">Version: 1.0</string>
+    <string name="contactUs">Contact us</string>
+    <string name="contactUs1">+358405268536</string>
+    <string name="contactUs2">+358445092182</string>
 </resources>
