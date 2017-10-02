@@ -40,10 +40,7 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                Log.i("Detector", "You have fallen");
-                Log.i("Location", String.valueOf(msg.obj));
                 location = String.valueOf(msg.obj);
-                Log.i("Loc", location);
                 showAlert();
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
                 alert.putExtra("location", location);
@@ -139,14 +136,10 @@ public class FallDetectionService extends Service {
 
     public void sendSMS(String number, String username, String location) {
 
-        Log.i("LOC", location);
-
         String uri = "http://google.com/maps/place/" + location;
         smsManager.getDefault();
         StringBuffer smsBody = new StringBuffer();
         smsBody.append(Uri.parse(uri));
-        Log.i("URI", smsBody.toString());
         smsManager.sendTextMessage(number, null, username + " needs help " + smsBody.toString(), null, null);
-
     }
 }

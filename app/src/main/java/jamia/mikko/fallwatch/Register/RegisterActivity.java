@@ -30,6 +30,8 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 import static android.content.DialogInterface.*;
@@ -44,6 +46,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ContentResolver cr;
     private Cursor cursor;
     private LayoutInflater inflater;
+    private Set connections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
         try {
             cr = getContentResolver();
 
-            cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+            cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY + " ASC");
 
         }catch (Exception e){
             Log.i("ERROR", e.toString());

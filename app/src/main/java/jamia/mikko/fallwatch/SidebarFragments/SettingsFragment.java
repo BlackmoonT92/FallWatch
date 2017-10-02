@@ -106,7 +106,6 @@ public class SettingsFragment extends Fragment {
 
         final int[] toLayouts = { R.id.contactName, R.id.contactNumber };
 
-
         cr = getActivity().getContentResolver();
 
         cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");

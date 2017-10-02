@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,7 +43,7 @@ public class HomeFragment extends Fragment {
     private SensorManager sensorManager;
     private PopupWindow popupWindow;
     public static final String USER_PREFERENCES = "UserPreferences";
-    private String username, contact1, location;
+    private String username, contact1;
     private boolean useInternal, useExternal;
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
@@ -64,6 +65,8 @@ public class HomeFragment extends Fragment {
 
         getActivity().setTitle(R.string.titleHome);
 
+        fallDetectionService = new FallDetectionService();
+
         activity = ((MainSidebarActivity) getActivity());
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
@@ -80,7 +83,7 @@ public class HomeFragment extends Fragment {
                 receivedLocation = intent.getStringExtra("location");
 
                 if(message != null) {
-                    showPopupDialog(receivedLocation);
+                    showPopupDialog();
                     activity.stopService(service);
                     activity.unregisterReceiver(this);
                     FallDetectionService.IS_SERVICE_RUNNING = false;
@@ -157,9 +160,9 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
-    public void showPopupDialog(final String location) {
+    public void showPopupDialog() {
         try {
+
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) getActivity().findViewById(R.id.popup));
 
@@ -181,6 +184,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
+                    fallDetectionService.sendSMS(contact1, username, receivedLocation);
                     this.cancel();
                 }
             }.start();
@@ -197,6 +201,7 @@ public class HomeFragment extends Fragment {
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
+                    Log.i("LOC", contact1 + " " + username + " " + " " + receivedLocation);
                     Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
@@ -204,6 +209,7 @@ public class HomeFragment extends Fragment {
                     close.setVisibility(View.INVISIBLE);
                     sendAlert.setVisibility(View.INVISIBLE);
                     countDownTimer.cancel();
+                    fallDetectionService.sendSMS(contact1, username, receivedLocation);
                 }
             });
 
