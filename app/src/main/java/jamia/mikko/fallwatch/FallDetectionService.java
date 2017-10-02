@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.hardware.SensorManager;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -37,7 +38,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -61,7 +61,7 @@ public class FallDetectionService extends Service implements GoogleApiClient.Con
         com.google.android.gms.location.LocationListener {
 
     private Thread thread;
-    private FallDetectionClient fallDetectionClient;
+    private InternalDetectionClient internalDetectionClient;
     private SensorManager sensorManager;
     public static boolean IS_SERVICE_RUNNING = false;
     private SmsManager smsManager = SmsManager.getDefault();
@@ -97,7 +97,6 @@ public class FallDetectionService extends Service implements GoogleApiClient.Con
     public void onCreate() {
         super.onCreate();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        fallDetectionClient = new FallDetectionClient(sensorManager, messageHandler);
 
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
@@ -106,12 +105,13 @@ public class FallDetectionService extends Service implements GoogleApiClient.Con
                 .build();
 
         //locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        thread = new Thread(fallDetectionClient);
+        thread = new Thread(internalDetectionClient);
         thread.start();
         showNotification();
 
@@ -121,7 +121,7 @@ public class FallDetectionService extends Service implements GoogleApiClient.Con
     @Override
     public void onDestroy() {
         thread = null;
-        fallDetectionClient.stop();
+        internalDetectionClient.stop();
     }
 
     private void showNotification() {

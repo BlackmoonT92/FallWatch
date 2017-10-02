@@ -27,7 +27,24 @@
     <string name="fallen">Ouch, you have fallen..</string>
     <string name="waiting_for_help">Waiting for help.</string>
     <string name="fillAllFields">Please fill all fields</string>
+    <string name="alertSent">Alert sent!</string>
+    <string name="titleHowToUse">How to use FallWatch?</string>
+    <string name="textHowToUse">FallWatch uses acceleration sensors to detect sudden changes in your movement. You can
+        either use your devices internal sensor or a external MetaMotionC sensor when using FallWatch. When using
+     external sensor, you do not have to have your device with you to use the application. However, we highly
+     recommend to have you device always nearby. You can turn the detection on/off from
+        the home view.\n\nIn case of possible collision, FallWatch will ask you if you
+     are okay. To this question you can either answer yes or no. If your answer is yes, FallWatch will send a text
+    message to your two defined contacts. From this message your contacts will know that you have possibly injured
+    yourself and also your current location.</string>
+    <string name="titleHowToChangeSettings">How can I change my settings?</string>
+    <string name="textHowToChangeSettings">From the left uppercorner of the application, you can find a navigation,
+         which takes you the settings. From the settings you can choose to use internal/external sensor and change
+         your user information. You can change your name that will be shown in the text message your contacts receives in
+         case of collision. You can also change your contacts. Remember to press the "Apply" button to validate your
+     latest settings.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="titleApplicationOnOff">Does the application have to be active in order it to work?</string>
+    <string name="textApplicationOnOff">No. You can turn the application off once you have set the detection on.
+    FallWatch will continue detecting in the background even if the app is not active.</string>
 </resources>

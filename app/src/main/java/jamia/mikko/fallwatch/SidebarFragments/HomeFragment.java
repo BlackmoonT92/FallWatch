@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment {
 
                 @Override
                 public void onFinish() {
-                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
                     fallDetectionService.sendSMS(contact1,username, location);
@@ -220,7 +220,7 @@ public class HomeFragment extends Fragment {
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), "Alert sent!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     countDownTimer.cancel();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
