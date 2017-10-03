@@ -18,6 +18,11 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
+
+import java.io.Serializable;
+
 import jamia.mikko.fallwatch.Register.RegisterActivity;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
@@ -30,6 +35,9 @@ public class MainSidebarActivity extends AppCompatActivity
 
 
     public static final String USER_PREFERENCES = "UserPreferences";
+    private static FragmentManager fragmentManager;
+    private static Intent service;
+    public static GoogleApiClientHelper clientHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +69,7 @@ public class MainSidebarActivity extends AppCompatActivity
                 e.printStackTrace();
             }
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.nav_container, fragment).commit();
         }
 
@@ -79,6 +87,7 @@ public class MainSidebarActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
+
     }
 
     @Override
@@ -125,7 +134,7 @@ public class MainSidebarActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.nav_container, fragment).commit();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -160,5 +169,22 @@ public class MainSidebarActivity extends AppCompatActivity
                 }
                 break;
         }
+    }
+
+    public void connectToService() {
+        service = new Intent(this, FallDetectionService.class);
+
+        if(!FallDetectionService.IS_SERVICE_RUNNING) {
+            service.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+            FallDetectionService.IS_SERVICE_RUNNING = true;
+        }
+
+        startService(service);
+    }
+
+    public void stopService() {
+        service = new Intent(this, FallDetectionService.class);
+        FallDetectionService.IS_SERVICE_RUNNING = false;
+        stopService(service);
     }
 }

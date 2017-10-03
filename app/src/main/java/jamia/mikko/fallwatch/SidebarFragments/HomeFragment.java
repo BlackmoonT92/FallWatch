@@ -49,18 +49,33 @@ public class HomeFragment extends Fragment {
     private MainSidebarActivity activity;
     private SharedPreferences prefs;
     private BluetoothAdapter mBluetoothAdapter;
-    private BroadcastReceiver messageReceiver;
     private FallDetectionService fallDetectionService;
     private String receivedLocation;
+    private static CountDownTimer countDownTimer;
 
     public HomeFragment() {
 
     }
 
+    BroadcastReceiver messageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("alert");
+            receivedLocation = intent.getStringExtra("location");
+
+            if(message != null) {
+                showPopupDialog();
+                activity.stopService();
+                getActivity().unregisterReceiver(this);
+            }
+        }
+    };
+
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.nav_home, container, false);
 
         getActivity().setTitle(R.string.titleHome);
@@ -74,22 +89,20 @@ public class HomeFragment extends Fragment {
         trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
         prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
-        final Intent service = new Intent(getContext(), FallDetectionService.class);
+        username = prefs.getString("username", null);
+        contact1 = prefs.getString("contact1", null);
+        useInternal = prefs.getBoolean("internalSensor", true);
+        useExternal = prefs.getBoolean("externalSensor", true);
 
-        messageReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String message = intent.getStringExtra("alert");
-                receivedLocation = intent.getStringExtra("location");
+        boolean switchOn = prefs.getBoolean("tracking_state", true);
 
-                if(message != null) {
-                    showPopupDialog();
-                    activity.stopService(service);
-                    activity.unregisterReceiver(this);
-                    FallDetectionService.IS_SERVICE_RUNNING = false;
-                }
-            }
-        };
+        if (switchOn) {
+            trackerSwitch.setChecked(true);
+
+            ((Animatable) statusOn.getDrawable()).start();
+            statusOff.setVisibility(View.INVISIBLE);
+            statusOn.setVisibility(View.VISIBLE);
+        }
 
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -106,15 +119,10 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
-                    if(!FallDetectionService.IS_SERVICE_RUNNING) {
-                        service.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
-                        FallDetectionService.IS_SERVICE_RUNNING = true;
-                    }
-
                     IntentFilter intentFilter = new IntentFilter(Constants.ACTION.MESSAGE_RECEIVED);
-                    activity.registerReceiver(messageReceiver, intentFilter);
+                    getActivity().registerReceiver(messageReceiver, intentFilter);
 
-                    activity.startService(service);
+                    activity.connectToService();
                     activity.saveTrackingStateToPreferences("tracking_state", true);
 
 
@@ -123,14 +131,11 @@ public class HomeFragment extends Fragment {
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
-                    FallDetectionService.IS_SERVICE_RUNNING = false;
-
                     try {
-                        activity.unregisterReceiver(messageReceiver);
+                        getActivity().unregisterReceiver(messageReceiver);
                     } catch (Exception e) {}
 
-                    activity.stopService(service);
-
+                    activity.stopService();
                     activity.saveTrackingStateToPreferences("tracking_state", false);
                 }
             }
@@ -142,22 +147,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        username = prefs.getString("username", null);
-        contact1 = prefs.getString("contact1", null);
-        useInternal = prefs.getBoolean("internalSensor", true);
-        useExternal = prefs.getBoolean("externalSensor", true);
-
-        boolean switchOn = prefs.getBoolean("tracking_state", true);
-
-        if (switchOn) {
-            trackerSwitch.setChecked(true);
-        }
     }
 
     public void showPopupDialog() {
@@ -172,7 +161,7 @@ public class HomeFragment extends Fragment {
 
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
 
-            final CountDownTimer countDownTimer = new CountDownTimer(30000, 1000) {
+            countDownTimer = new CountDownTimer(30000, 1000) {
 
                 @Override
                 public void onTick(long millisUntilFinished) {
@@ -201,15 +190,7 @@ public class HomeFragment extends Fragment {
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-                    Log.i("LOC", contact1 + " " + username + " " + " " + receivedLocation);
-                    Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
-                    countDownTimer.cancel();
-                    timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-                    timer.setText(getString(R.string.waiting_for_help));
-                    close.setVisibility(View.INVISIBLE);
-                    sendAlert.setVisibility(View.INVISIBLE);
-                    countDownTimer.cancel();
-                    fallDetectionService.sendSMS(contact1, username, receivedLocation);
+                    countDownTimer.onFinish();
                 }
             });
 
