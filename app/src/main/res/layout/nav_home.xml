@@ -25,21 +25,15 @@
         android:visibility="visible"
         app:srcCompat="@drawable/ic_close" />
 
-    <ProgressBar
-        android:id="@+id/connectionProgress"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        android:layout_below="@id/status_off"/>
-
     <Switch
         android:layout_marginTop="30dp"
         android:id="@+id/tracking_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/toggleToDetect"
         android:scaleX="2"
         android:scaleY="2"
         android:layout_centerHorizontal="true"
-        android:layout_below="@+id/connectionProgress"/>
+        android:layout_below="@+id/status_off"/>
 
 </RelativeLayout>

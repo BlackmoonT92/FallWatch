@@ -57,7 +57,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
         this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;
         this.context = context;
-        this.clientHelper = new GoogleApiClientHelper(context);
     }
 
     @Override
@@ -68,12 +67,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
             Thread.sleep(500);
             sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
 
-            Thread.sleep(500);
-            clientHelper.connect();
-
-            Thread.sleep(500);
-            clientHelper.requestPermissions();
-
         } catch (Exception e) {
             Log.i("Error", e.toString());
         }
@@ -82,7 +75,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
 
     public void stop() {
         sm.unregisterListener(this);
-        clientHelper.disconnect();
     }
 
 

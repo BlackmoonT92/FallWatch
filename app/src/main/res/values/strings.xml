@@ -47,8 +47,14 @@
     <string name="titleApplicationOnOff">Does the application have to be active in order it to work?</string>
     <string name="textApplicationOnOff">No. You can turn the application off once you have set the detection on.
     FallWatch will continue detecting in the background even if the app is not active.</string>
-    <string name="version">Version: 1.0</string>
+    <string name="version">Version</string>
+    <string name="versionNumber">1.0</string>
     <string name="contactUs">Contact us</string>
     <string name="contactUs1">+358405268536</string>
     <string name="contactUs2">+358445092182</string>
+
+    <string name="toggleToDetect">Toggle to turn detection on and off.</string>
+    <string name="toggleForInternal">Toggle to use internal sensor.</string>
+    <string name="toggleForExternal">Toggle to use external sensor.</string>
+    <string name="applyChanges">Click to apply your changes.</string>
 </resources>

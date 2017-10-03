@@ -49,8 +49,14 @@
     <string name="textApplicationOnOff">Ei tarvitse. Voit rauhassa sulkea sovelluksen kun havaitseminen on asetettu
      päälle. FallWatch jatkaa havaitsemista vaikka sovellus ei olisi aktiivinen.</string>
 
-    <string name="version">Versio: 1.0</string>
+    <string name="version">Version</string>
+    <string name="versionNumber">1.0</string>
     <string name="contactUs">Contact us</string>
     <string name="contactUs1">+358405268536</string>
     <string name="contactUs2">+358445092182</string>
+
+    <string name="toggleToDetect">Klikkaa käynnistääksesi ja sammuttaaksesi tarkkailun</string>
+    <string name="toggleForInternal">Klikkaa käyttääksesi sisäistä anturia.</string>
+    <string name="toggleForExternal">Klikkaa käyttääksesi ulkoista anturia.</string>
+    <string name="applyChanges">Klikkaa tallentaaksesi asetuksesi.</string>
 </resources>
