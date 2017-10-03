@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
@@ -31,7 +32,8 @@ public class FallDetectionService extends Service {
     public static boolean IS_SERVICE_RUNNING = false;
     private SmsManager smsManager = SmsManager.getDefault();
     private LocationManager locationManager;
-    private String location;
+    private String location, user, contact1;
+    private BroadcastReceiver smsReceiver;
 
     public FallDetectionService() {
     }
@@ -40,9 +42,14 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                location = String.valueOf(msg.obj);
+                String[] data = (String[]) msg.obj;
+                contact1 = data[0];
+                user = data[1];
+                location = data[2];
                 showAlert();
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
+                alert.putExtra("contact1", contact1);
+                alert.putExtra("user", user);
                 alert.putExtra("location", location);
                 getApplicationContext().sendBroadcast(alert);
                 stopSelf();
@@ -111,27 +118,34 @@ public class FallDetectionService extends Service {
 
     private void showAlert() {
 
-        Intent notificationIntent = new Intent(this, MainSidebarActivity.class);
-        notificationIntent.setAction(Constants.ACTION.ALERT_ACTION);
+        String message = "You have fallen down, please confirm that you are okay or send an alert.";
 
-        Intent stopIntent = new Intent(this, FallDetectionService.class);
-        stopIntent.setAction(Constants.ACTION.STOP_ALERT_ACTION);
-        PendingIntent pstopIntent = PendingIntent.getService(this, 0, stopIntent, 0);
-
-        String message = "You have fallen down, please confirm that are you okay.";
-
-        Notification alert = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setContentTitle("Fallwatch")
                 .setSmallIcon(R.drawable.ic_notifications)
-                .setContentText(message)
-                .addAction(0, "I'm okay", pstopIntent)
-                .build();
+                .setContentText(message);
 
-        NotificationManager notificationManager =
+
+        Intent resultIntent = new Intent(this, MainSidebarActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        Intent yesReceive = new Intent(this, AlertReceiver.class);
+        yesReceive.setAction(Constants.ACTION.YES_ACTION);
+        PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Action YES_ACTION = new NotificationCompat.Action(0, "I'm okay", pendingIntentYes);
+        builder.addAction(YES_ACTION);
+
+        Intent alertReceive = new Intent(this, AlertReceiver.class);
+        alertReceive.setAction(Constants.ACTION.ALERT_ACTION);
+        PendingIntent pendingIntentNo = PendingIntent.getBroadcast(this, 12345, alertReceive, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Action ALERT_ACTION = new NotificationCompat.Action(0, "Alert!", pendingIntentNo);
+        builder.addAction(ALERT_ACTION);
+
+        NotificationManager notifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-        notificationManager.notify(1, alert);
+        notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     public void sendSMS(String number, String username, String location) {

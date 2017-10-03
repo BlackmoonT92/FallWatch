@@ -46,7 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
     private ContentResolver cr;
     private Cursor cursor;
     private LayoutInflater inflater;
-    private Set connections;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
             cr = getContentResolver();
 
             cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY + " ASC");
+
 
         }catch (Exception e){
             Log.i("ERROR", e.toString());
@@ -98,6 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     ListView lv = (ListView) convertView.findViewById(R.id.contactList);
                                     myAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+
                                     lv.setAdapter(myAdapter);
 
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {

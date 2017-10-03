@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -36,6 +37,7 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by jamiamikko on 21/09/2017.
@@ -56,6 +58,8 @@ public class InternalDetectionClient implements Runnable, SensorEventListener, G
     private LocationRequest locationRequest;
     private Location mLastLocation;
     private Context context;
+    private SharedPreferences prefs;
+    public static final String USER_PREFERENCES = "UserPreferences";
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler, LocationManager locationManager, Context context) {
         this.sm = sensorManager;
@@ -81,6 +85,8 @@ public class InternalDetectionClient implements Runnable, SensorEventListener, G
             sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
 
             googleApiClient.connect();
+
+            prefs = context.getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -119,10 +125,17 @@ public class InternalDetectionClient implements Runnable, SensorEventListener, G
                 float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / timeDifference * 10000;
 
                 if (speed > THRESHOLD) {
+
+                    String[] messages = new String[3];
                     Message msg = handler.obtainMessage();
+
                     msg.what = 0;
 
-                    msg.obj = getLocation();
+                    messages[0] = prefs.getString("contact1", null);
+                    messages[1] = prefs.getString("username", null);
+                    messages[2] = getLocation();
+
+                    msg.obj = messages;
 
                     handler.sendMessage(msg);
                 }
@@ -224,6 +237,12 @@ public class InternalDetectionClient implements Runnable, SensorEventListener, G
         String location = lat + "," + lng;
 
         return location;
+    }
 
+    private String getUser(){
+
+        String user = prefs.getString("username", null);
+
+        return user;
     }
 }
