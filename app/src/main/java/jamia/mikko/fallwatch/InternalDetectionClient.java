@@ -30,16 +30,12 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     private float lastX, lastY, lastZ;
     private static final int THRESHOLD = 200;
     private Context context;
-    private SharedPreferences prefs;
-    public static final String USER_PREFERENCES = "UserPreferences";
-    private GoogleApiClientHelper clientHelper;
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler, Context context) {
         this.sm = sensorManager;
         this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;
         this.context = context;
-        //this.clientHelper = new GoogleApiClientHelper(context);
     }
 
     @Override
@@ -50,14 +46,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
             Thread.sleep(500);
             sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
 
-            //prefs = context.getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
-
-            /*Thread.sleep(500);
-            clientHelper.connect();
-
-            Thread.sleep(500);
-            clientHelper.requestPermissions();*/
-
         } catch (Exception e) {
             Log.i("Error", e.toString());
         }
@@ -66,7 +54,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
 
     public void stop() {
         sm.unregisterListener(this);
-        //clientHelper.disconnect();
     }
 
 
@@ -96,15 +83,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
 
                     msg.what = 0;
 
-                    //messages[0] = prefs.getString("contact1", null);
-                    //messages[1] = prefs.getString("username", null);
-                    //messages[2] = clientHelper.getLocation();
-                    messages.add("0445092182");
-                    messages.add("peraroori");
-                    messages.add("62.00,24.00");
-
-                    msg.obj = messages;
-
+                    msg.obj = ApplicationClass.getGoogleApiHelper().getLocation();
                     handler.sendMessage(msg);
                 }
 

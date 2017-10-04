@@ -1,10 +1,12 @@
 package jamia.mikko.fallwatch;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,10 +20,19 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+
 import jamia.mikko.fallwatch.Register.RegisterActivity;
+import jamia.mikko.fallwatch.SidebarFragments.AboutFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
-import jamia.mikko.fallwatch.SidebarFragments.AboutFragment;
 import jamia.mikko.fallwatch.SidebarFragments.SettingsFragment;
 
 
@@ -32,7 +43,6 @@ public class MainSidebarActivity extends AppCompatActivity
     public static final String USER_PREFERENCES = "UserPreferences";
     private static FragmentManager fragmentManager;
     private static Intent service;
-    public static GoogleApiClientHelper clientHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,5 +191,44 @@ public class MainSidebarActivity extends AppCompatActivity
         service = new Intent(this, FallDetectionService.class);
         FallDetectionService.IS_SERVICE_RUNNING = false;
         stopService(service);
+    }
+
+    private void enableLocationRequest() {
+
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(ApplicationClass.getLocationRequest());
+
+        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
+                .checkLocationSettings(ApplicationClass.getGoogleApiHelperInstance().apiClient, builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                final LocationSettingsStates state = result.getLocationSettingsStates();
+
+                switch (status.getStatusCode()) {
+                    //All location settings are satisfied
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        break;
+                    //Not all location settings are satisfied
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        //Show dialog user a dialog to enable location
+                        PendingIntent pI = status.getResolution();
+                        ApplicationClass.getGoogleApiHelperInstance().apiClient.getContext().startActivity(new Intent(ApplicationClass.getGoogleApiHelperInstance().apiClient.getContext(), MainSidebarActivity.class)
+                                .putExtra("resolution", pI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+
+                        try {
+                            status.startResolutionForResult(MainSidebarActivity.this, 1000);
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        break;
+                }
+            }
+        });
     }
 }

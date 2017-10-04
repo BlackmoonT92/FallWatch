@@ -5,8 +5,8 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/aboutTitle"
-        android:text="@string/titleAbout"
+        android:id="@+id/titleVersion"
+        android:text="@string/version"
         android:textStyle="bold"
         android:textSize="18dp"
         android:layout_width="match_parent"
@@ -16,10 +16,10 @@
     <TextView
         android:layout_marginTop="8dp"
         android:id="@+id/version"
-        android:text="@string/version"
+        android:text="@string/versionNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/aboutTitle"/>
+        android:layout_below="@+id/titleVersion"/>
 
     <TextView
         android:layout_marginTop="16dp"

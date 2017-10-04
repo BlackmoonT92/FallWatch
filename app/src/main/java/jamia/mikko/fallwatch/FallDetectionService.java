@@ -44,19 +44,10 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
+                location = String.valueOf(msg.obj);
                 showAlert();
-                ArrayList<String> data = (ArrayList<String>) msg.obj;
-
-                contact1 = data.get(0);
-                user = data.get(1);
-                location = data.get(2);
-
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
-
-                alert.putExtra("contact1", contact1);
-                alert.putExtra("user", user);
                 alert.putExtra("location", location);
-                Log.i("INFORMATION", contact1 + " " + user + " " + location);
                 getApplicationContext().sendBroadcast(alert);
                 stopSelf();
                 stopForeground(true);
