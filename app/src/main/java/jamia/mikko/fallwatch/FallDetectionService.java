@@ -45,7 +45,7 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                ArrayList<String> data = new ArrayList<String>();
+                ArrayList<String> data;
                 data = (ArrayList<String>) msg.obj;
                 contact1 = data.get(0);
                 user = data.get(1);
