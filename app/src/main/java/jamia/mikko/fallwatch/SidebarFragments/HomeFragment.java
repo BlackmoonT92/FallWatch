@@ -11,6 +11,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -92,16 +93,6 @@ public class HomeFragment extends Fragment {
         contact1 = prefs.getString("contact1", null);
         useExternal = prefs.getBoolean("externalSensor", true);
 
-        boolean switchOn = prefs.getBoolean("tracking_state", true);
-
-        if (switchOn) {
-            trackerSwitch.setChecked(true);
-
-            ((Animatable) statusOn.getDrawable()).start();
-            statusOff.setVisibility(View.INVISIBLE);
-            statusOn.setVisibility(View.VISIBLE);
-        }
-
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -142,6 +133,21 @@ public class HomeFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        boolean switchOn = prefs.getBoolean("tracking_state", true);
+
+        if (switchOn) {
+
+            ((Animatable) statusOn.getDrawable()).start();
+            statusOff.setVisibility(View.INVISIBLE);
+            statusOn.setVisibility(View.VISIBLE);
+            trackerSwitch.setChecked(true);
+        }
     }
 
     @Override
