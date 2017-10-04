@@ -189,6 +189,7 @@ public class HomeFragment extends Fragment {
                 public void onClick(View v) {
                     getActivity().unregisterReceiver(timeReceiver);
                     popupWindow.dismiss();
+                    fallDetectionService.stopTimer();
                 }
             });
 
@@ -199,6 +200,7 @@ public class HomeFragment extends Fragment {
                     fallDetectionService.sendSMS(contact1, username, location);
                     getActivity().unregisterReceiver(timeReceiver);
                     popupWindow.dismiss();
+                    fallDetectionService.stopTimer();
                 }
             });
 
