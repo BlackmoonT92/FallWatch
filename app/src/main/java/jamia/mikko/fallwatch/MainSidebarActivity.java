@@ -43,13 +43,14 @@ public class MainSidebarActivity extends AppCompatActivity
     private static FragmentManager fragmentManager;
     private static Intent service;
     private boolean useInternal, useExternal;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sidebar);
 
-        SharedPreferences prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
+        prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
         String username = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
@@ -92,9 +93,6 @@ public class MainSidebarActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
-
-        useExternal = prefs.getBoolean("externalSensor", true);
-        useInternal = prefs.getBoolean("intenralSensor", true);
 
         enableLocationRequest();
     }
@@ -182,6 +180,10 @@ public class MainSidebarActivity extends AppCompatActivity
     }
 
     public void connectToService() {
+
+        useExternal = prefs.getBoolean("externalSensor", true);
+        useInternal = prefs.getBoolean("intenralSensor", true);
+
         service = new Intent(this, FallDetectionService.class);
 
         if(!FallDetectionService.IS_SERVICE_RUNNING) {
