@@ -89,10 +89,6 @@ public class HomeFragment extends Fragment {
         trackerSwitch = (Switch) view.findViewById(R.id.tracking_switch);
         prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
-        username = prefs.getString("username", null);
-        contact1 = prefs.getString("contact1", null);
-        useExternal = prefs.getBoolean("externalSensor", true);
-
         trackerSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -139,6 +135,10 @@ public class HomeFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        username = prefs.getString("username", null);
+        contact1 = prefs.getString("contact1", null);
+        useExternal = prefs.getBoolean("externalSensor", true);
 
         boolean switchOn = prefs.getBoolean("tracking_state", true);
 
