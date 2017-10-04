@@ -47,7 +47,9 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
         try {
 
             Thread.sleep(500);
-            sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
+            if(sensorExists()) {
+                sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
+            }
 
         } catch (Exception e) {
             Log.i("Error", e.toString());
@@ -107,4 +109,13 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
+
+    public Boolean sensorExists() {
+        if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
