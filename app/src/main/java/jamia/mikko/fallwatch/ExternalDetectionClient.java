@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -26,9 +27,13 @@ import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Led;
 
+import java.util.ArrayList;
+
 import bolts.Continuation;
 import bolts.Task;
 import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by jamiamikko on 25/09/2017.
@@ -43,16 +48,20 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     private Handler uiHandler;
     private final String mwMacAddress= "E6:F3:22:B3:2C:4E";
     private BluetoothDevice btDevice;
+    private SharedPreferences prefs;
+    public static final String USER_PREFERENCES = "UserPreferences";
 
     public ExternalDetectionClient(Context context, BluetoothManager btManager, Handler uiHandler) {
         this.context = context;
         this.btManager = btManager;
         this.uiHandler = uiHandler;
+        prefs = context.getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
     }
 
     @Override
     public void run() {
         try {
+            Thread.sleep(500);
             start();
         } catch (Exception e) {
         }
@@ -110,7 +119,17 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
                             @Override
                             public void apply(Data data, Object... env) {
                                 Message msg = uiHandler.obtainMessage();
-                                msg.obj = 0;
+
+                                ArrayList<String> messages = new ArrayList<>();
+
+                                messages.add(prefs.getString("contact1", null));
+                                messages.add(prefs.getString("username", null));
+                                messages.add(ApplicationClass.getGoogleApiHelper().getLocation());
+
+
+                                msg.what = 0;
+                                msg.obj = messages;
+
                                 uiHandler.sendMessage(msg);
                             }
                         }).to().filter(Comparison.EQ, 1).react(new RouteComponent.Action() {

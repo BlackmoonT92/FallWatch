@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -29,10 +30,16 @@ public class FallDetectionService extends Service {
 
     private Thread thread;
     private InternalDetectionClient internalDetectionClient;
+    private ExternalDetectionClient externalDetectionClient;
     private SensorManager sensorManager;
     public static boolean IS_SERVICE_RUNNING = false;
+
+    public static boolean IS_RUNNING_EXTERNAL = false;
+    public static boolean IS_RUNNING_INTERNAL = false;
+
     private SmsManager smsManager = SmsManager.getDefault();
     private String location, user, contact1;
+    private BluetoothManager bluetoothManager;
 
     public FallDetectionService() {
     }
@@ -70,12 +77,25 @@ public class FallDetectionService extends Service {
 
         Context context = getApplicationContext();
 
+        bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
+
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
+        externalDetectionClient = new ExternalDetectionClient(context, bluetoothManager, messageHandler);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        thread = new Thread(internalDetectionClient);
+
+        if(IS_RUNNING_EXTERNAL) {
+
+            thread = new Thread(externalDetectionClient);
+
+        } else {
+
+            thread = new Thread(internalDetectionClient);
+
+        }
+
         thread.start();
         showNotification();
 
@@ -86,6 +106,7 @@ public class FallDetectionService extends Service {
     public void onDestroy() {
         thread = null;
         internalDetectionClient.stop();
+        externalDetectionClient.stop();
     }
 
     private void showNotification() {

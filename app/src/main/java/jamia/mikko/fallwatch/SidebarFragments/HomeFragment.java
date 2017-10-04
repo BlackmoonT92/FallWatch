@@ -40,11 +40,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment {
 
     private ImageView statusOn, statusOff;
-    private SensorManager sensorManager;
     private PopupWindow popupWindow;
     public static final String USER_PREFERENCES = "UserPreferences";
     private String username, contact1;
-    private boolean useInternal, useExternal;
+    private boolean useExternal;
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
     private SharedPreferences prefs;
@@ -62,10 +61,7 @@ public class HomeFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("alert");
             receivedLocation = intent.getStringExtra("location");
-<<<<<<< HEAD
 
-=======
->>>>>>> 171c410be5d3bd97e5ea9cd8827f48dc6d877697
             if(message != null) {
                 showPopupDialog(receivedLocation);
                 activity.stopService();
@@ -94,7 +90,6 @@ public class HomeFragment extends Fragment {
 
         username = prefs.getString("username", null);
         contact1 = prefs.getString("contact1", null);
-        useInternal = prefs.getBoolean("internalSensor", true);
         useExternal = prefs.getBoolean("externalSensor", true);
 
         boolean switchOn = prefs.getBoolean("tracking_state", true);
@@ -116,7 +111,7 @@ public class HomeFragment extends Fragment {
                     startActivityForResult(enableBtIntent, 1);
                 }
 
-                //activity.enableLocationRequest();
+                activity.enableLocationRequest();
 
                 if (isChecked) {
 
