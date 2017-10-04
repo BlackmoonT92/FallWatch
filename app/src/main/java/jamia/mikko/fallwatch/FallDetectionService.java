@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -37,6 +38,7 @@ public class FallDetectionService extends Service {
     private SmsManager smsManager = SmsManager.getDefault();
     private String location, user, contact1;
     private BluetoothManager bluetoothManager;
+    public static AlarmTimer timer;
 
     public FallDetectionService() {
     }
@@ -45,6 +47,7 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
+                timer.start();
                 ArrayList<String> data = new ArrayList<String>();
                 data = (ArrayList<String>) msg.obj;
                 contact1 = data.get(0);
@@ -77,6 +80,8 @@ public class FallDetectionService extends Service {
 
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
         externalDetectionClient = new ExternalDetectionClient(context, bluetoothManager, messageHandler);
+
+        timer = new AlarmTimer(60000, 1000);
     }
 
     @Override
@@ -172,5 +177,26 @@ public class FallDetectionService extends Service {
         StringBuffer smsBody = new StringBuffer();
         smsBody.append(Uri.parse(uri));
         smsManager.sendTextMessage(number, null, username + " needs help " + smsBody.toString(), null, null);
+    }
+
+    private class AlarmTimer extends CountDownTimer {
+        public AlarmTimer(long millisInFuture, long countDownInterval) {
+            super(millisInFuture, countDownInterval);
+        }
+
+        @Override
+        public void onTick(long l) {
+            Intent timerIntent = new Intent(Constants.ACTION.TIMER_REGISTERED).putExtra("tick", l);
+            getApplicationContext().sendBroadcast(timerIntent);
+        }
+
+        @Override
+        public void onFinish() {
+            sendSMS(contact1, user, location);
+        }
+    }
+
+    public void stopTimer(){
+        timer.cancel();
     }
 }

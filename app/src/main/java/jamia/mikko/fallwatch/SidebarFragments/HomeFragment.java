@@ -12,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -162,28 +163,25 @@ public class HomeFragment extends Fragment {
 
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
 
-            countDownTimer = new CountDownTimer(30000, 1000) {
-
+            final BroadcastReceiver timeReceiver = new BroadcastReceiver() {
                 @Override
-                public void onTick(long millisUntilFinished) {
-                    timer.setText(Long.toString(millisUntilFinished / 1000));
-                }
+                public void onReceive(Context context, Intent intent) {
 
-                @Override
-                public void onFinish() {
-                    Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
-                    timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
-                    timer.setText(getString(R.string.waiting_for_help));
-                    fallDetectionService.sendSMS(contact1, username, location);
-                    this.cancel();
-                    popupWindow.dismiss();
+                    long time = intent.getLongExtra("tick", 0);
+
+                    Log.i("Clock", Long.toString(time / 1000));
+
+                    timer.setText(Long.toString(time / 1000));
                 }
-            }.start();
+            };
+
+            IntentFilter intentFilter = new IntentFilter(Constants.ACTION.TIMER_REGISTERED);
+            getActivity().registerReceiver(timeReceiver, intentFilter);
 
             final Button close = (Button) layout.findViewById(R.id.btn_im_okay);
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    countDownTimer.cancel();
+                    getActivity().unregisterReceiver(timeReceiver);
                     popupWindow.dismiss();
                 }
             });
@@ -192,7 +190,9 @@ public class HomeFragment extends Fragment {
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
                 public void onClick(View v) {
-                    countDownTimer.onFinish();
+                    fallDetectionService.sendSMS(contact1, username, location);
+                    getActivity().unregisterReceiver(timeReceiver);
+                    popupWindow.dismiss();
                 }
             });
 

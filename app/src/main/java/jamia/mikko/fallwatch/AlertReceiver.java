@@ -30,7 +30,7 @@ public class AlertReceiver extends BroadcastReceiver{
         location = intent.getStringExtra("location");
 
         if (YES_ACTION.equals(action)){
-
+            fallDetectionService.stopTimer();
         }
 
         else if (ALERT_ACTION.equals(action)){
@@ -38,6 +38,7 @@ public class AlertReceiver extends BroadcastReceiver{
             if (message != null) {
 
                 fallDetectionService.sendSMS(contact1, username, location);
+                fallDetectionService.stopTimer();
             }
 
             if (message == null){
