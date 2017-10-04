@@ -23,23 +23,28 @@ public class AlertReceiver extends BroadcastReceiver{
 
         String action = intent.getAction();
 
+        String message = intent.getStringExtra("alertReceive");
+
+        contact1 = intent.getStringExtra("number");
+        username = intent.getStringExtra("userName");
+        location = intent.getStringExtra("location");
+
+        Log.i("Info", contact1 + " " + username + " " + location);
+
         if (YES_ACTION.equals(action)){
             Log.i("ACTION", "You are OK");
         }
         else if (ALERT_ACTION.equals(action)){
             Log.i("ACTION", "Alerting");
-            String message = intent.getStringExtra("alert");
 
             if (message != null) {
-                contact1 = intent.getStringExtra("contact1");
-                username = intent.getStringExtra("user");
-                location = intent.getStringExtra("location");
-
-                Log.i("Info", contact1 + " " + username + " " + location);
 
                 fallDetectionService.sendSMS(contact1, username, location);
             }
 
+            if (message == null){
+                Log.i("ERROR", "message is null");
+            }
         }
     }
 }

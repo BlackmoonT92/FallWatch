@@ -19,6 +19,8 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 /**
  * Created by jamiamikko on 27/09/2017.
  */
@@ -42,15 +44,19 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                String[] data = (String[]) msg.obj;
-                contact1 = data[0];
-                user = data[1];
-                location = data[2];
                 showAlert();
+                ArrayList<String> data = (ArrayList<String>) msg.obj;
+
+                contact1 = data.get(0);
+                user = data.get(1);
+                location = data.get(2);
+
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
+
                 alert.putExtra("contact1", contact1);
                 alert.putExtra("user", user);
                 alert.putExtra("location", location);
+                Log.i("INFORMATION", contact1 + " " + user + " " + location);
                 getApplicationContext().sendBroadcast(alert);
                 stopSelf();
                 stopForeground(true);
@@ -69,11 +75,9 @@ public class FallDetectionService extends Service {
         super.onCreate();
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
         Context context = getApplicationContext();
 
-        internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, locationManager, context);
+        internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
     }
 
     @Override
@@ -126,7 +130,6 @@ public class FallDetectionService extends Service {
                 .setSmallIcon(R.drawable.ic_notifications)
                 .setContentText(message);
 
-
         Intent resultIntent = new Intent(this, MainSidebarActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
@@ -137,7 +140,10 @@ public class FallDetectionService extends Service {
         NotificationCompat.Action YES_ACTION = new NotificationCompat.Action(0, "I'm okay", pendingIntentYes);
         builder.addAction(YES_ACTION);
 
-        Intent alertReceive = new Intent(this, AlertReceiver.class);
+        Intent alertReceive = new Intent(this, AlertReceiver.class).putExtra("alertReceive", "alerting");
+        alertReceive.putExtra("userName", "Roope");
+        alertReceive.putExtra("number", "0445092182");
+        alertReceive.putExtra("location", "62.00,24.00");
         alertReceive.setAction(Constants.ACTION.ALERT_ACTION);
         PendingIntent pendingIntentNo = PendingIntent.getBroadcast(this, 12345, alertReceive, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action ALERT_ACTION = new NotificationCompat.Action(0, "Alert!", pendingIntentNo);
