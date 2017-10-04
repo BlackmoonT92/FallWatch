@@ -61,9 +61,10 @@ public class HomeFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("alert");
+            receivedLocation = intent.getStringExtra("location");
 
             if(message != null) {
-                showPopupDialog();
+                showPopupDialog(receivedLocation);
                 activity.stopService();
                 getActivity().unregisterReceiver(this);
             }
@@ -148,7 +149,7 @@ public class HomeFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void showPopupDialog() {
+    public void showPopupDialog(final String location) {
         try {
 
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -172,16 +173,17 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    fallDetectionService.sendSMS(contact1, username, receivedLocation);
+                    fallDetectionService.sendSMS(contact1, username, location);
                     this.cancel();
+                    popupWindow.dismiss();
                 }
             }.start();
 
             final Button close = (Button) layout.findViewById(R.id.btn_im_okay);
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    popupWindow.dismiss();
                     countDownTimer.cancel();
+                    popupWindow.dismiss();
                 }
             });
 
