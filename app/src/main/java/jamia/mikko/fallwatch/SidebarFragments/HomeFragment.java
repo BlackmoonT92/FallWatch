@@ -7,14 +7,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import jamia.mikko.fallwatch.Constants;
 import jamia.mikko.fallwatch.FallDetectionService;
@@ -64,7 +61,7 @@ public class HomeFragment extends Fragment {
             String message = intent.getStringExtra("alert");
             receivedLocation = intent.getStringExtra("location");
 
-            if(message != null) {
+            if (message != null) {
                 showPopupDialog(receivedLocation);
                 activity.stopService();
                 getActivity().unregisterReceiver(this);
@@ -122,7 +119,8 @@ public class HomeFragment extends Fragment {
 
                     try {
                         getActivity().unregisterReceiver(messageReceiver);
-                    } catch (Exception e) {}
+                    } catch (Exception e) {
+                    }
 
                     activity.stopService();
                     activity.saveTrackingStateToPreferences("tracking_state", false);

@@ -186,11 +186,11 @@ public class MainSidebarActivity extends AppCompatActivity
 
         service = new Intent(this, FallDetectionService.class);
 
-        if(!FallDetectionService.IS_SERVICE_RUNNING) {
+        if (!FallDetectionService.IS_SERVICE_RUNNING) {
             service.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
             FallDetectionService.IS_SERVICE_RUNNING = true;
 
-            if(useExternal) {
+            if (useExternal) {
                 FallDetectionService.IS_RUNNING_EXTERNAL = true;
             } else {
                 FallDetectionService.IS_RUNNING_INTERNAL = true;

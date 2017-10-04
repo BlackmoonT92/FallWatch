@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import jamia.mikko.fallwatch.R;
 
 /**
@@ -13,7 +14,8 @@ import jamia.mikko.fallwatch.R;
 
 public class HelpFragment extends Fragment {
 
-    public HelpFragment(){}
+    public HelpFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

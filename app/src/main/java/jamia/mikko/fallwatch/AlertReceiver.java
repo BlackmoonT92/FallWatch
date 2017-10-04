@@ -9,7 +9,7 @@ import android.util.Log;
  * Created by rrvil on 03-Oct-17.
  */
 
-public class AlertReceiver extends BroadcastReceiver{
+public class AlertReceiver extends BroadcastReceiver {
 
     public static final String ALERT_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.alertaction";
     public static final String YES_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.yesaction";
@@ -29,11 +29,9 @@ public class AlertReceiver extends BroadcastReceiver{
         username = intent.getStringExtra("userName");
         location = intent.getStringExtra("location");
 
-        if (YES_ACTION.equals(action)){
+        if (YES_ACTION.equals(action)) {
             fallDetectionService.stopTimer();
-        }
-
-        else if (ALERT_ACTION.equals(action)){
+        } else if (ALERT_ACTION.equals(action)) {
 
             if (message != null) {
 
@@ -41,7 +39,7 @@ public class AlertReceiver extends BroadcastReceiver{
                 fallDetectionService.stopTimer();
             }
 
-            if (message == null){
+            if (message == null) {
                 Log.i("ERROR", "message is null");
             }
         }

@@ -87,7 +87,7 @@ public class FallDetectionService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(IS_RUNNING_EXTERNAL) {
+        if (IS_RUNNING_EXTERNAL) {
 
             thread = new Thread(externalDetectionClient);
 
@@ -196,7 +196,7 @@ public class FallDetectionService extends Service {
         }
     }
 
-    public void stopTimer(){
+    public void stopTimer() {
         timer.cancel();
     }
 }

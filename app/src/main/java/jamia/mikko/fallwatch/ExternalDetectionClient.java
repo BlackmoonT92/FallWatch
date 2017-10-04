@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+
 import com.mbientlab.metawear.Data;
 import com.mbientlab.metawear.DataToken;
 import com.mbientlab.metawear.MetaWearBoard;
@@ -22,7 +23,6 @@ import com.mbientlab.metawear.builder.RouteComponent;
 import com.mbientlab.metawear.builder.filter.Comparison;
 import com.mbientlab.metawear.builder.filter.ThresholdOutput;
 import com.mbientlab.metawear.builder.function.Function1;
-import com.mbientlab.metawear.builder.function.Function2;
 import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Led;
@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 import bolts.Continuation;
 import bolts.Task;
-import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -46,7 +45,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     private Context context;
     private BluetoothManager btManager;
     private Handler uiHandler;
-    private final String mwMacAddress= "E6:F3:22:B3:2C:4E";
+    private final String mwMacAddress = "E6:F3:22:B3:2C:4E";
     private BluetoothDevice btDevice;
     private SharedPreferences prefs;
     public static final String USER_PREFERENCES = "UserPreferences";
@@ -76,7 +75,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
         try {
 
             context.unbindService(this);
-            if(accelerometer != null) {
+            if (accelerometer != null) {
                 accelerometer.acceleration().stop();
             }
 
@@ -149,7 +148,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
             @Override
             public Void then(Task<Route> task) throws Exception {
-                if(task.isFaulted()) {
+                if (task.isFaulted()) {
                     Log.i("Freefall", String.valueOf(task.getError()));
                     mwBoard.getModule(Debug.class).resetAsync();
                 } else {

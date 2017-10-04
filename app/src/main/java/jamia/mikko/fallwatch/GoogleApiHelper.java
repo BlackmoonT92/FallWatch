@@ -1,11 +1,7 @@
 package jamia.mikko.fallwatch;
 
 import android.Manifest;
-import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -17,15 +13,8 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 /**
  * Created by jamiamikko on 04/10/2017.
@@ -39,7 +28,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
     public static GoogleApiClient apiClient;
     public static LocationRequest locationRequest;
     public Location mLastLocation;
-    private Context currentActivity;
+
     public GoogleApiHelper(Context context) {
         this.context = context;
 
@@ -71,7 +60,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
     }
 
     public void checkPermissions() {
-        if(isConnected()) {
+        if (isConnected()) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
                 LocationServices.FusedLocationApi.requestLocationUpdates(apiClient, locationRequest, this);
@@ -112,12 +101,12 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
 
 
     private void stopLocationUpdates() {
-        if(isConnected()) {
+        if (isConnected()) {
             apiClient.disconnect();
         }
     }
 
-    public String getLocation(){
+    public String getLocation() {
 
         String lat = Double.toString(mLastLocation.getLatitude());
         String lng = Double.toString(mLastLocation.getLongitude());

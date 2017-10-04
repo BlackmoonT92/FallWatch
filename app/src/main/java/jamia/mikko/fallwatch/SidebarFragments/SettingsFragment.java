@@ -47,7 +47,8 @@ public class SettingsFragment extends Fragment {
     private Cursor cursor;
     private LayoutInflater inflater;
 
-    public SettingsFragment(){}
+    public SettingsFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,7 +80,7 @@ public class SettingsFragment extends Fragment {
         final boolean useInternal = prefs.getBoolean("internalSensor", true);
         final boolean useExternal = prefs.getBoolean("externalSensor", true);
 
-        if(name != null) {
+        if (name != null) {
             editUsername.setText(name.toString());
         }
 
@@ -91,20 +92,20 @@ public class SettingsFragment extends Fragment {
             editContact2.setText(contact2.toString());
         }
 
-        if(useInternal) {
+        if (useInternal) {
             internalSensor.setChecked(true);
         }
 
-        if(useExternal) {
+        if (useExternal) {
             externalSensor.setChecked(true);
         }
 
-        final String[] projection = new String[] {
+        final String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
                 ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
         };
 
-        final int[] toLayouts = { R.id.contactName, R.id.contactNumber };
+        final int[] toLayouts = {R.id.contactName, R.id.contactNumber};
 
         cr = getActivity().getContentResolver();
 
@@ -115,7 +116,7 @@ public class SettingsFragment extends Fragment {
         editContact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b) {
+                if (b) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                     builder.setMessage(R.string.typeNumberYourSelf)
@@ -160,7 +161,7 @@ public class SettingsFragment extends Fragment {
         editContact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b) {
+                if (b) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                     builder.setMessage(R.string.typeNumberYourSelf)
@@ -205,7 +206,7 @@ public class SettingsFragment extends Fragment {
         internalSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
+                if (b) {
                     externalSensor.setChecked(false);
                 }
             }
@@ -214,7 +215,7 @@ public class SettingsFragment extends Fragment {
         externalSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b) {
+                if (b) {
                     internalSensor.setChecked(false);
                 }
             }
@@ -224,7 +225,7 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                if(validEdit()) {
+                if (validEdit()) {
                     prefs.edit().putString("username", editUsername.getText().toString()).apply();
                     prefs.edit().putString("contact1", editContact1.getText().toString()).apply();
                     prefs.edit().putString("contact2", editContact2.getText().toString()).apply();
@@ -239,7 +240,7 @@ public class SettingsFragment extends Fragment {
     }
 
     public String getNumberById(long id) {
-        String[] projection = new String[] {
+        String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone._ID,
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         };
@@ -254,7 +255,7 @@ public class SettingsFragment extends Fragment {
 
     private boolean validEdit() {
 
-        if(!editUsername.getText().toString().equals("") && !editContact1.getText().toString().equals("") && !editContact2.getText().toString().equals("")) {
+        if (!editUsername.getText().toString().equals("") && !editContact1.getText().toString().equals("") && !editContact2.getText().toString().equals("")) {
             return true;
         } else {
             return false;

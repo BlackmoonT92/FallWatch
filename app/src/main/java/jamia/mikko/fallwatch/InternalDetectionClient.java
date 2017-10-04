@@ -1,16 +1,13 @@
 package jamia.mikko.fallwatch;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
-
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -47,7 +44,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
         try {
 
             Thread.sleep(500);
-            if(sensorExists()) {
+            if (sensorExists()) {
                 sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
             }
 
@@ -111,7 +108,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     }
 
     public Boolean sensorExists() {
-        if(sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+        if (sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
             return true;
         } else {
             return false;

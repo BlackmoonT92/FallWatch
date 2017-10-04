@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +16,6 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -28,13 +28,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
-import static android.content.DialogInterface.*;
+
+import static android.content.DialogInterface.OnClickListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -53,12 +54,12 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
         checkAndRequestPermissions();
 
-        final String[] projection = new String[] {
+        final String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
                 ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
         };
 
-        final int[] toLayouts = { R.id.contactName, R.id.contactNumber };
+        final int[] toLayouts = {R.id.contactName, R.id.contactNumber};
 
         try {
             cr = getContentResolver();
@@ -66,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
             cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY + " ASC");
 
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.i("ERROR", e.toString());
         }
 
@@ -81,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
         contact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b) {
+                if (b) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     builder.setMessage(R.string.typeNumberYourSelf)
                             .setTitle(R.string.contactPhoneNumber)
@@ -124,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
         contact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
-                if(b) {
+                if (b) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     builder.setMessage(R.string.typeNumberYourSelf)
                             .setTitle(R.string.contactPhoneNumber)
@@ -169,7 +170,7 @@ public class RegisterActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(validRegister()) {
+                if (validRegister()) {
                     saveStringToPreferences("username", userName.getText().toString());
                     saveStringToPreferences("contact1", contact1.getText().toString());
                     saveStringToPreferences("contact2", contact2.getText().toString());
@@ -208,7 +209,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void checkAndRequestPermissions() {
-        String [] permissions=new String[]{
+        String[] permissions = new String[]{
                 Manifest.permission.READ_CONTACTS,
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -217,8 +218,8 @@ public class RegisterActivity extends AppCompatActivity {
                 Manifest.permission.INTERNET
         };
         List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String permission:permissions) {
-            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission )!= PackageManager.PERMISSION_GRANTED){
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), permission) != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(permission);
             }
         }
@@ -229,7 +230,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private boolean validRegister() {
 
-        if(!userName.getText().toString().equals("") && !contact1.getText().toString().equals("") && !contact2.getText().toString().equals("")) {
+        if (!userName.getText().toString().equals("") && !contact1.getText().toString().equals("") && !contact2.getText().toString().equals("")) {
             return true;
         } else {
             return false;
@@ -237,7 +238,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public String getNumberById(long id) {
-        String[] projection = new String[] {
+        String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone._ID,
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         };
