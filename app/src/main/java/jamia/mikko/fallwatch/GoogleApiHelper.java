@@ -34,7 +34,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         com.google.android.gms.location.LocationListener {
 
     private Context context;
-    private GoogleApiClient apiClient;
+    public GoogleApiClient apiClient;
     public LocationRequest locationRequest;
     public Location mLastLocation;
 
@@ -51,7 +51,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
             apiClient.connect();
         }
 
-        requestPermissions();
+        createLocationRequest();
 
         Log.i("Google helper", "created");
     }
@@ -64,7 +64,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         return apiClient != null && apiClient.isConnected();
     }
 
-    public void requestPermissions() {
+    public void checkPermissions() {
         if(isConnected()) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -75,7 +75,8 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        enableLocationRequest();
+
+        checkPermissions();
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -108,39 +109,11 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         mLastLocation = location;
     }
 
-    private void enableLocationRequest() {
+    private void createLocationRequest() {
         locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
-                .checkLocationSettings(apiClient, builder.build());
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(@NonNull LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                final LocationSettingsStates state = result.getLocationSettingsStates();
-
-                switch (status.getStatusCode()) {
-                    //All location settings are satisfied
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        break;
-                    //Not all location settings are satisfied
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        //Show dialog user a dialog to enable location
-                        PendingIntent pI = status.getResolution();
-                        apiClient.getContext().startActivity(new Intent(apiClient.getContext(), MainSidebarActivity.class)
-                                .putExtra("resolution", pI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        break;
-                }
-            }
-        });
     }
 
     private void stopLocationUpdates() {

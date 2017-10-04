@@ -48,11 +48,15 @@ public class ApplicationClass extends Application {
         return mInstance;
     }
 
-    public GoogleApiHelper getGoogleApiHelperInstance() {
-        return this.googleApiHelper;
+    public static GoogleApiHelper getGoogleApiHelperInstance() {
+        return googleApiHelper;
     }
     public static GoogleApiHelper getGoogleApiHelper() {
         return getInstance().getGoogleApiHelperInstance();
+    }
+
+    public static LocationRequest getLocationRequest() {
+        return getGoogleApiHelper().locationRequest;
     }
 
     @Override
