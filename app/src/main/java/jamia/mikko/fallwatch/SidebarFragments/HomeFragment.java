@@ -106,6 +106,7 @@ public class HomeFragment extends Fragment {
 
                 if (isChecked) {
 
+                    activity.enableLocationRequest();
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);

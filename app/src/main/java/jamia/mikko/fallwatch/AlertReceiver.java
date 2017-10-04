@@ -30,7 +30,9 @@ public class AlertReceiver extends BroadcastReceiver{
         location = intent.getStringExtra("location");
 
         if (YES_ACTION.equals(action)){
+
         }
+
         else if (ALERT_ACTION.equals(action)){
 
             if (message != null) {

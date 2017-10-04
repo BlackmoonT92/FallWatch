@@ -1,8 +1,6 @@
 package jamia.mikko.fallwatch;
 
 import android.app.Activity;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -164,7 +162,6 @@ public class MainSidebarActivity extends AppCompatActivity
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        //final LocationSettingsStates states = LocationSettingsStates.fromIntent(data);
         switch (requestCode) {
             case 1000:
                 switch (resultCode) {
@@ -173,7 +170,9 @@ public class MainSidebarActivity extends AppCompatActivity
                         break;
                     case Activity.RESULT_CANCELED:
                         // The user was asked to change settings, but chose not to
-                        Toast.makeText(this, "Location Service not Enabled", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                "Location Service not Enabled, application works properly only if you enable Location Service",
+                                Toast.LENGTH_LONG).show();
                         break;
                     default:
                         break;

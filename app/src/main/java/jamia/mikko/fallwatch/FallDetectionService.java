@@ -1,11 +1,9 @@
 package jamia.mikko.fallwatch;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
@@ -17,7 +15,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -50,7 +47,6 @@ public class FallDetectionService extends Service {
             if (msg.what == 0) {
                 ArrayList<String> data = new ArrayList<String>();
                 data = (ArrayList<String>) msg.obj;
-
                 contact1 = data.get(0);
                 user = data.get(1);
                 location = data.get(2);
@@ -117,21 +113,21 @@ public class FallDetectionService extends Service {
 
         Intent stopIntent = new Intent(this, FallDetectionService.class);
         stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-        PendingIntent pstopIntent = PendingIntent.getService(this, 0,
-                stopIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(this)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setOngoing(true)
                 .setContentTitle("Fallwatch")
                 .setSmallIcon(R.drawable.ic_menu_settings)
-                .setContentText("Detecting")
-                .addAction(R.drawable.ic_menu_home, "Stop", pstopIntent)
-                .build();
+                .setContentText("Detecting");
 
-        NotificationManager notificationManager =
+        Intent resultIntent = new Intent(this, MainSidebarActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        NotificationManager notifyMgr =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0, notification);
+        notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     private void showAlert() {
@@ -142,10 +138,11 @@ public class FallDetectionService extends Service {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
                 .setContentTitle("Fallwatch")
                 .setSmallIcon(R.drawable.ic_notifications)
-                .setContentText(message);
+                .setContentText(message)
+                .setAutoCancel(true);
 
         Intent resultIntent = new Intent(this, MainSidebarActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
         builder.setContentIntent(pendingIntent);
 
         Intent yesReceive = new Intent(this, AlertReceiver.class);
