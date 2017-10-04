@@ -30,12 +30,15 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     private float lastX, lastY, lastZ;
     private static final int THRESHOLD = 200;
     private Context context;
+    private SharedPreferences prefs;
+    public static final String USER_PREFERENCES = "UserPreferences";
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler, Context context) {
         this.sm = sensorManager;
         this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;
         this.context = context;
+        prefs = context.getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
     }
 
     @Override
@@ -78,12 +81,18 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
 
                 if (speed > THRESHOLD) {
 
-                    ArrayList<String> messages = new ArrayList<String>();
+                    ArrayList<String> messages = new ArrayList<>();
                     Message msg = handler.obtainMessage();
+
+                    messages.add(prefs.getString("contact1", null));
+                    messages.add(prefs.getString("username", null));
+                    messages.add(ApplicationClass.getGoogleApiHelper().getLocation());
 
                     msg.what = 0;
 
-                    msg.obj = ApplicationClass.getGoogleApiHelper().getLocation();
+                    msg.obj = messages;
+
+                    //msg.obj =
                     handler.sendMessage(msg);
                 }
 

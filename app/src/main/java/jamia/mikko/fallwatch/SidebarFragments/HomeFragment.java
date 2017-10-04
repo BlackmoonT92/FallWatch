@@ -11,9 +11,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +25,12 @@ import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import jamia.mikko.fallwatch.Constants;
 import jamia.mikko.fallwatch.FallDetectionService;
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -61,9 +61,9 @@ public class HomeFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("alert");
-
+            receivedLocation = intent.getStringExtra("location");
             if(message != null) {
-                showPopupDialog();
+                showPopupDialog(receivedLocation);
                 activity.stopService();
                 getActivity().unregisterReceiver(this);
             }
@@ -150,7 +150,7 @@ public class HomeFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void showPopupDialog() {
+    public void showPopupDialog(final String location) {
         try {
 
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -174,7 +174,7 @@ public class HomeFragment extends Fragment {
                     Toast.makeText(getContext(), getString(R.string.alertSent), Toast.LENGTH_SHORT).show();
                     timer.setTextSize(TypedValue.COMPLEX_UNIT_SP, 25);
                     timer.setText(getString(R.string.waiting_for_help));
-                    fallDetectionService.sendSMS(contact1, username, receivedLocation);
+                    fallDetectionService.sendSMS(contact1, username, location);
                     this.cancel();
                 }
             }.start();

@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.SensorManager;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
@@ -33,9 +32,7 @@ public class FallDetectionService extends Service {
     private SensorManager sensorManager;
     public static boolean IS_SERVICE_RUNNING = false;
     private SmsManager smsManager = SmsManager.getDefault();
-    private LocationManager locationManager;
     private String location, user, contact1;
-    private BroadcastReceiver smsReceiver;
 
     public FallDetectionService() {
     }
@@ -44,7 +41,12 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                location = String.valueOf(msg.obj);
+                ArrayList<String> data = new ArrayList<String>();
+                data = (ArrayList<String>) msg.obj;
+
+                contact1 = data.get(0);
+                user = data.get(1);
+                location = data.get(2);
                 showAlert();
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
                 alert.putExtra("location", location);
@@ -132,9 +134,9 @@ public class FallDetectionService extends Service {
         builder.addAction(YES_ACTION);
 
         Intent alertReceive = new Intent(this, AlertReceiver.class).putExtra("alertReceive", "alerting");
-        alertReceive.putExtra("userName", "Roope");
-        alertReceive.putExtra("number", "0445092182");
-        alertReceive.putExtra("location", "62.00,24.00");
+        alertReceive.putExtra("userName", user);
+        alertReceive.putExtra("number", contact1);
+        alertReceive.putExtra("location", location);
         alertReceive.setAction(Constants.ACTION.ALERT_ACTION);
         PendingIntent pendingIntentNo = PendingIntent.getBroadcast(this, 12345, alertReceive, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action ALERT_ACTION = new NotificationCompat.Action(0, "Alert!", pendingIntentNo);
