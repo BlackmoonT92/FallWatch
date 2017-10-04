@@ -50,7 +50,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     private float lastX, lastY, lastZ;
     private static final int THRESHOLD = 300;
     private Context context;
-    private GoogleApiClientHelper clientHelper;
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler, Context context) {
         this.sm = sensorManager;
@@ -101,7 +100,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
                     Message msg = handler.obtainMessage();
                     msg.what = 0;
 
-                    //msg.obj = getLocation();
+                    msg.obj = ApplicationClass.getGoogleApiHelper().getLocation();
 
                     handler.sendMessage(msg);
                 }

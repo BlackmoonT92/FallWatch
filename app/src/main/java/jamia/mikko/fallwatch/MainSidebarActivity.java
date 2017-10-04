@@ -1,6 +1,7 @@
 package jamia.mikko.fallwatch;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -37,7 +38,6 @@ public class MainSidebarActivity extends AppCompatActivity
     public static final String USER_PREFERENCES = "UserPreferences";
     private static FragmentManager fragmentManager;
     private static Intent service;
-    public static GoogleApiClientHelper clientHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +87,7 @@ public class MainSidebarActivity extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
-
+        
     }
 
     @Override

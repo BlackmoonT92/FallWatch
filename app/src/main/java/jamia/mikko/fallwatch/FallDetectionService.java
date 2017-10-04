@@ -40,10 +40,10 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
-                //location = String.valueOf(msg.obj);
+                location = String.valueOf(msg.obj);
                 showAlert();
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
-                //alert.putExtra("location", location);
+                alert.putExtra("location", location);
                 getApplicationContext().sendBroadcast(alert);
                 stopSelf();
                 stopForeground(true);
