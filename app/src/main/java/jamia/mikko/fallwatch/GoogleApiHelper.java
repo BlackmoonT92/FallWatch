@@ -92,6 +92,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         }
 
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
+
     }
 
     @Override

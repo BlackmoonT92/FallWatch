@@ -40,11 +40,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment {
 
     private ImageView statusOn, statusOff;
-    private SensorManager sensorManager;
     private PopupWindow popupWindow;
     public static final String USER_PREFERENCES = "UserPreferences";
     private String username, contact1;
-    private boolean useInternal, useExternal;
+    private boolean useExternal;
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
     private SharedPreferences prefs;
@@ -62,6 +61,7 @@ public class HomeFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("alert");
             receivedLocation = intent.getStringExtra("location");
+
             if(message != null) {
                 showPopupDialog(receivedLocation);
                 activity.stopService();
@@ -90,7 +90,6 @@ public class HomeFragment extends Fragment {
 
         username = prefs.getString("username", null);
         contact1 = prefs.getString("contact1", null);
-        useInternal = prefs.getBoolean("internalSensor", true);
         useExternal = prefs.getBoolean("externalSensor", true);
 
         boolean switchOn = prefs.getBoolean("tracking_state", true);
@@ -111,6 +110,8 @@ public class HomeFragment extends Fragment {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, 1);
                 }
+
+                activity.enableLocationRequest();
 
                 if (isChecked) {
 
@@ -175,14 +176,15 @@ public class HomeFragment extends Fragment {
                     timer.setText(getString(R.string.waiting_for_help));
                     fallDetectionService.sendSMS(contact1, username, location);
                     this.cancel();
+                    popupWindow.dismiss();
                 }
             }.start();
 
             final Button close = (Button) layout.findViewById(R.id.btn_im_okay);
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    popupWindow.dismiss();
                     countDownTimer.cancel();
+                    popupWindow.dismiss();
                 }
             });
 
