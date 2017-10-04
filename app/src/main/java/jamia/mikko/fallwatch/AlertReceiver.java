@@ -29,13 +29,9 @@ public class AlertReceiver extends BroadcastReceiver{
         username = intent.getStringExtra("userName");
         location = intent.getStringExtra("location");
 
-        Log.i("Info", contact1 + " " + username + " " + location);
-
         if (YES_ACTION.equals(action)){
-            Log.i("ACTION", "You are OK");
         }
         else if (ALERT_ACTION.equals(action)){
-            Log.i("ACTION", "Alerting");
 
             if (message != null) {
 

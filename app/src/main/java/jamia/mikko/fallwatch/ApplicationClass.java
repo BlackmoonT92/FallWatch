@@ -1,6 +1,7 @@
 package jamia.mikko.fallwatch;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -41,7 +42,6 @@ public class ApplicationClass extends Application {
 
         mInstance = this;
         googleApiHelper = new GoogleApiHelper(this);
-
     }
 
     public static synchronized ApplicationClass getInstance() {
@@ -56,13 +56,12 @@ public class ApplicationClass extends Application {
     }
 
     public static LocationRequest getLocationRequest() {
-        return getGoogleApiHelper().locationRequest;
+        return getInstance().getGoogleApiHelperInstance().locationRequest;
     }
 
     @Override
     public void onTerminate() {
         super.onTerminate();
     }
-
 
 }

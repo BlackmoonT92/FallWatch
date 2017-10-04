@@ -11,9 +11,7 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +25,12 @@ import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import jamia.mikko.fallwatch.Constants;
 import jamia.mikko.fallwatch.FallDetectionService;
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -62,7 +62,10 @@ public class HomeFragment extends Fragment {
         public void onReceive(Context context, Intent intent) {
             String message = intent.getStringExtra("alert");
             receivedLocation = intent.getStringExtra("location");
+<<<<<<< HEAD
 
+=======
+>>>>>>> 171c410be5d3bd97e5ea9cd8827f48dc6d877697
             if(message != null) {
                 showPopupDialog(receivedLocation);
                 activity.stopService();
@@ -112,6 +115,8 @@ public class HomeFragment extends Fragment {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, 1);
                 }
+
+                //activity.enableLocationRequest();
 
                 if (isChecked) {
 
