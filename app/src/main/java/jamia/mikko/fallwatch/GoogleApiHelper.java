@@ -1,9 +1,11 @@
 package jamia.mikko.fallwatch;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -34,12 +36,17 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         com.google.android.gms.location.LocationListener {
 
     private Context context;
-    public GoogleApiClient apiClient;
-    public LocationRequest locationRequest;
+    public static GoogleApiClient apiClient;
+    public static LocationRequest locationRequest;
     public Location mLastLocation;
-
+    private Context currentActivity;
     public GoogleApiHelper(Context context) {
         this.context = context;
+
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         this.apiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
@@ -51,7 +58,6 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
             apiClient.connect();
         }
 
-        createLocationRequest();
 
         Log.i("Google helper", "created");
     }
@@ -81,13 +87,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
 
@@ -109,12 +109,6 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         mLastLocation = location;
     }
 
-    private void createLocationRequest() {
-        locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(1000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
 
     private void stopLocationUpdates() {
         if(isConnected()) {
@@ -130,6 +124,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         String location = lat + "," + lng;
 
         return location;
-
     }
+
+
 }

@@ -2,6 +2,7 @@ package jamia.mikko.fallwatch;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -43,6 +44,7 @@ public class MainSidebarActivity extends AppCompatActivity
     public static final String USER_PREFERENCES = "UserPreferences";
     private static FragmentManager fragmentManager;
     private static Intent service;
+    private static final int REQUEST_CHECK_SETTINGS = 0x1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,6 +95,7 @@ public class MainSidebarActivity extends AppCompatActivity
         TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
 
+        enableLocationRequest();
     }
 
     @Override
@@ -193,14 +196,16 @@ public class MainSidebarActivity extends AppCompatActivity
         stopService(service);
     }
 
-    private void enableLocationRequest() {
+    public void enableLocationRequest() {
 
 
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(ApplicationClass.getLocationRequest());
 
+        builder.setAlwaysShow(true);
+
         PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
-                .checkLocationSettings(ApplicationClass.getGoogleApiHelperInstance().apiClient, builder.build());
+                .checkLocationSettings(ApplicationClass.getGoogleApiHelper().apiClient, builder.build());
 
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
@@ -215,10 +220,6 @@ public class MainSidebarActivity extends AppCompatActivity
                     //Not all location settings are satisfied
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                         //Show dialog user a dialog to enable location
-                        PendingIntent pI = status.getResolution();
-                        ApplicationClass.getGoogleApiHelperInstance().apiClient.getContext().startActivity(new Intent(ApplicationClass.getGoogleApiHelperInstance().apiClient.getContext(), MainSidebarActivity.class)
-                                .putExtra("resolution", pI).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-
                         try {
                             status.startResolutionForResult(MainSidebarActivity.this, 1000);
                         } catch (IntentSender.SendIntentException e) {

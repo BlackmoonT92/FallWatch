@@ -112,6 +112,8 @@ public class HomeFragment extends Fragment {
                     startActivityForResult(enableBtIntent, 1);
                 }
 
+                //activity.enableLocationRequest();
+
                 if (isChecked) {
 
                     ((Animatable) statusOn.getDrawable()).start();
