@@ -12,8 +12,6 @@ public class Constants {
         public static String MESSAGE_RECEIVED = "jamia.mikko.fallwatch.falldetectionservice.action.messagereceived";
         public static String ALERT_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.alertaction";
         public static String YES_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.yesaction";
-        public static String STOP_ALERT_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.stopalert";
-        public static String START_ALERT_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.startalert";
         public static String TIMER_REGISTERED = "jamia.mikko.fallwatch.falldetectionservice.action.timerregistered";
 
     }

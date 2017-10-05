@@ -19,6 +19,9 @@ import android.telephony.SmsManager;
 
 import java.util.ArrayList;
 
+import static android.support.v4.app.NotificationCompat.DEFAULT_SOUND;
+import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;
+
 /**
  * Created by jamiamikko on 27/09/2017.
  */
@@ -147,6 +150,7 @@ public class FallDetectionService extends Service {
                 .setContentTitle(getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_falling)
                 .setContentText(getString(R.string.fallen))
+                .setDefaults(DEFAULT_SOUND | DEFAULT_VIBRATE)
                 .setAutoCancel(true);
 
         Intent resultIntent = new Intent(this, MainSidebarActivity.class);
