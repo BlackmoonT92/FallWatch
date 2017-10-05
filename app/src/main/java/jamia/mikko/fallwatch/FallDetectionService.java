@@ -34,7 +34,7 @@ public class FallDetectionService extends Service {
     public static boolean IS_RUNNING_EXTERNAL = false;
     public static boolean IS_RUNNING_INTERNAL = false;
     private SmsManager smsManager = SmsManager.getDefault();
-    private String location, user, contact1;
+    private String location, user, contact1, contact2;
     private BluetoothManager bluetoothManager;
     public static AlarmTimer timer;
     private NotificationManager notifyMgr;
@@ -50,8 +50,9 @@ public class FallDetectionService extends Service {
                 ArrayList<String> data;
                 data = (ArrayList<String>) msg.obj;
                 contact1 = data.get(0);
-                user = data.get(1);
-                location = data.get(2);
+                contact2 = data.get(1);
+                user = data.get(2);
+                location = data.get(3);
                 showAlert();
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
                 alert.putExtra("location", location);
@@ -144,7 +145,7 @@ public class FallDetectionService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.fallen)))
                 .setContentTitle(getString(R.string.app_name))
-                .setSmallIcon(R.drawable.ic_notifications)
+                .setSmallIcon(R.drawable.ic_falling)
                 .setContentText(getString(R.string.fallen))
                 .setAutoCancel(true);
 
@@ -160,7 +161,8 @@ public class FallDetectionService extends Service {
 
         Intent alertReceive = new Intent(this, AlertReceiver.class).putExtra("alertReceive", "alerting");
         alertReceive.putExtra("userName", user);
-        alertReceive.putExtra("number", contact1);
+        alertReceive.putExtra("number1", contact1);
+        alertReceive.putExtra("number2", contact2);
         alertReceive.putExtra("location", location);
         alertReceive.setAction(Constants.ACTION.ALERT_ACTION);
         PendingIntent pendingIntentNo = PendingIntent.getBroadcast(this, 12345, alertReceive, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -168,6 +170,27 @@ public class FallDetectionService extends Service {
         builder.addAction(ALERT_ACTION);
 
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
+    }
+
+    private void alertSentNotification(){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setContentTitle("FallWatch")
+                .setSmallIcon(R.drawable.ic_falling)
+                .setContentText("Alert sent!");
+
+        notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
+    }
+
+    public void alertSentNotification(Context context){
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                .setContentTitle("FallWatch")
+                .setSmallIcon(R.drawable.ic_falling)
+                .setContentText("Alert sent!");
+
+        String notificationService = Context.NOTIFICATION_SERVICE;
+        NotificationManager manager = (NotificationManager) context.getSystemService(notificationService);
+        manager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
+
     }
 
     public void sendSMS(String number, String username, String location) {
@@ -193,6 +216,8 @@ public class FallDetectionService extends Service {
         @Override
         public void onFinish() {
             sendSMS(contact1, user, location);
+            sendSMS(contact2, user, location);
+            alertSentNotification();
         }
     }
 

@@ -82,8 +82,10 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
                     Message msg = handler.obtainMessage();
 
                     messages.add(prefs.getString("contact1", null));
+                    messages.add(prefs.getString("contact2", null));
                     messages.add(prefs.getString("username", null));
                     messages.add(ApplicationClass.getGoogleApiHelper().getLocation());
+
 
                     msg.what = 0;
 

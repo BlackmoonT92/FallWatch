@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
+
 /**
  * Created by rrvil on 03-Oct-17.
  */
@@ -14,7 +16,7 @@ public class AlertReceiver extends BroadcastReceiver {
     public static final String ALERT_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.alertaction";
     public static final String YES_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.yesaction";
     private FallDetectionService fallDetectionService;
-    private String username, contact1, location;
+    private String username, contact1, contact2, location;
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -25,7 +27,8 @@ public class AlertReceiver extends BroadcastReceiver {
 
         String message = intent.getStringExtra("alertReceive");
 
-        contact1 = intent.getStringExtra("number");
+        contact1 = intent.getStringExtra("number1");
+        contact2 = intent.getStringExtra("number2");
         username = intent.getStringExtra("userName");
         location = intent.getStringExtra("location");
 
@@ -36,7 +39,9 @@ public class AlertReceiver extends BroadcastReceiver {
             if (message != null) {
 
                 fallDetectionService.sendSMS(contact1, username, location);
+                fallDetectionService.sendSMS(contact2, username, location);
                 fallDetectionService.stopTimer();
+                fallDetectionService.alertSentNotification(context);
             }
 
             if (message == null) {
