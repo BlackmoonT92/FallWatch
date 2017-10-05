@@ -61,15 +61,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         final int[] toLayouts = {R.id.contactName, R.id.contactNumber};
 
-        try {
-            cr = getContentResolver();
+        cr = getContentResolver();
 
-            cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY + " ASC");
-
-
-        } catch (Exception e) {
-            Log.i("ERROR", e.toString());
-        }
+        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
         userName = (EditText) findViewById(R.id.yourNameEdit);
         contact1 = (EditText) findViewById(R.id.firstContactEdit);

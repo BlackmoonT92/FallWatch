@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">FallWatch</string>
     <string name="welcome">Welcome!</string>
+    <string name="detecting">Detecting.</string>
     <string name="fillInInfo">Please fill in your information so that we can help you the best way we can.</string>
     <string name="yourName">Name:</string>
     <string name="contact1">Contact 1:</string>
@@ -26,6 +27,8 @@
     <string name="confirm_condition">Please confirm if your are okay.</string>
     <string name="fallen">Ouch, you have fallen..</string>
     <string name="waiting_for_help">Waiting for help.</string>
+    <string name="imOkay">I\'m okay</string>
+    <string name="sendAlert">Send alert!</string>
     <string name="fillAllFields">Please fill all fields</string>
     <string name="alertSent">Alert sent!</string>
     <string name="titleHowToUse">How to use FallWatch?</string>
@@ -43,7 +46,6 @@
          your user information. You can change your name that will be shown in the text message your contacts receives in
          case of collision. You can also change your contacts. Remember to press the "Apply" button to validate your
      latest settings.</string>
-
     <string name="titleApplicationOnOff">Does the application have to be active in order it to work?</string>
     <string name="textApplicationOnOff">No. You can turn the application off once you have set the detection on.
     FallWatch will continue detecting in the background even if the app is not active.</string>
@@ -52,7 +54,6 @@
     <string name="contactUs">Contact us</string>
     <string name="contactUs1">+358405268536</string>
     <string name="contactUs2">+358445092182</string>
-
     <string name="toggleToDetect">Toggle to turn detection on and off.</string>
     <string name="toggleForInternal">Toggle to use internal sensor.</string>
     <string name="toggleForExternal">Toggle to use external sensor.</string>

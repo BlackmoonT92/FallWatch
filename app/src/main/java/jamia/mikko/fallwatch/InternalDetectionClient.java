@@ -25,8 +25,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     private Sensor accelaration;
     private long lastTime = 0;
     private float lastX, lastY, lastZ;
-    private static final int THRESHOLD = 200;
-    private Context context;
+    private static final int THRESHOLD = 400;
     private SharedPreferences prefs;
     public static final String USER_PREFERENCES = "UserPreferences";
 
@@ -34,7 +33,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
         this.sm = sensorManager;
         this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;
-        this.context = context;
         prefs = context.getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
     }
 
@@ -91,7 +89,6 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
 
                     msg.obj = messages;
 
-                    //msg.obj =
                     handler.sendMessage(msg);
                 }
 

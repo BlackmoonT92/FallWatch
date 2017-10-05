@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">FallWatch</string>
+    <string name="detecting">Tarkkaillaan.</string>
     <string name="welcome">Tervetuloa!</string>
     <string name="fillInInfo">Täytäthän alle vaaditut tiedot, jotta voimme auttaa sinua parhaalla mahdollisella tavalla.</string>
     <string name="yourName">Nimesi:</string>
@@ -26,6 +27,8 @@
     <string name="alerting">Pyydetään apua!</string>
     <string name="confirm_condition">Ole hyvä ja vahvista oletko kunnossa.</string>
     <string name="fallen">Voi jehna, olet kaatunut..</string>
+    <string name="imOkay">Olen kunnossa</string>
+    <string name="sendAlert">Kutsu apua!</string>
     <string name="waiting_for_help">Odotetaan apua.</string>
     <string name="fillAllFields">Täytäthän kaikki kentät</string>
     <string name="alertSent">Viesti lähetetty!</string>

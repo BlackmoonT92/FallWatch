@@ -124,6 +124,7 @@ public class HomeFragment extends Fragment {
 
                     activity.stopService();
                     activity.saveTrackingStateToPreferences("tracking_state", false);
+                    fallDetectionService.destroyNotificationsFromUi(getContext());
                 }
             }
         });

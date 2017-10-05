@@ -31,14 +31,13 @@ public class FallDetectionService extends Service {
     private ExternalDetectionClient externalDetectionClient;
     private SensorManager sensorManager;
     public static boolean IS_SERVICE_RUNNING = false;
-
     public static boolean IS_RUNNING_EXTERNAL = false;
     public static boolean IS_RUNNING_INTERNAL = false;
-
     private SmsManager smsManager = SmsManager.getDefault();
     private String location, user, contact1;
     private BluetoothManager bluetoothManager;
     public static AlarmTimer timer;
+    private NotificationManager notifyMgr;
 
     public FallDetectionService() {
     }
@@ -80,6 +79,7 @@ public class FallDetectionService extends Service {
 
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
         externalDetectionClient = new ExternalDetectionClient(context, bluetoothManager, messageHandler);
+        notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         timer = new AlarmTimer(60000, 1000);
     }
@@ -110,6 +110,12 @@ public class FallDetectionService extends Service {
         externalDetectionClient.stop();
     }
 
+    public void destroyNotificationsFromUi(Context context) {
+        String notificationService = Context.NOTIFICATION_SERVICE;
+        NotificationManager manager = (NotificationManager) context.getSystemService(notificationService);
+        manager.cancel(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE);
+    }
+
     private void showNotification() {
 
         Intent notificationIntent = new Intent(this, MainSidebarActivity.class);
@@ -121,29 +127,25 @@ public class FallDetectionService extends Service {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setOngoing(true)
-                .setContentTitle("Fallwatch")
-                .setSmallIcon(R.drawable.ic_menu_settings)
-                .setContentText("Detecting");
+                .setContentTitle(getString(R.string.app_name))
+                .setSmallIcon(R.drawable.ic_falling)
+                .setContentText(getString(R.string.detecting));
 
         Intent resultIntent = new Intent(this, MainSidebarActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
-        NotificationManager notifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     private void showAlert() {
 
-        String message = "You have fallen down, please confirm that you are okay or send an alert.";
-
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message))
-                .setContentTitle("Fallwatch")
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.fallen)))
+                .setContentTitle(getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_notifications)
-                .setContentText(message)
+                .setContentText(getString(R.string.fallen))
                 .setAutoCancel(true);
 
         Intent resultIntent = new Intent(this, MainSidebarActivity.class);
@@ -153,7 +155,7 @@ public class FallDetectionService extends Service {
         Intent yesReceive = new Intent(this, AlertReceiver.class);
         yesReceive.setAction(Constants.ACTION.YES_ACTION);
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action YES_ACTION = new NotificationCompat.Action(0, "I'm okay", pendingIntentYes);
+        NotificationCompat.Action YES_ACTION = new NotificationCompat.Action(0, getString(R.string.imOkay), pendingIntentYes);
         builder.addAction(YES_ACTION);
 
         Intent alertReceive = new Intent(this, AlertReceiver.class).putExtra("alertReceive", "alerting");
@@ -162,11 +164,9 @@ public class FallDetectionService extends Service {
         alertReceive.putExtra("location", location);
         alertReceive.setAction(Constants.ACTION.ALERT_ACTION);
         PendingIntent pendingIntentNo = PendingIntent.getBroadcast(this, 12345, alertReceive, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action ALERT_ACTION = new NotificationCompat.Action(0, "Alert!", pendingIntentNo);
+        NotificationCompat.Action ALERT_ACTION = new NotificationCompat.Action(0, getString(R.string.sendAlert), pendingIntentNo);
         builder.addAction(ALERT_ACTION);
 
-        NotificationManager notifyMgr =
-                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
