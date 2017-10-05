@@ -189,6 +189,7 @@ public class HomeFragment extends Fragment {
                     getActivity().unregisterReceiver(timeReceiver);
                     popupWindow.dismiss();
                     fallDetectionService.stopTimer();
+                    fallDetectionService.destroyNotificationsFromUi(getContext());
                 }
             });
 
