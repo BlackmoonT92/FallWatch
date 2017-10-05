@@ -39,9 +39,9 @@ import static android.content.Context.MODE_PRIVATE;
 public class HomeFragment extends Fragment {
 
     private ImageView statusOn, statusOff;
-    private PopupWindow popupWindow;
+    public PopupWindow popupWindow;
     public static final String USER_PREFERENCES = "UserPreferences";
-    private String username, contact1;
+    private String username, contact1, contact2;
     private boolean useExternal;
     public Switch trackerSwitch;
     private MainSidebarActivity activity;
@@ -138,6 +138,7 @@ public class HomeFragment extends Fragment {
 
         username = prefs.getString("username", null);
         contact1 = prefs.getString("contact1", null);
+        contact2 = prefs.getString("contact2", null);
         useExternal = prefs.getBoolean("externalSensor", true);
 
         boolean switchOn = prefs.getBoolean("tracking_state", true);
@@ -198,9 +199,11 @@ public class HomeFragment extends Fragment {
 
                 public void onClick(View v) {
                     fallDetectionService.sendSMS(contact1, username, location);
+                    fallDetectionService.sendSMS(contact2, username, location);
                     getActivity().unregisterReceiver(timeReceiver);
                     popupWindow.dismiss();
                     fallDetectionService.stopTimer();
+                    fallDetectionService.alertSentNotification(getContext());
                 }
             });
 

@@ -122,14 +122,17 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
                                 ArrayList<String> messages = new ArrayList<>();
 
                                 messages.add(prefs.getString("contact1", null));
+                                messages.add(prefs.getString("contact2", null));
                                 messages.add(prefs.getString("username", null));
                                 messages.add(ApplicationClass.getGoogleApiHelper().getLocation());
 
 
                                 msg.what = 0;
+
                                 msg.obj = messages;
 
                                 uiHandler.sendMessage(msg);
+
                             }
                         }).to().filter(Comparison.EQ, 1).react(new RouteComponent.Action() {
                             @Override

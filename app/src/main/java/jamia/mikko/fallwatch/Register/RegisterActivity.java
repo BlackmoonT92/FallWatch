@@ -63,8 +63,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         cr = getContentResolver();
 
-        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-
         userName = (EditText) findViewById(R.id.yourNameEdit);
         contact1 = (EditText) findViewById(R.id.firstContactEdit);
         contact2 = (EditText) findViewById(R.id.secondContactEdit);
@@ -90,6 +88,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     final PopupWindow popupWindow = new PopupWindow(convertView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, true);
                                     popupWindow.showAtLocation(convertView, Gravity.CENTER, 0, 0);
+
+                                    cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null,
+                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
                                     ListView lv = (ListView) convertView.findViewById(R.id.contactList);
                                     myAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
@@ -137,6 +138,10 @@ public class RegisterActivity extends AppCompatActivity {
                                     popupWindow.showAtLocation(convertView, Gravity.CENTER, 0, 0);
 
                                     ListView lv = (ListView) convertView.findViewById(R.id.contactList);
+
+                                    cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null,
+                                            ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+
                                     myAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
                                     lv.setAdapter(myAdapter);
 
