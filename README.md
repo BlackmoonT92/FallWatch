@@ -13,7 +13,8 @@ Is an appication designed for people, who might have in their daily lifes a risk
 ```git clone https://github.com/jamiamikko/FallWatch.git```
 
 2. Open project in Android Studio
-[https://developer.android.com/studio/index.html](https://developer.android.com/studio/index.html)
+
+  * [https://developer.android.com/studio/index.html](https://developer.android.com/studio/index.html)
 
 3. Configure your MetaMotionC external sensor (optional)
 
