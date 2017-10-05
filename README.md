@@ -14,13 +14,11 @@ Is an appication designed for people, who might have in their daily lifes a risk
 
 2. Open project in Android Studio
 
-  * [https://developer.android.com/studio/index.html](https://developer.android.com/studio/index.html)
+  * Download Android Studio: [https://developer.android.com/studio/index.html](https://developer.android.com/studio/index.html)
 
 3. Configure your MetaMotionC external sensor (optional)
 
-4. Download and install MetaWear app from Google Play: 
-
-  * [https://play.google.com/store/apps/details?id=com.mbientlab.metawear.app](https://play.google.com/store/apps/details?id=com.mbientlab.metawear.app)
+  * Download and install MetaWear app from Google Play: [https://play.google.com/store/apps/details?id=com.mbientlab.metawear.app](https://play.google.com/store/apps/details?id=com.mbientlab.metawear.app)
 
   * Connect to your MetaMotionC external sensor and check devices MAC address.
 
