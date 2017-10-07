@@ -32,11 +32,13 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
     public GoogleApiHelper(Context context) {
         this.context = context;
 
+        //Create LocationRequest that is used from MainSidebarActivity.
         locationRequest = new LocationRequest();
         locationRequest.setInterval(10000);
         locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
+        //Create new GoogleApiClient and connect.
         this.apiClient = new GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -47,19 +49,18 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
             apiClient.connect();
         }
 
-
-        Log.i("Google helper", "created");
     }
 
     public void disconnect() {
-        apiClient.disconnect();
+        stopLocationUpdates();
     }
 
     public boolean isConnected() {
         return apiClient != null && apiClient.isConnected();
     }
 
-    public void checkPermissions() {
+    public void receiveLocationUpdates() {
+        //If apiClient is connected, check permissions and start receiving location updates from API.
         if (isConnected()) {
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -71,7 +72,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
     @Override
     public void onConnected(@Nullable Bundle bundle) {
 
-        checkPermissions();
+        receiveLocationUpdates();
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -80,6 +81,7 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
             return;
         }
 
+        //Last know location is always what we receive from API.
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(apiClient);
 
     }
@@ -108,6 +110,8 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
 
     public String getLocation() {
 
+
+        //Initialize new location string used in FallDetectionService.
         String lat = Double.toString(mLastLocation.getLatitude());
         String lng = Double.toString(mLastLocation.getLongitude());
 

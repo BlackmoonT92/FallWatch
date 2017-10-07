@@ -10,6 +10,7 @@ import com.google.android.gms.location.LocationRequest;
 
 public class ApplicationClass extends Application {
 
+    //Using Application extending class to make sure we only have one instance of GoogleAPiHelper.
     private static GoogleApiHelper googleApiHelper;
     private static ApplicationClass mInstance;
 
@@ -33,6 +34,7 @@ public class ApplicationClass extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //Initialize
         mInstance = this;
         googleApiHelper = new GoogleApiHelper(this);
     }
