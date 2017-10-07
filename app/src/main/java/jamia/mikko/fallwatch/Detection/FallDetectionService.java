@@ -35,7 +35,7 @@ public class FallDetectionService extends Service {
     public static boolean IS_SERVICE_RUNNING = false;
     public static boolean IS_RUNNING_EXTERNAL = false;
     public static boolean IS_RUNNING_INTERNAL = false;
-    public static AlarmTimer timer;
+    private static AlarmTimer timer;
     private Thread thread;
     private InternalDetectionClient internalDetectionClient;
     private ExternalDetectionClient externalDetectionClient;
@@ -77,22 +77,21 @@ public class FallDetectionService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        //Initialize
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         Context context = getApplicationContext();
-
         bluetoothManager = (BluetoothManager) getSystemService(BLUETOOTH_SERVICE);
-
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
         externalDetectionClient = new ExternalDetectionClient(context, bluetoothManager, messageHandler);
         notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
         timer = new AlarmTimer(60000, 1000);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        //Decide which sensor and client to use.
         if (IS_RUNNING_EXTERNAL) {
 
             thread = new Thread(externalDetectionClient);
@@ -103,6 +102,7 @@ public class FallDetectionService extends Service {
 
         }
 
+        //Run detection client and show notification
         thread.start();
         showNotification();
 
@@ -111,12 +111,16 @@ public class FallDetectionService extends Service {
 
     @Override
     public void onDestroy() {
+
+        //Kill thread and make sure both clients are stopped.
         thread = null;
         internalDetectionClient.stop();
         externalDetectionClient.stop();
     }
 
     public void destroyNotificationsFromUi(Context context) {
+
+        //Kill all notifications related to service.
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager manager = (NotificationManager) context.getSystemService(notificationService);
         manager.cancel(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE);
@@ -124,6 +128,7 @@ public class FallDetectionService extends Service {
 
     private void showNotification() {
 
+        //Initialize main notification intent and actions.
         Intent notificationIntent = new Intent(this, MainSidebarActivity.class);
 
         notificationIntent.setAction(Constants.ACTION.MAIN_ACTION);
@@ -141,12 +146,13 @@ public class FallDetectionService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(pendingIntent);
 
-
+        //Notify
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     private void showAlert() {
 
+        //Initialize alert notification intent and actions.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(getString(R.string.fallen)))
                 .setContentTitle(getString(R.string.app_name))
@@ -159,6 +165,7 @@ public class FallDetectionService extends Service {
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0);
         builder.setContentIntent(pendingIntent);
 
+        //Define actions from AlertReceiver class
         Intent yesReceive = new Intent(this, AlertReceiver.class);
         yesReceive.setAction(Constants.ACTION.YES_ACTION);
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(this, 12345, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -175,36 +182,41 @@ public class FallDetectionService extends Service {
         NotificationCompat.Action ALERT_ACTION = new NotificationCompat.Action(0, getString(R.string.sendAlert), pendingIntentNo);
         builder.addAction(ALERT_ACTION);
 
+        //Notify
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     private void alertSentNotification() {
+        //Alert sent notification
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle("FallWatch")
+                .setContentTitle(getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_falling)
-                .setContentText("Alert sent!");
+                .setContentText(getString(R.string.alertSent));
 
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     public void alertSentNotification(Context context) {
+        //Alert sent notification with context (from UI).
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentTitle("FallWatch")
+                .setContentTitle(getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_falling)
-                .setContentText("Alert sent!");
+                .setContentText(getString(R.string.alertSent));
 
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager manager = (NotificationManager) context.getSystemService(notificationService);
-        manager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
 
+        //Notify
+        manager.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
     public void sendSMS(String number, String username, String location) {
-
+        //Define SMS body string and send message
         String uri = "http://google.com/maps/place/" + location;
         smsManager.getDefault();
         StringBuffer smsBody = new StringBuffer();
         smsBody.append(Uri.parse(uri));
+
         smsManager.sendTextMessage(number, null, username + " needs help " + smsBody.toString(), null, null);
     }
 
@@ -219,12 +231,14 @@ public class FallDetectionService extends Service {
 
         @Override
         public void onTick(long l) {
+            //Broadcast timer
             Intent timerIntent = new Intent(Constants.ACTION.TIMER_REGISTERED).putExtra("tick", l);
             getApplicationContext().sendBroadcast(timerIntent);
         }
 
         @Override
         public void onFinish() {
+            //On finnish send message to both contacts.
             sendSMS(contact1, user, location);
             sendSMS(contact2, user, location);
             alertSentNotification();
