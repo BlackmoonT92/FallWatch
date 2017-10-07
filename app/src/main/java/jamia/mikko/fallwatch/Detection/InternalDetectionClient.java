@@ -9,9 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-
 import java.util.ArrayList;
-
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -20,7 +18,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class InternalDetectionClient implements Runnable, SensorEventListener {
 
-    public static final String USER_PREFERENCES = "UserPreferences";
+    private static final String USER_PREFERENCES = "UserPreferences";
     private static final int THRESHOLD = 450;
     private Handler handler;
     private SensorManager sm;
@@ -30,6 +28,8 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     private SharedPreferences prefs;
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler, Context context) {
+
+        //Initialize
         this.sm = sensorManager;
         this.accelaration = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         this.handler = handler;
@@ -42,6 +42,8 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
         try {
 
             Thread.sleep(500);
+
+            //If sensor exists, register sensor event listener.
             if (sensorExists()) {
                 sm.registerListener(this, accelaration, SensorManager.SENSOR_DELAY_NORMAL);
             }
@@ -61,23 +63,27 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
     public void onSensorChanged(SensorEvent sensorEvent) {
 
         int sensorType = sensorEvent.sensor.getType();
-
         if (sensorType == Sensor.TYPE_ACCELEROMETER) {
 
+            //Get values from sensor
             float x = sensorEvent.values[0];
             float y = sensorEvent.values[1];
             float z = sensorEvent.values[2];
 
+            //Get current time of the system
             long currentTime = System.currentTimeMillis();
 
+            //Compare currentTime to lastTime. If gap is larger that 250 ms, analyze the data.
             if ((currentTime - lastTime) > 250) {
                 long timeDifference = currentTime - lastTime;
                 lastTime = currentTime;
 
                 float speed = Math.abs(x + y + z - lastX - lastY - lastZ) / timeDifference * 10000;
 
+                //If speed is larger than threshold, send message to service.
                 if (speed > THRESHOLD) {
 
+                    //Build message array.
                     ArrayList<String> messages = new ArrayList<>();
                     Message msg = handler.obtainMessage();
 
@@ -86,14 +92,11 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
                     messages.add(prefs.getString("username", null));
                     messages.add(ApplicationClass.getGoogleApiHelper().getLocation());
 
-
                     msg.what = 0;
-
                     msg.obj = messages;
 
                     handler.sendMessage(msg);
                 }
-
                 lastX = x;
                 lastY = y;
                 lastZ = z;
