@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,10 +37,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
-    public static final String USER_PREFERENCES = "UserPreferences";
-    private static CountDownTimer countDownTimer;
-    public PopupWindow popupWindow;
-    public Switch trackerSwitch;
+    private static final String USER_PREFERENCES = "UserPreferences";
+    private PopupWindow popupWindow;
+    private Switch trackerSwitch;
     private ImageView statusOn, statusOff;
     private String username, contact1, contact2;
     private boolean useExternal;
@@ -50,6 +48,8 @@ public class HomeFragment extends Fragment {
     private BluetoothAdapter mBluetoothAdapter;
     private FallDetectionService fallDetectionService;
     private String receivedLocation;
+
+    //Broadcast falling down alerts from service.
     BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment {
             receivedLocation = intent.getStringExtra("location");
 
             if (message != null) {
+                //Show popup and close service. Also unregister receiver.
                 showPopupDialog(receivedLocation);
                 activity.stopService();
                 getActivity().unregisterReceiver(this);
@@ -77,8 +78,8 @@ public class HomeFragment extends Fragment {
 
         getActivity().setTitle(R.string.titleHome);
 
+        //Initialize
         fallDetectionService = new FallDetectionService();
-
         activity = ((MainSidebarActivity) getActivity());
         statusOn = (ImageView) view.findViewById(R.id.status_on);
         statusOff = (ImageView) view.findViewById(R.id.status_off);
@@ -90,39 +91,49 @@ public class HomeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
+                //If we use external sensor, check that bluetooth is enabled.
                 if (!mBluetoothAdapter.isEnabled() && useExternal) {
                     Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                     startActivityForResult(enableBtIntent, 1);
                 }
 
+                //Make sure that locations are enabled.
                 activity.enableLocationRequest();
 
                 if (isChecked) {
 
-                    activity.enableLocationRequest();
+                    //Icon animation
                     ((Animatable) statusOn.getDrawable()).start();
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
+                    //Register receiver and create filter for broadcast.
                     IntentFilter intentFilter = new IntentFilter(Constants.ACTION.MESSAGE_RECEIVED);
                     getActivity().registerReceiver(messageReceiver, intentFilter);
 
+
+                    //Start service and save tracking state to shared preferences.
                     activity.connectToService();
                     activity.saveTrackingStateToPreferences("tracking_state", true);
 
 
                 } else {
+                    //Icon animation
                     statusOff.getDrawable();
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
 
+                    //Try to unregister receiver, as it might be already unregistered in receiver itself.
                     try {
                         getActivity().unregisterReceiver(messageReceiver);
                     } catch (Exception e) {
                     }
 
+                    //Stop service and save tracking state.
                     activity.stopService();
                     activity.saveTrackingStateToPreferences("tracking_state", false);
+
+                    //Kill all notifications
                     fallDetectionService.destroyNotificationsFromUi(getContext());
                 }
             }
@@ -135,15 +146,18 @@ public class HomeFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //Initialize
         username = prefs.getString("username", null);
         contact1 = prefs.getString("contact1", null);
         contact2 = prefs.getString("contact2", null);
         useExternal = prefs.getBoolean("externalSensor", true);
 
+        //Set switch to correct position if tracking state is true.
         boolean switchOn = prefs.getBoolean("tracking_state", true);
 
         if (switchOn) {
 
+            //Animation
             ((Animatable) statusOn.getDrawable()).start();
             statusOff.setVisibility(View.INVISIBLE);
             statusOn.setVisibility(View.VISIBLE);
@@ -156,9 +170,10 @@ public class HomeFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void showPopupDialog(final String location) {
+    private void showPopupDialog(final String location) {
         try {
 
+            //Initialize popup
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final View layout = inflater.inflate(R.layout.popup_home, (ViewGroup) getActivity().findViewById(R.id.popup));
 
@@ -166,6 +181,7 @@ public class HomeFragment extends Fragment {
             popupWindow.showAtLocation(layout, Gravity.CENTER, 0, 0);
             dimBehind(popupWindow);
 
+            //Broadcast timer from service.
             final TextView timer = (TextView) layout.findViewById(R.id.alert_countdown);
 
             final BroadcastReceiver timeReceiver = new BroadcastReceiver() {
@@ -173,16 +189,15 @@ public class HomeFragment extends Fragment {
                 public void onReceive(Context context, Intent intent) {
 
                     long time = intent.getLongExtra("tick", 0);
-
-                    Log.i("Clock", Long.toString(time / 1000));
-
                     timer.setText(Long.toString(time / 1000));
                 }
             };
 
+            //Create filter for timer broadcast and register receiver.
             IntentFilter intentFilter = new IntentFilter(Constants.ACTION.TIMER_REGISTERED);
             getActivity().registerReceiver(timeReceiver, intentFilter);
 
+            //When user is okay, unregister timer and destroy popup and notifications.
             final Button close = (Button) layout.findViewById(R.id.btn_im_okay);
             close.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
@@ -193,6 +208,7 @@ public class HomeFragment extends Fragment {
                 }
             });
 
+            //If user is not okay, send alert and stop broadcast.
             final Button sendAlert = (Button) layout.findViewById(R.id.btn_need_help);
             sendAlert.setOnClickListener(new View.OnClickListener() {
 
@@ -211,6 +227,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    //Dim background area of popup window.
     private void dimBehind(PopupWindow popupWindow) {
         View container;
         if (popupWindow.getBackground() == null) {
