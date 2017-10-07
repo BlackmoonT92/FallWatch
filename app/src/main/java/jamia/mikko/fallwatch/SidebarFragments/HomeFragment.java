@@ -25,9 +25,9 @@ import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import jamia.mikko.fallwatch.Constants;
-import jamia.mikko.fallwatch.FallDetectionService;
-import jamia.mikko.fallwatch.MainSidebarActivity;
+import jamia.mikko.fallwatch.Detection.Constants;
+import jamia.mikko.fallwatch.Detection.FallDetectionService;
+import jamia.mikko.fallwatch.Main.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
 
 import static android.content.Context.MODE_PRIVATE;

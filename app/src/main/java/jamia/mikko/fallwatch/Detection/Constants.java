@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Detection;
 
 /**
  * Created by jamiamikko on 28/09/2017.

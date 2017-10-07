@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Main;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -28,6 +28,10 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import jamia.mikko.fallwatch.Detection.ApplicationClass;
+import jamia.mikko.fallwatch.Detection.Constants;
+import jamia.mikko.fallwatch.Detection.FallDetectionService;
+import jamia.mikko.fallwatch.R;
 import jamia.mikko.fallwatch.Register.RegisterActivity;
 import jamia.mikko.fallwatch.SidebarFragments.AboutFragment;
 import jamia.mikko.fallwatch.SidebarFragments.HelpFragment;
@@ -39,10 +43,10 @@ public class MainSidebarActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
 
-    public static final String USER_PREFERENCES = "UserPreferences";
-    private static FragmentManager fragmentManager;
+    private static final String USER_PREFERENCES = "UserPreferences";
+    private FragmentManager fragmentManager;
     private static Intent service;
-    private boolean useInternal, useExternal;
+    private boolean useExternal;
     private SharedPreferences prefs;
 
     @Override
@@ -182,7 +186,6 @@ public class MainSidebarActivity extends AppCompatActivity
     public void connectToService() {
 
         useExternal = prefs.getBoolean("externalSensor", true);
-        useInternal = prefs.getBoolean("intenralSensor", true);
 
         service = new Intent(this, FallDetectionService.class);
 

@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Detection;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -18,6 +18,9 @@ import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 
 import java.util.ArrayList;
+
+import jamia.mikko.fallwatch.Main.MainSidebarActivity;
+import jamia.mikko.fallwatch.R;
 
 import static android.support.v4.app.NotificationCompat.DEFAULT_SOUND;
 import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;

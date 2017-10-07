@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Detection;
 
 import android.Manifest;
 import android.content.Context;

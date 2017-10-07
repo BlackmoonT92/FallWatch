@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Detection;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -21,7 +21,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class InternalDetectionClient implements Runnable, SensorEventListener {
 
     public static final String USER_PREFERENCES = "UserPreferences";
-    private static final int THRESHOLD = 400;
+    private static final int THRESHOLD = 450;
     private Handler handler;
     private SensorManager sm;
     private Sensor accelaration;

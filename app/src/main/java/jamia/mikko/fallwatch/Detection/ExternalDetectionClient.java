@@ -1,4 +1,4 @@
-package jamia.mikko.fallwatch;
+package jamia.mikko.fallwatch.Detection;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;

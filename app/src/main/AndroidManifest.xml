@@ -16,7 +16,7 @@
         android:required="true" />
 
     <application
-        android:name=".ApplicationClass"
+        android:name=".Detection.ApplicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,15 +24,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
         <service android:name="com.mbientlab.metawear.android.BtleService" />
-        <service android:name=".FallDetectionService" />
+        <service android:name=".Detection.FallDetectionService" />
 
-        <receiver android:name=".AlertReceiver"></receiver>
+        <receiver android:name=".Detection.AlertReceiver"></receiver>
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".MainSidebarActivity"
+            android:name=".Main.MainSidebarActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:noHistory="true"
             android:screenOrientation="portrait">
