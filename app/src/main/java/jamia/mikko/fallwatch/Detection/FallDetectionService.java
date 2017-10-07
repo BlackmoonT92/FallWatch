@@ -208,9 +208,9 @@ public class FallDetectionService extends Service {
     public void alertSentNotification(Context context) {
         //Alert sent notification with context (from UI).
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setContentTitle(getString(R.string.app_name))
+                .setContentTitle(context.getString(R.string.app_name))
                 .setSmallIcon(R.drawable.ic_falling)
-                .setContentText(getString(R.string.alertSent));
+                .setContentText(context.getString(R.string.alertSent));
 
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager manager = (NotificationManager) context.getSystemService(notificationService);
