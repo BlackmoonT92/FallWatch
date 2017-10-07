@@ -48,17 +48,26 @@ public class FallDetectionService extends Service {
 
         public void handleMessage(Message msg) {
             if (msg.what == 0) {
+                //Start timer
                 timer.start();
+
+                //Get data from msg.obj
                 ArrayList<String> data;
                 data = (ArrayList<String>) msg.obj;
                 contact1 = data.get(0);
                 contact2 = data.get(1);
                 user = data.get(2);
                 location = data.get(3);
+
+                //Show alert
                 showAlert();
+
+                //Start broadcasting to UI
                 Intent alert = new Intent(Constants.ACTION.MESSAGE_RECEIVED).putExtra("alert", "oh noes");
                 alert.putExtra("location", location);
                 getApplicationContext().sendBroadcast(alert);
+
+                //Stop service, no need to keep detecting
                 stopSelf();
                 stopForeground(true);
             }
