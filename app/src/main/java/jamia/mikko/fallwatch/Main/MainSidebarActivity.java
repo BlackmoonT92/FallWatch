@@ -48,16 +48,20 @@ public class MainSidebarActivity extends AppCompatActivity
     private static Intent service;
     private boolean useExternal;
     private SharedPreferences prefs;
+    private String username, contact1;
+    private TextView loggedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sidebar);
 
+        //Initialize
         prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
-        String username = prefs.getString("username", null);
-        String contact1 = prefs.getString("contact1", null);
+        //Check if user is registered. If not, redirect to register activity.
+        username = prefs.getString("username", null);
+        contact1 = prefs.getString("contact1", null);
 
         if (username == null && contact1 == null) {
 
@@ -66,6 +70,7 @@ public class MainSidebarActivity extends AppCompatActivity
             finish();
         }
 
+        //Initialize sidebar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -95,9 +100,10 @@ public class MainSidebarActivity extends AppCompatActivity
         toolbar.findViewById(R.id.logged_user);
 
         View header = navigationView.getHeaderView(0);
-        TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
+        loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
 
+        //Make sure that location is enabled.
         enableLocationRequest();
     }
 
@@ -116,8 +122,6 @@ public class MainSidebarActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -185,8 +189,8 @@ public class MainSidebarActivity extends AppCompatActivity
 
     public void connectToService() {
 
+        //Depending on which sensor is selected, tell service to run specific thread.
         useExternal = prefs.getBoolean("externalSensor", true);
-
         service = new Intent(this, FallDetectionService.class);
 
         if (!FallDetectionService.IS_SERVICE_RUNNING) {
