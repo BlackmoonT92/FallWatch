@@ -24,10 +24,10 @@ public class GoogleApiHelper implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
-    private Context context;
     public static GoogleApiClient apiClient;
     public static LocationRequest locationRequest;
     public Location mLastLocation;
+    private Context context;
 
     public GoogleApiHelper(Context context) {
         this.context = context;

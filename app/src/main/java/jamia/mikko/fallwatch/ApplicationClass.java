@@ -13,14 +13,6 @@ public class ApplicationClass extends Application {
     private static GoogleApiHelper googleApiHelper;
     private static ApplicationClass mInstance;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        mInstance = this;
-        googleApiHelper = new GoogleApiHelper(this);
-    }
-
     public static synchronized ApplicationClass getInstance() {
         return mInstance;
     }
@@ -35,6 +27,14 @@ public class ApplicationClass extends Application {
 
     public static LocationRequest getLocationRequest() {
         return getInstance().getGoogleApiHelperInstance().locationRequest;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        mInstance = this;
+        googleApiHelper = new GoogleApiHelper(this);
     }
 
     @Override

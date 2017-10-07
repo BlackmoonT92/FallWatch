@@ -40,15 +40,15 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
+    public static final String USER_PREFERENCES = "UserPreferences";
+    private final String mwMacAddress = "E6:F3:22:B3:2C:4E";
     private MetaWearBoard mwBoard;
     private Accelerometer accelerometer;
     private Context context;
     private BluetoothManager btManager;
     private Handler uiHandler;
-    private final String mwMacAddress = "E6:F3:22:B3:2C:4E";
     private BluetoothDevice btDevice;
     private SharedPreferences prefs;
-    public static final String USER_PREFERENCES = "UserPreferences";
 
     public ExternalDetectionClient(Context context, BluetoothManager btManager, Handler uiHandler) {
         this.context = context;

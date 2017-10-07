@@ -29,22 +29,18 @@ import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;
 
 public class FallDetectionService extends Service {
 
+    public static boolean IS_SERVICE_RUNNING = false;
+    public static boolean IS_RUNNING_EXTERNAL = false;
+    public static boolean IS_RUNNING_INTERNAL = false;
+    public static AlarmTimer timer;
     private Thread thread;
     private InternalDetectionClient internalDetectionClient;
     private ExternalDetectionClient externalDetectionClient;
     private SensorManager sensorManager;
-    public static boolean IS_SERVICE_RUNNING = false;
-    public static boolean IS_RUNNING_EXTERNAL = false;
-    public static boolean IS_RUNNING_INTERNAL = false;
     private SmsManager smsManager = SmsManager.getDefault();
     private String location, user, contact1, contact2;
     private BluetoothManager bluetoothManager;
-    public static AlarmTimer timer;
     private NotificationManager notifyMgr;
-
-    public FallDetectionService() {
-    }
-
     private Handler messageHandler = new Handler(Looper.getMainLooper()) {
 
         public void handleMessage(Message msg) {
@@ -65,6 +61,9 @@ public class FallDetectionService extends Service {
             }
         }
     };
+
+    public FallDetectionService() {
+    }
 
     @Nullable
     @Override
@@ -176,7 +175,7 @@ public class FallDetectionService extends Service {
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
-    private void alertSentNotification(){
+    private void alertSentNotification() {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setContentTitle("FallWatch")
                 .setSmallIcon(R.drawable.ic_falling)
@@ -185,7 +184,7 @@ public class FallDetectionService extends Service {
         notifyMgr.notify(Constants.NOTIFICATION_ID.FOREGROUND_SERVICE, builder.build());
     }
 
-    public void alertSentNotification(Context context){
+    public void alertSentNotification(Context context) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentTitle("FallWatch")
                 .setSmallIcon(R.drawable.ic_falling)
@@ -206,6 +205,10 @@ public class FallDetectionService extends Service {
         smsManager.sendTextMessage(number, null, username + " needs help " + smsBody.toString(), null, null);
     }
 
+    public void stopTimer() {
+        timer.cancel();
+    }
+
     private class AlarmTimer extends CountDownTimer {
         public AlarmTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -223,9 +226,5 @@ public class FallDetectionService extends Service {
             sendSMS(contact2, user, location);
             alertSentNotification();
         }
-    }
-
-    public void stopTimer() {
-        timer.cancel();
     }
 }

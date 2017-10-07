@@ -40,9 +40,9 @@
 
                 <Switch
                     android:id="@+id/useInternal"
-                    android:contentDescription="@string/toggleForInternal"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:contentDescription="@string/toggleForInternal"
                     android:scaleX="1.5"
                     android:scaleY="1.5" />
             </LinearLayout>
@@ -63,9 +63,9 @@
 
                 <Switch
                     android:id="@+id/useExternal"
-                    android:contentDescription="@string/toggleForExternal"
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
+                    android:contentDescription="@string/toggleForExternal"
                     android:scaleX="1.5"
                     android:scaleY="1.5" />
             </LinearLayout>
@@ -129,9 +129,9 @@
                 android:id="@+id/submitButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/applyChanges"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:contentDescription="@string/applyChanges"
                 android:text="@string/apply" />
         </LinearLayout>
     </ScrollView>

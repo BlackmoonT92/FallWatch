@@ -6,44 +6,44 @@
 
     <TextView
         android:id="@+id/titleVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:text="@string/version"
-        android:textStyle="bold"
         android:textSize="18dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"/>
+        android:textStyle="bold" />
 
     <TextView
-        android:layout_marginTop="8dp"
         android:id="@+id/version"
-        android:text="@string/versionNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/titleVersion"/>
+        android:layout_below="@+id/titleVersion"
+        android:layout_marginTop="8dp"
+        android:text="@string/versionNumber" />
 
     <TextView
-        android:layout_marginTop="16dp"
         android:id="@+id/contactUs"
-        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/version"
+        android:layout_marginTop="16dp"
         android:text="@string/contactUs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/version"/>
+        android:textStyle="bold" />
 
     <TextView
-        android:layout_marginTop="8dp"
         android:id="@+id/contact1"
-        android:text="@string/contactUs1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/contactUs"/>
+        android:layout_below="@+id/contactUs"
+        android:layout_marginTop="8dp"
+        android:text="@string/contactUs1" />
 
     <TextView
-        android:layout_marginTop="8dp"
         android:id="@+id/contact2"
-        android:text="@string/contactUs2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/contact1"/>
+        android:layout_below="@+id/contact1"
+        android:layout_marginTop="8dp"
+        android:text="@string/contactUs2" />
 
 </RelativeLayout>

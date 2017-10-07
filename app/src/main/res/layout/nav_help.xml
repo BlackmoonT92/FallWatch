@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="16dp">
 
     <ScrollView
@@ -16,57 +16,60 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_marginTop="8dp"
                 android:id="@+id/titleHowToUse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="8dp"
                 android:text="@string/titleHowToUse"
                 android:textSize="14dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
+
             <TextView
-                android:layout_marginTop="8dp"
-                android:textSize="14dp"
                 android:id="@+id/textHowToUse"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/textHowToUse"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textSize="14dp" />
 
             <TextView
-                android:layout_marginTop="16dp"
                 android:id="@+id/settings"
-                android:textSize="14dp"
-                android:text="@string/titleHowToChangeSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:layout_alignParentTop="true"
-                android:textStyle="bold"/>
-            <TextView
-                android:layout_marginTop="8dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="16dp"
+                android:text="@string/titleHowToChangeSettings"
                 android:textSize="14dp"
-                android:id="@+id/textHowToChangeSettings"
-                android:text="@string/textHowToChangeSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
 
             <TextView
-                android:layout_marginTop="16dp"
-                android:id="@+id/titleApplicationOnOff"
-                android:textSize="14dp"
-                android:text="@string/titleApplicationOnOff"
+                android:id="@+id/textHowToChangeSettings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_alignParentTop="true"
-                android:textStyle="bold"/>
-            <TextView
                 android:layout_marginTop="8dp"
-                android:textSize="14dp"
-                android:id="@+id/textApplicationOnOff"
-                android:text="@string/textApplicationOnOff"
+                android:text="@string/textHowToChangeSettings"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/titleApplicationOnOff"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="16dp"
+                android:text="@string/titleApplicationOnOff"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textApplicationOnOff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/textApplicationOnOff"
+                android:textSize="14dp" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
-
 /**
  * Created by rrvil on 03-Oct-17.
  */

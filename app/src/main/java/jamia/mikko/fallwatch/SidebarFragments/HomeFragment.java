@@ -38,23 +38,18 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class HomeFragment extends Fragment {
 
-    private ImageView statusOn, statusOff;
-    public PopupWindow popupWindow;
     public static final String USER_PREFERENCES = "UserPreferences";
+    private static CountDownTimer countDownTimer;
+    public PopupWindow popupWindow;
+    public Switch trackerSwitch;
+    private ImageView statusOn, statusOff;
     private String username, contact1, contact2;
     private boolean useExternal;
-    public Switch trackerSwitch;
     private MainSidebarActivity activity;
     private SharedPreferences prefs;
     private BluetoothAdapter mBluetoothAdapter;
     private FallDetectionService fallDetectionService;
     private String receivedLocation;
-    private static CountDownTimer countDownTimer;
-
-    public HomeFragment() {
-
-    }
-
     BroadcastReceiver messageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -68,6 +63,10 @@ public class HomeFragment extends Fragment {
             }
         }
     };
+
+    public HomeFragment() {
+
+    }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,

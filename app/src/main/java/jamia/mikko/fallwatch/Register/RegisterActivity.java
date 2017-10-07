@@ -16,7 +16,6 @@ import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,22 +27,19 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import jamia.mikko.fallwatch.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
-
 import static android.content.DialogInterface.OnClickListener;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    public static final String USER_PREFERENCES = "UserPreferences";
+    private static final String USER_PREFERENCES = "UserPreferences";
     private EditText userName, contact1, contact2;
     private Button submitButton;
     private InputMethodManager inputMethodManager;
-    private CursorAdapter myAdapter;
+    private CursorAdapter contactListAdapter;
     private ContentResolver cr;
     private Cursor cursor;
     private LayoutInflater inflater;
@@ -52,7 +48,18 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        //Check permissions
         checkAndRequestPermissions();
+
+        //Initialize
+        userName = (EditText) findViewById(R.id.yourNameEdit);
+        contact1 = (EditText) findViewById(R.id.firstContactEdit);
+        contact2 = (EditText) findViewById(R.id.secondContactEdit);
+        submitButton = (Button) findViewById(R.id.submit);
+        inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        cr = getContentResolver();
+        inflater = getLayoutInflater();
 
         final String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
@@ -61,20 +68,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         final int[] toLayouts = {R.id.contactName, R.id.contactNumber};
 
-        cr = getContentResolver();
-
-        userName = (EditText) findViewById(R.id.yourNameEdit);
-        contact1 = (EditText) findViewById(R.id.firstContactEdit);
-        contact2 = (EditText) findViewById(R.id.secondContactEdit);
-        submitButton = (Button) findViewById(R.id.submit);
-        inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-
-        inflater = getLayoutInflater();
-
+        //Show popup on editText focus. Display contact list from device and return contact to editText
         contact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
+            public void onFocusChange(View view, boolean focused) {
+                if (focused) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     builder.setMessage(R.string.typeNumberYourSelf)
                             .setTitle(R.string.contactPhoneNumber)
@@ -93,9 +91,9 @@ public class RegisterActivity extends AppCompatActivity {
                                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
                                     ListView lv = (ListView) convertView.findViewById(R.id.contactList);
-                                    myAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+                                    contactListAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
 
-                                    lv.setAdapter(myAdapter);
+                                    lv.setAdapter(contactListAdapter);
 
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
@@ -117,10 +115,11 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //Show popup on editText focus. Display contact list from device and return contact to editText
         contact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
+            public void onFocusChange(View view, boolean focused) {
+                if (focused) {
                     final AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
                     builder.setMessage(R.string.typeNumberYourSelf)
                             .setTitle(R.string.contactPhoneNumber)
@@ -142,8 +141,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null,
                                             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 
-                                    myAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
-                                    lv.setAdapter(myAdapter);
+                                    contactListAdapter = new SimpleCursorAdapter(getApplicationContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+                                    lv.setAdapter(contactListAdapter);
 
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
@@ -166,6 +165,8 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
         });
+
+        //Check validation and submit. Save values to shared preferences.
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,7 +237,8 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-    public String getNumberById(long id) {
+    //Return correct phone number from contacts.
+    private String getNumberById(long id) {
         String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone._ID,
                 ContactsContract.CommonDataKinds.Phone.NUMBER

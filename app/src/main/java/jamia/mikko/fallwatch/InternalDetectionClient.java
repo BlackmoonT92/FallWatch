@@ -20,14 +20,14 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class InternalDetectionClient implements Runnable, SensorEventListener {
 
+    public static final String USER_PREFERENCES = "UserPreferences";
+    private static final int THRESHOLD = 400;
     private Handler handler;
     private SensorManager sm;
     private Sensor accelaration;
     private long lastTime = 0;
     private float lastX, lastY, lastZ;
-    private static final int THRESHOLD = 400;
     private SharedPreferences prefs;
-    public static final String USER_PREFERENCES = "UserPreferences";
 
     public InternalDetectionClient(SensorManager sensorManager, Handler handler, Context context) {
         this.sm = sensorManager;
