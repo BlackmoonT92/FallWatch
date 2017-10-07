@@ -36,13 +36,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class SettingsFragment extends Fragment {
 
-    public static final String USER_PREFERENCES = "UserPreferences";
+    private static final String USER_PREFERENCES = "UserPreferences";
     private EditText editUsername, editContact1, editContact2;
     private Switch internalSensor, externalSensor;
     private SharedPreferences prefs;
     private Button submitButton;
     private InputMethodManager inputMethodManager;
-    private CursorAdapter myAdapter;
+    private CursorAdapter contactListAdapter;
     private ContentResolver cr;
     private Cursor cursor;
     private LayoutInflater inflater;
@@ -65,6 +65,7 @@ public class SettingsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //Initialize
         prefs = getActivity().getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
         editUsername = (EditText) getActivity().findViewById(R.id.yourNameEdit);
         editContact1 = (EditText) getActivity().findViewById(R.id.firstContactEdit);
@@ -73,7 +74,18 @@ public class SettingsFragment extends Fragment {
         externalSensor = (Switch) getActivity().findViewById(R.id.useExternal);
         submitButton = (Button) getActivity().findViewById(R.id.submitButton);
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        cr = getActivity().getContentResolver();
+        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
+        inflater = getActivity().getLayoutInflater();
 
+        final String[] projection = new String[]{
+                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
+                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
+        };
+
+        final int[] toLayouts = {R.id.contactName, R.id.contactNumber};
+
+        //Initialize current settings
         String name = prefs.getString("username", null);
         String contact1 = prefs.getString("contact1", null);
         String contact2 = prefs.getString("contact2", null);
@@ -100,23 +112,11 @@ public class SettingsFragment extends Fragment {
             externalSensor.setChecked(true);
         }
 
-        final String[] projection = new String[]{
-                ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME_PRIMARY,
-                ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER
-        };
-
-        final int[] toLayouts = {R.id.contactName, R.id.contactNumber};
-
-        cr = getActivity().getContentResolver();
-
-        cursor = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
-
-        inflater = getActivity().getLayoutInflater();
-
+        //Show popup on editText focus. Display contact list from device and return contact to editText
         editContact1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
+            public void onFocusChange(View view, boolean focused) {
+                if (focused) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                     builder.setMessage(R.string.typeNumberYourSelf)
@@ -133,8 +133,8 @@ public class SettingsFragment extends Fragment {
                                     popupWindow.showAtLocation(convertView, Gravity.CENTER, 0, 0);
 
                                     ListView lv = (ListView) convertView.findViewById(R.id.contactList);
-                                    myAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
-                                    lv.setAdapter(myAdapter);
+                                    contactListAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+                                    lv.setAdapter(contactListAdapter);
 
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
@@ -158,10 +158,11 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        //Show popup on editText focus. Display contact list from device and return contact to editText
         editContact2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean b) {
-                if (b) {
+            public void onFocusChange(View view, boolean focused) {
+                if (focused) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
                     builder.setMessage(R.string.typeNumberYourSelf)
@@ -178,8 +179,8 @@ public class SettingsFragment extends Fragment {
                                     popupWindow.showAtLocation(convertView, Gravity.CENTER, 0, 0);
 
                                     ListView lv = (ListView) convertView.findViewById(R.id.contactList);
-                                    myAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
-                                    lv.setAdapter(myAdapter);
+                                    contactListAdapter = new SimpleCursorAdapter(getContext(), R.layout.contact_list_item, cursor, projection, toLayouts);
+                                    lv.setAdapter(contactListAdapter);
 
                                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                         @Override
@@ -203,24 +204,27 @@ public class SettingsFragment extends Fragment {
             }
         });
 
+        //Make sure external and internal can't be checked at the same time.
         internalSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
                     externalSensor.setChecked(false);
                 }
             }
         });
 
+        //Make sure external and internal can't be checked at the same time.
         externalSensor.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
                     internalSensor.setChecked(false);
                 }
             }
         });
 
+        //Validate and submit / edit shared preferences.
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -239,7 +243,7 @@ public class SettingsFragment extends Fragment {
         });
     }
 
-    public String getNumberById(long id) {
+    private String getNumberById(long id) {
         String[] projection = new String[]{
                 ContactsContract.CommonDataKinds.Phone._ID,
                 ContactsContract.CommonDataKinds.Phone.NUMBER

@@ -18,7 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -27,7 +26,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-
 import jamia.mikko.fallwatch.Detection.ApplicationClass;
 import jamia.mikko.fallwatch.Detection.Constants;
 import jamia.mikko.fallwatch.Detection.FallDetectionService;
@@ -48,8 +46,6 @@ public class MainSidebarActivity extends AppCompatActivity
     private static Intent service;
     private boolean useExternal;
     private SharedPreferences prefs;
-    private String username, contact1;
-    private TextView loggedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +56,8 @@ public class MainSidebarActivity extends AppCompatActivity
         prefs = getSharedPreferences(USER_PREFERENCES, MODE_PRIVATE);
 
         //Check if user is registered. If not, redirect to register activity.
-        username = prefs.getString("username", null);
-        contact1 = prefs.getString("contact1", null);
+        String username = prefs.getString("username", null);
+        String contact1 = prefs.getString("contact1", null);
 
         if (username == null && contact1 == null) {
 
@@ -100,7 +96,7 @@ public class MainSidebarActivity extends AppCompatActivity
         toolbar.findViewById(R.id.logged_user);
 
         View header = navigationView.getHeaderView(0);
-        loggedUser = (TextView) header.findViewById(R.id.logged_user);
+        TextView loggedUser = (TextView) header.findViewById(R.id.logged_user);
         loggedUser.setText(username);
 
         //Make sure that location is enabled.
