@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-
 import com.mbientlab.metawear.Data;
 import com.mbientlab.metawear.DataToken;
 import com.mbientlab.metawear.MetaWearBoard;
@@ -26,12 +25,9 @@ import com.mbientlab.metawear.builder.function.Function1;
 import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Led;
-
 import java.util.ArrayList;
-
 import bolts.Continuation;
 import bolts.Task;
-
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -40,7 +36,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
-    public static final String USER_PREFERENCES = "UserPreferences";
+    private static final String USER_PREFERENCES = "UserPreferences";
     private final String mwMacAddress = "E6:F3:22:B3:2C:4E";
     private MetaWearBoard mwBoard;
     private Accelerometer accelerometer;
@@ -51,6 +47,8 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     private SharedPreferences prefs;
 
     public ExternalDetectionClient(Context context, BluetoothManager btManager, Handler uiHandler) {
+
+        //Initialize
         this.context = context;
         this.btManager = btManager;
         this.uiHandler = uiHandler;
@@ -61,6 +59,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     public void run() {
         try {
             Thread.sleep(500);
+            //Start client
             start();
         } catch (Exception e) {
         }
@@ -74,6 +73,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     public void stop() {
         try {
 
+            //Stop client
             context.unbindService(this);
             if (accelerometer != null) {
                 accelerometer.acceleration().stop();
@@ -86,10 +86,9 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
 
+        //Initialize external sensor device
         BtleService.LocalBinder serviceBinder = (BtleService.LocalBinder) service;
-
         btDevice = btManager.getAdapter().getRemoteDevice(mwMacAddress);
-
         mwBoard = serviceBinder.getMetaWearBoard(btDevice);
 
         mwBoard.connectAsync().onSuccessTask(new Continuation<Void, Task<Route>>() {
@@ -97,11 +96,13 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
             @Override
             public Task<Route> then(Task<Void> task) throws Exception {
 
+                //Configure accelerometer
                 accelerometer = mwBoard.getModule(Accelerometer.class);
                 accelerometer.configure()
                         .odr(5f)
                         .commit();
 
+                //Data route
                 return accelerometer.acceleration().addRouteAsync(new RouteBuilder() {
                     @Override
                     public void configure(final RouteComponent source) {
@@ -110,6 +111,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
                                 .to().filter(Comparison.EQ, -1).react(new RouteComponent.Action() {
                             @Override
                             public void execute(DataToken token) {
+                                //Play led when the acceleration gets great enough.
                                 Led led = mwBoard.getModule(Led.class);
                                 led.editPattern(Led.Color.RED, Led.PatternPreset.SOLID).commit();
                                 led.play();
@@ -119,6 +121,7 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
                             public void apply(Data data, Object... env) {
                                 Message msg = uiHandler.obtainMessage();
 
+                                //Build data message
                                 ArrayList<String> messages = new ArrayList<>();
 
                                 messages.add(prefs.getString("contact1", null));
@@ -128,15 +131,16 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
 
                                 msg.what = 0;
-
                                 msg.obj = messages;
 
+                                //Send message to service
                                 uiHandler.sendMessage(msg);
 
                             }
                         }).to().filter(Comparison.EQ, 1).react(new RouteComponent.Action() {
                             @Override
                             public void execute(DataToken token) {
+                                //Stop led.
                                 Led led = mwBoard.getModule(Led.class);
                                 led.stop(true);
 
@@ -151,6 +155,8 @@ public class ExternalDetectionClient implements Runnable, ServiceConnection {
 
             @Override
             public Void then(Task<Route> task) throws Exception {
+
+                //If defined task is ok, start accelerometer
                 if (task.isFaulted()) {
                     Log.i("Freefall", String.valueOf(task.getError()));
                     mwBoard.getModule(Debug.class).resetAsync();

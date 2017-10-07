@@ -95,6 +95,7 @@ public class InternalDetectionClient implements Runnable, SensorEventListener {
                     msg.what = 0;
                     msg.obj = messages;
 
+                    //Send message to service
                     handler.sendMessage(msg);
                 }
                 lastX = x;
