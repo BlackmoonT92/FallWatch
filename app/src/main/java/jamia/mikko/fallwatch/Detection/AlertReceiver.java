@@ -3,6 +3,7 @@ package jamia.mikko.fallwatch.Detection;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 /**
@@ -11,18 +12,16 @@ import android.util.Log;
 
 public class AlertReceiver extends BroadcastReceiver {
 
-    public static final String ALERT_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.alertaction";
-    public static final String YES_ACTION = "jamia.mikko.fallwatch.falldetectionservice.action.yesaction";
     private FallDetectionService fallDetectionService;
     private String username, contact1, contact2, location;
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        //Initialize
         fallDetectionService = new FallDetectionService();
 
         String action = intent.getAction();
-
         String message = intent.getStringExtra("alertReceive");
 
         contact1 = intent.getStringExtra("number1");
@@ -30,20 +29,17 @@ public class AlertReceiver extends BroadcastReceiver {
         username = intent.getStringExtra("userName");
         location = intent.getStringExtra("location");
 
-        if (YES_ACTION.equals(action)) {
+        if (Constants.ACTION.YES_ACTION.equals(action)) {
+            //If user is okay, stop the timer.
             fallDetectionService.stopTimer();
-        } else if (ALERT_ACTION.equals(action)) {
+        } else if (Constants.ACTION.ALERT_ACTION.equals(action)) {
 
             if (message != null) {
-
+                //If user is not okay, send alert and stop timer.
                 fallDetectionService.sendSMS(contact1, username, location);
                 fallDetectionService.sendSMS(contact2, username, location);
                 fallDetectionService.stopTimer();
                 fallDetectionService.alertSentNotification(context);
-            }
-
-            if (message == null) {
-                Log.i("ERROR", "message is null");
             }
         }
     }
