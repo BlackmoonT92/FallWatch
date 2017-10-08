@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
@@ -189,7 +188,12 @@ public class HomeFragment extends Fragment {
                 public void onReceive(Context context, Intent intent) {
 
                     long time = intent.getLongExtra("tick", 0);
+
                     timer.setText(Long.toString(time / 1000));
+
+                    if (timer.getText().toString().equals("1")){
+                        popupWindow.dismiss();
+                    }
                 }
             };
 

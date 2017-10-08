@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import jamia.mikko.fallwatch.Main.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
+import jamia.mikko.fallwatch.SidebarFragments.HomeFragment;
 
 import static android.support.v4.app.NotificationCompat.DEFAULT_SOUND;
 import static android.support.v4.app.NotificationCompat.DEFAULT_VIBRATE;
@@ -94,7 +95,7 @@ public class FallDetectionService extends Service {
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
         externalDetectionClient = new ExternalDetectionClient(context, bluetoothManager, messageHandler);
         notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        timer = new AlarmTimer(60000, 1000);
+        timer = new AlarmTimer(30000, 1000);
     }
 
     @Override
