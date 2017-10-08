@@ -95,7 +95,7 @@ public class FallDetectionService extends Service {
         internalDetectionClient = new InternalDetectionClient(sensorManager, messageHandler, context);
         externalDetectionClient = new ExternalDetectionClient(context, bluetoothManager, messageHandler);
         notifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        timer = new AlarmTimer(30000, 1000);
+        timer = new AlarmTimer(60000, 1000);
     }
 
     @Override
