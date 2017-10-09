@@ -27,10 +27,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import jamia.mikko.fallwatch.Main.MainSidebarActivity;
 import jamia.mikko.fallwatch.R;
+
 import static android.content.DialogInterface.OnClickListener;
 
 public class RegisterActivity extends AppCompatActivity {

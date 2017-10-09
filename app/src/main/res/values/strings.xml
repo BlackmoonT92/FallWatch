@@ -58,4 +58,6 @@
     <string name="toggleForInternal">Toggle to use internal sensor.</string>
     <string name="toggleForExternal">Toggle to use external sensor.</string>
     <string name="applyChanges">Click to apply your changes.</string>
+    <string name="trackingOn">Tracking mode on.</string>
+    <string name="trackingOff">Tracking mode off.</string>
 </resources>

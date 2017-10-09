@@ -9,7 +9,9 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+
 import java.util.ArrayList;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -19,7 +21,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class InternalDetectionClient implements Runnable, SensorEventListener {
 
     private static final String USER_PREFERENCES = "UserPreferences";
-    private static final int THRESHOLD = 450;
+    private static final int THRESHOLD = 800;
     private Handler handler;
     private SensorManager sm;
     private Sensor accelaration;

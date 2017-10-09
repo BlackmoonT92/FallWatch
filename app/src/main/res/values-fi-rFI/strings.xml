@@ -62,4 +62,7 @@
     <string name="toggleForInternal">Klikkaa käyttääksesi sisäistä anturia.</string>
     <string name="toggleForExternal">Klikkaa käyttääksesi ulkoista anturia.</string>
     <string name="applyChanges">Klikkaa tallentaaksesi asetuksesi.</string>
+
+    <string name="trackingOn">Seuranta päällä.</string>
+    <string name="trackingOff">Seuranta pois päältä.</string>
 </resources>

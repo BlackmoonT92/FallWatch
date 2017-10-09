@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import jamia.mikko.fallwatch.Detection.Constants;
 import jamia.mikko.fallwatch.Detection.FallDetectionService;
@@ -59,7 +60,12 @@ public class HomeFragment extends Fragment {
                 //Show popup and close service. Also unregister receiver.
                 showPopupDialog(receivedLocation);
                 activity.stopService();
-                getActivity().unregisterReceiver(this);
+                try {
+                    getActivity().unregisterReceiver(this);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         }
     };
@@ -106,6 +112,8 @@ public class HomeFragment extends Fragment {
                     statusOff.setVisibility(View.INVISIBLE);
                     statusOn.setVisibility(View.VISIBLE);
 
+                    Toast.makeText(getContext(), getString(R.string.trackingOn), Toast.LENGTH_SHORT).show();
+
                     //Register receiver and create filter for broadcast.
                     IntentFilter intentFilter = new IntentFilter(Constants.ACTION.MESSAGE_RECEIVED);
                     getActivity().registerReceiver(messageReceiver, intentFilter);
@@ -121,6 +129,8 @@ public class HomeFragment extends Fragment {
                     statusOff.getDrawable();
                     statusOn.setVisibility(View.INVISIBLE);
                     statusOff.setVisibility(View.VISIBLE);
+
+                    Toast.makeText(getContext(), getString(R.string.trackingOff), Toast.LENGTH_SHORT).show();
 
                     //Try to unregister receiver, as it might be already unregistered in receiver itself.
                     try {
@@ -191,7 +201,7 @@ public class HomeFragment extends Fragment {
 
                     timer.setText(Long.toString(time / 1000));
 
-                    if (timer.getText().toString().equals("1")){
+                    if (timer.getText().toString().equals("1")) {
                         popupWindow.dismiss();
                     }
                 }

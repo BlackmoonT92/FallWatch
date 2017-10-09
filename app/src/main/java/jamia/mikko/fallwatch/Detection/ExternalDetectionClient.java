@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
+
 import com.mbientlab.metawear.Data;
 import com.mbientlab.metawear.DataToken;
 import com.mbientlab.metawear.MetaWearBoard;
@@ -25,9 +26,12 @@ import com.mbientlab.metawear.builder.function.Function1;
 import com.mbientlab.metawear.module.Accelerometer;
 import com.mbientlab.metawear.module.Debug;
 import com.mbientlab.metawear.module.Led;
+
 import java.util.ArrayList;
+
 import bolts.Continuation;
 import bolts.Task;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**

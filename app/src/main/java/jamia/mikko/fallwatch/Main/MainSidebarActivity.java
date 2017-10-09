@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -26,6 +27,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+
 import jamia.mikko.fallwatch.Detection.ApplicationClass;
 import jamia.mikko.fallwatch.Detection.Constants;
 import jamia.mikko.fallwatch.Detection.FallDetectionService;
@@ -42,8 +44,8 @@ public class MainSidebarActivity extends AppCompatActivity
 
 
     private static final String USER_PREFERENCES = "UserPreferences";
-    private FragmentManager fragmentManager;
     private static Intent service;
+    private FragmentManager fragmentManager;
     private boolean useExternal;
     private SharedPreferences prefs;
 

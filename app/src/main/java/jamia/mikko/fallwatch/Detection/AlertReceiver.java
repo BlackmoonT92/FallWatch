@@ -3,8 +3,6 @@ package jamia.mikko.fallwatch.Detection;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.provider.ContactsContract;
-import android.util.Log;
 
 /**
  * Created by rrvil on 03-Oct-17.
