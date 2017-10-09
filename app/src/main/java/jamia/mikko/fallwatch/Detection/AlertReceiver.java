@@ -30,6 +30,7 @@ public class AlertReceiver extends BroadcastReceiver {
         if (Constants.ACTION.YES_ACTION.equals(action)) {
             //If user is okay, stop the timer.
             fallDetectionService.stopTimer();
+            fallDetectionService.destroyNotificationsFromUi(context);
         } else if (Constants.ACTION.ALERT_ACTION.equals(action)) {
 
             if (message != null) {
@@ -38,6 +39,8 @@ public class AlertReceiver extends BroadcastReceiver {
                 fallDetectionService.sendSMS(contact2, username, location);
                 fallDetectionService.stopTimer();
                 fallDetectionService.alertSentNotification(context);
+                fallDetectionService.destroyNotificationsFromUi(context);
+
             }
         }
     }
