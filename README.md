@@ -5,6 +5,9 @@ Is an appication designed for people, who might have in their daily lifes a risk
 - Minimum Android version: Android 5.0 API 21
 - Targeted for: Android 7.1.1 API 25
 
+## UI/UX Documentation and testing report
+- [https://docs.google.com/a/metropolia.fi/document/d/1sUgW5BqvcIkrUS7YugXa74UzTRldkH7BzbuRyMNpvn0/edit?usp=sharing](https://docs.google.com/a/metropolia.fi/document/d/1sUgW5BqvcIkrUS7YugXa74UzTRldkH7BzbuRyMNpvn0/edit?usp=sharing)
+
 ## Optional
 - MbientLab MetaMotionC external sensor.
 
